@@ -1,0 +1,12 @@
+clade = Tracheophyta 
+search = internal transcribed spacer, internal transcribed spacer 1
+gene = ITS
+mad =  0.005 #higher = less broken up
+coverage = 0.2
+identity = 0.2
+db = /Users/hannahmarx/Documents/Idaho/Tank/PHLAWD/pln5913.db
+knownfile = ITS_GB.keep.namesfixed
+numthreads = 4
+listfile = includefile
+#excludelistfile = exclude
+containswild

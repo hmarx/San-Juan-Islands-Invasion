@@ -1,0 +1,72 @@
+#NEXUS
+begin taxa;
+	dimensions ntax=62;
+	taxlabels
+	Pentagramma_triangularis
+	Pteridium_aquilinum
+	Polypodium_glycyrrhiza
+	Polypodium_hesperium
+	Polystichum_munitum
+	Dryopteris_expansa
+	Cystopteris_fragilis
+	Athyrium_filix_femina
+	Asplenium_trichomanes
+	Myosurus_minimus
+	Berberis_aquifolium
+	Eschscholzia_californica
+	Stellaria_media
+	Buglossoides_arvensis
+	Plantago_lanceolata
+	Lamium_purpureum
+	Linnaea_borealis
+	Campanula_rotundifolia
+	Symphoricarpos_albus
+	Valerianella_locusta
+	Hedera_helix
+	Arctostaphylos_uva_ursi
+	Philadelphus_lewisii
+	Anagallis_arvensis
+	Micranthes_integrifolia
+	Populus_tremuloides
+	Geranium_carolinianum
+	Chamerion_angustifolium
+	Arabidopsis_thaliana
+	Hypericum_perforatum
+	Shepherdia_canadensis
+	Urtica_dioica
+	Lotus_corniculatus
+	Alnus_rubra
+	Alnus_alnobetula
+	Vitis_vinifera
+	Spiranthes_romanzoffiana
+	Polypogon_monspeliensis
+	Trisetum_cernuum
+	Anthoxanthum_odoratum
+	Cynosurus_cristatus
+	Dactylis_glomerata
+	Vulpia_microstachys
+	Festuca_rubra
+	Festuca_arundinacea
+	Lolium_perenne
+	Aira_caryophyllea
+	Elymus_trachycaulus
+	Danthonia_californica
+	Juncus_effusus
+	Eleocharis_palustris
+	Typha_latifolia
+	Asparagus_officinalis
+	Triteleia_hyacinthina
+	Maianthemum_racemosum
+	Triglochin_maritima
+	Pseudotsuga_menziesii
+	Thuja_plicata
+	Taxus_brevifolia
+	Equisetum_hyemale
+	Equisetum_arvense
+	Equisetum_telmateia
+;
+end;
+
+begin trees;
+	tree tree_1 = [&R] (((Pentagramma_triangularis:0.08175098611515824,(Pteridium_aquilinum:0.05863028917150087,((((Polypodium_glycyrrhiza:0.0013848278372688982,Polypodium_hesperium:0.007403252720687981):0.04470766690867789,(Polystichum_munitum:0.023326217247940928,Dryopteris_expansa:0.01941941511689016):0.01660179792228378):0.016346508552489147,(Cystopteris_fragilis:0.0287833149570077,Athyrium_filix_femina:0.03381123303949485):0.008538723022672723):0.008646090118841432,Asplenium_trichomanes:0.08417383179756582):0.02975318566337226):0.04248372146041374):0.18728743068978243,(((((Myosurus_minimus:0.08502632870419508,Berberis_aquifolium:0.04033085222625088):0.00873581683396707,Eschscholzia_californica:0.026445887164766313):0.006171358903009627,(((((((Stellaria_media:0.07697975468795576,(Buglossoides_arvensis:0.03543617050145853,(Plantago_lanceolata:0.059601522513166694,Lamium_purpureum:0.015466960465528867):0.028036109078612037):0.0058456649513948244):0.005448718225048388,((Linnaea_borealis:0.007658554832670972,(Campanula_rotundifolia:0.07972803974722725,(Symphoricarpos_albus:0.024363369313996297,Valerianella_locusta:0.04809083205121828):0.009846697130661997):0.005237560617611048):0.0026246789298614015,Hedera_helix:0.024903653905963052):0.005593135674791305):0.0026790992375275713,Arctostaphylos_uva_ursi:0.02592699955410338):0.0031998027360160552,(Philadelphus_lewisii:0.01932667347525896,Anagallis_arvensis:0.06321735141809448):0.003750253592442243):0.00943935293682574,Micranthes_integrifolia:0.03660526242662887):1.9783032882414453E-6,((Populus_tremuloides:0.04680864442274857,(Geranium_carolinianum:0.08297080304207755,(Chamerion_angustifolium:0.043830485032390065,(Arabidopsis_thaliana:0.0820179863631999,Hypericum_perforatum:0.10573350493940536):0.0021242279730963043):0.010235478612564408):0.006795865300232906):3.975232007444318E-4,((Shepherdia_canadensis:0.03356208451370751,Urtica_dioica:0.06275619388765213):0.010247649274402304,(Lotus_corniculatus:0.05888293918655435,(Alnus_rubra:0.009407103038457099,Alnus_alnobetula:1.9783032882414453E-6):0.02948258044804536):0.00325193378684413):0.00329099415719597):0.009428694964740802):0.003626102273655507,Vitis_vinifera:0.012862400651211914):0.01833908645549648):0.010819015747714766,((Spiranthes_romanzoffiana:0.0625374429318667,((((((((Polypogon_monspeliensis:0.00526745755696667,Trisetum_cernuum:0.006091193646859894):1.9783032882414453E-6,Anthoxanthum_odoratum:0.00523728109908661):0.0027621236946702155,(((Cynosurus_cristatus:0.012370386209793138,Dactylis_glomerata:0.00412027434137896):6.875986454302208E-4,((Vulpia_microstachys:0.0037193593775491363,Festuca_rubra:0.004019628991754454):0.010228356915766013,(Festuca_arundinacea:1.9783032882414453E-6,Lolium_perenne:0.0023602991774932525):0.009246956885922586):0.0013448814850073876):0.001515682485876857,Aira_caryophyllea:0.011389119955993343):0.004099977447486469):0.0025540625159341523,Elymus_trachycaulus:0.012277977050163258):0.02198552423420541,Danthonia_californica:0.034358491388274015):0.06678829616789717,(Juncus_effusus:0.06377332157217758,Eleocharis_palustris:0.04063786484759302):0.04507697275293221):0.015139353601298644,Typha_latifolia:0.0223804931498916):0.010887495926901192,(Asparagus_officinalis:0.01755931934461752,(Triteleia_hyacinthina:0.017454957052067344,Maianthemum_racemosum:0.011222852061520516):0.0031744382310480157):0.022983890308165444):0.0028422886197710384):0.015504194508327407,Triglochin_maritima:0.06731129303043187):0.00773677455824906):0.076331206291534,(Pseudotsuga_menziesii:0.07083309508841051,(Thuja_plicata:0.04833576586650301,Taxus_brevifolia:0.03859755353159011):0.06822468835361939):0.03322816893796399):0.11773572128507631):0.13705557651484646,((Equisetum_hyemale:0.003877223261819829,Equisetum_arvense:0.002449211150386099):0.0524735788985215,Equisetum_telmateia:0.03176478953135403):0.13705557651484646);
+end;

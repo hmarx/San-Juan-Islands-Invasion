@@ -1,0 +1,162 @@
+outfile: SJ0530.1000.unweight.treePL.dated.tre
+PRIMING the optimization parameters and then exiting
+finished reading config file
+tiny branch length at 6_Grindelia. setting to 0.0001740644
+tiny branch length at 18_Sonchus. setting to 0.0001740644
+tiny branch length at 121_Sorbus. setting to 0.0001740644
+tiny branch length at 186_Cakile. setting to 0.0001740644
+tiny branch length at 241_Rumex. setting to 0.0001740644
+tiny branch length at 300_Bromus. setting to 0.0001740644
+tiny branch length at internal node. setting to 0.0001740644
+tiny branch length at internal node. setting to 0.0001740644
+tiny branch length at internal node. setting to 0.0001740644
+tiny branch length at internal node. setting to 0.0001740644
+setting 07f61be540fe90b004de607bcbb41d13 min: 91.355928
+setting 0be32dd7639735a17d830a603407fbfa min: 111.49088
+setting 17d5d489ba69884af2b1995834080ca0 min: 97.414608
+setting 194b6aec9ab5be69fcf5051c7655e3d3 min: 132.88246
+setting 1b170cc8d620d525d9a41a791939526e min: 191.42168
+setting 1f9bd42f36e78a242b7344af545f969b min: 102.87149
+setting 211c45a8829fe6f5a50c7241b8fa47f9 min: 75.080858
+setting 328322e06237ad831ecbffa6b41a6f48 min: 40.518659
+setting 360539b78fa14cb8a8d969ea7db3b66f min: 58.804912
+setting 36b722f86f2561af0e0834f3abe499f8 min: 84.475417
+setting 41fca5f0173cbc4891465662d4ee82fe min: 97.875007
+setting 4253da9c53e5281c981f80a8eea36b3c min: 101.20047
+setting 44569dfef30154cfca40c71d55b12027 min: 104.21226
+setting 4457a7186e083221ec1a8e5ac40e5fdb min: 107.60947
+setting 49398ef5b2e7185ee3810d10078af6b5 min: 100.98928
+setting 596db17eac6dfd0943339676838f2293 min: 145.13038
+setting 684fc301666fc0ca40b0b30c7c83c885 min: 36.499053
+setting 6851a08ee50b175accf9c81f530da916 min: 134.86539
+setting 6a7a5ff2029cb392001cb4bfe4f9635a min: 352.23468
+setting 6c0886795003f75238692075d42b1889 min: 113.25045
+setting 6dd5232b28581cb4b501627e7c831fda min: 89.460938
+setting 73f5a8bd574c74bc1ddd735bfbe6c1be min: 117.53474
+setting 783d784f1d2c21eff8ce78a134bf5200 min: 79.523764
+setting 7db8ca2e546dabc21eefd2b388942e0c min: 158.34208
+setting 8dd5433e485d0e701ebfc8dfb0b0c5dc min: 71.218267
+setting 93e3f61d88aa228fba27db6bbb2dd1d0 min: 74.998999
+setting a42f3c705a1a749d457a8871d892a94b min: 90.169527
+setting a7bc5930aa423a7b90d1a1c83e429a9b min: 113.25861
+setting a80d34b1e83f6e22b5ff59b0543e47c4 min: 118.60131
+setting a9d0ad6db99b3e2acf382842cb7c1cc6 min: 96.143098
+setting b192c40cf4e8c56b86198634279e5fbf min: 273.52138
+setting b95717b41b2b2b3319364e1654300802 min: 89.277084
+setting e5a09916a4d0dad5d2cfa0083a9a4900 min: 56.971438
+setting e733366181425eea0ca97e14d5f87374 min: 136.90047
+setting e9d222718f3be6237537136147cb85dc min: 62.305394
+setting efd74f98720cdf1dac85c71e8267b81a min: 124.91069
+setting f127cd0a17b8d6d56b847e5664e8fa89 min: 124.40045
+setting f2224c89ea66eae3f258a947883049a5 min: 76.154511
+setting 07f61be540fe90b004de607bcbb41d13 max: 91.355928
+setting 0be32dd7639735a17d830a603407fbfa max: 111.49088
+setting 17d5d489ba69884af2b1995834080ca0 max: 97.414608
+setting 194b6aec9ab5be69fcf5051c7655e3d3 max: 132.88246
+setting 1b170cc8d620d525d9a41a791939526e max: 191.42168
+setting 1f9bd42f36e78a242b7344af545f969b max: 102.87149
+setting 211c45a8829fe6f5a50c7241b8fa47f9 max: 75.080858
+setting 328322e06237ad831ecbffa6b41a6f48 max: 40.518659
+setting 360539b78fa14cb8a8d969ea7db3b66f max: 58.804912
+setting 36b722f86f2561af0e0834f3abe499f8 max: 84.475417
+setting 41fca5f0173cbc4891465662d4ee82fe max: 97.875007
+setting 4253da9c53e5281c981f80a8eea36b3c max: 101.20047
+setting 44569dfef30154cfca40c71d55b12027 max: 104.21226
+setting 4457a7186e083221ec1a8e5ac40e5fdb max: 107.60947
+setting 49398ef5b2e7185ee3810d10078af6b5 max: 100.98928
+setting 596db17eac6dfd0943339676838f2293 max: 145.13038
+setting 684fc301666fc0ca40b0b30c7c83c885 max: 36.499053
+setting 6851a08ee50b175accf9c81f530da916 max: 134.86539
+setting 6a7a5ff2029cb392001cb4bfe4f9635a max: 352.23468
+setting 6c0886795003f75238692075d42b1889 max: 113.25045
+setting 6dd5232b28581cb4b501627e7c831fda max: 89.460938
+setting 73f5a8bd574c74bc1ddd735bfbe6c1be max: 117.53474
+setting 783d784f1d2c21eff8ce78a134bf5200 max: 79.523764
+setting 7db8ca2e546dabc21eefd2b388942e0c max: 158.34208
+setting 8dd5433e485d0e701ebfc8dfb0b0c5dc max: 71.218267
+setting 93e3f61d88aa228fba27db6bbb2dd1d0 max: 74.998999
+setting a42f3c705a1a749d457a8871d892a94b max: 90.169527
+setting a7bc5930aa423a7b90d1a1c83e429a9b max: 113.25861
+setting a80d34b1e83f6e22b5ff59b0543e47c4 max: 118.60131
+setting a9d0ad6db99b3e2acf382842cb7c1cc6 max: 96.143098
+setting b192c40cf4e8c56b86198634279e5fbf max: 273.52138
+setting b95717b41b2b2b3319364e1654300802 max: 89.277084
+setting e5a09916a4d0dad5d2cfa0083a9a4900 max: 56.971438
+setting e733366181425eea0ca97e14d5f87374 max: 136.90047
+setting e9d222718f3be6237537136147cb85dc max: 62.305394
+setting efd74f98720cdf1dac85c71e8267b81a max: 124.91069
+setting f127cd0a17b8d6d56b847e5664e8fa89 max: 124.40045
+setting f2224c89ea66eae3f258a947883049a5 max: 76.154511
+preorder prep
+calculating character durations
+setting min and max
+setting up all constraints
+getting feasible start dates
+start rate 0.12594281
+numparams:329
+initial calc: 1.085428e+08
+LF SIM
+345.67358
+exit siman: 8598441.6
+now priming regular
+nfeval: 56 rc: Linear search failed
+3 8592702.6 5738.9927
+setting NLOPT: LD_LBFGS 
+result: -1
+-1 8546103.5 52338.16
+setting NLOPT: LD_TNEWTON_PRECOND_RESTART
+result: -1
+-1 8572317.2 26124.389
+setting NLOPT: LD_MMA
+result: 3
+3 8592675.8 5765.8706
+setting NLOPT: LD_VAR2 
+result: -1
+-1 8541777.2 56664.437
+setting NLOPT : LN_SBPLX 
+result: 5
+5 4744611.3 3853830.4
+----
+now priming AD
+nfeval: 66 rc: Linear search failed
+3 8598441.6 0
+setting NLOPT: LD_LBFGS 
+result: 3
+3 6492541.7 2105899.9
+setting NLOPT: LD_TNEWTON_PRECOND_RESTART
+result: 5
+5 2321732.3 6276709.3
+setting NLOPT: LD_MMA
+result: 3
+3 8592675.7 5765.875
+setting NLOPT: LD_VAR2 
+result: 5
+5 6523201.8 2075239.8
+setting NLOPT : LN_SBPLX 
+result: 5
+5 4744611.3 3853830.4
+----
+now priming CV (AD)
+nfeval: 260 rc: Linear search failed
+3 2919086.7 5679354.9
+setting NLOPT parallel : LD_LBFGS 
+result: -1
+-1 4742735 3855706.6
+setting NLOPT parallel : LD_TNEWTON_PRECOND_RESTART
+result: -1
+-1 4321994.5 4276447.1
+setting NLOPT parallel : LD_MMA
+result: 3
+3 2718037.1 5880404.6
+setting NLOPT parallel : LD_VAR2 
+result: -1
+-1 4744037.6 3854404
+setting NLOPT parallel : LN_SBPLX 
+result: 5
+5 3977600 4620841.6
+best: 5(0) bestad: 2 (0) bestcv: 3 (1)
+PLACE THE LINES BELOW IN THE CONFIGURATION FILE
+opt = 5
+optad = 2
+optcvad = 3
+moredetailcvad

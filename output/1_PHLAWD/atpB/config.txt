@@ -1,0 +1,12 @@
+clade = Tracheophyta 
+search = atpB, ATP synthase beta subunit
+gene = atpB
+mad =  0.01
+coverage = 0.2
+identity = 0.2
+db = /Users/hannahmarx/Documents/Idaho/Tank/PHLAWD/pln5913.db
+knownfile = atpB.keep
+numthreads = 4
+listfile = includefile
+containswild
+#excludelistfile = exclude

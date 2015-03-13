@@ -1,0 +1,431 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;\f1\froman\fcharset0 Times-Roman;\f2\fnil\fcharset0 Verdana;
+\f3\fswiss\fcharset0 ArialMT;\f4\fmodern\fcharset0 CourierNewPSMT;\f5\fnil\fcharset0 LucidaGrande;
+}
+{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red59\green59\blue59;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww13680\viewh14100\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs28 \cf0 \
+
+\b data/\
+DRYAD1_SJtraits.newHeight.Final.numeric.csv \'97> SJtraits.csv\
+DRYAD2_SJcommSummary.csv \'97 > SJcommSummary.csv\
+DRYAD3_SpList.csv \'97> SJspList.csv\
+
+\b0 \
+\
+
+\b bin/\
+
+\b0 \
+ParsePHLAWD.R\
+# takes alignments from PHLAWD, removes infraspecific designations (e.g. var., sp.) to keep just Genus_species to the taxon label, and then retains only the longest sequence (if there are duplicates) \
+\
+###### The following were reserved as a different name, and the directories were corrected to within /SJmanuscript_FINAL\
+\
+SanJuans.R \'97> prepPipeline.R\
+# 2_SpeciesList, 4_Weight, 6_Trees, 7_Scaling\
+\
+SanJuans_FinalDatasets.R \'97> analysis.R\
+# read in phylogeny, functional traits, community matrix, and meta-data (all post-processing for name consistency, etc.)\
+\
+SanJuans_FinalFunctions6Nov2014.R \'97> DistinctivenessFunctions.R\
+# Batch of functions for analyses\
+# Distance to the Nearest Native Species (DNNS) and Nearest Native Functional Difference (NNFD) \
+# Distance to the Nearest Native Species (DNNS) and Nearest Native Functional Difference (NNFD) \
+\
+SanJuansFinalAnalysis6Nov2014.R \'97 > 	\
+# final analyses of phylogenetic and functional distinctiveness between invasive and native species within each island community \
+\
+SanJuans_TreeVisFinal2Dec2014.R\
+# visualization of invasive and native species, significant nodes, fossil calibrated nodes\
+\
+\
+\
+REMOVED: SanJuans_Analyses.R\
+# only had some data processing (e.g. for SJtreePL.bootstrap.Drop.tre)\
+# other functions were updated to other .R files\
+\
+\
+######### Depreciated functions\
+DNNS \'97> MNNPD\
+NNTD \'97> MNNFD\
+DNNSi \'97> MNNPDi\
+DNNSn \'97> MNNPDn\
+\
+SJ_NN \'97 > phyloObs\
+summaryDNNS \'97> phyloObsSum.tmp\
+SJsummaryDNNS \'97> phyloObsSum\
+distance.to.Nearest.Relatives \'97> phyloDistinct\
+summary.DNNS.MPD \'97> summary.MNNPD.MPD \
+functional.Distances \'97> functionDistinct\
+plot.NNTD \'97> plot.functionDistinct.Obs\
+melt.NNTD.to.meta \'97> melt.MNNFD.to.meta\
+neighborTraitSummary \'97> functionObsSum\
+\
+\
+
+\b results/\
+\
+Each subfolder contains the output from the following pipeline. Sub folders are described in more detail below.
+\b0 \
+\
+\pard\pardeftab720
+
+\b \cf0 0_IncludeFile
+\b0 : clean and finalize species pool list\
+\pard\pardeftab720\sl460
+\cf0 David G.; use 'Pres_abs_final' = 442 sp. , those collected AND observed (include = 416 species)\
+DG_specieslist = 'Pres_abs_final' = 442 sp.\
+	
+\f1 matchEDITrem.csv  -> SJdata.csv -> SJdata0611.csv -> 
+\f0 SJdata0613.csv \
+	
+\f1 - Fill in missing native/invasive info. using {\field{\*\fldinst{HYPERLINK "http://www.pnwherbaria.org/data/search.php"}}{\fldrslt http://www.pnwherbaria.org/data/search.php}} and {\field{\*\fldinst{HYPERLINK "http://www.calflora.org/"}}{\fldrslt http://		www.calflora.org/}}\
+	- changed synonyms (from synonyms.csv\'85from first analysis; names that PHLAWD search retrieved 		but were had synonyms from includefile\'85GenBank has synonyms included in info.) \
+	--remove var., ssp., sp., and lone genera (saved as removed.txt) \
+		open matchEDIT.csv in textwrangler:\
+ 		var\\. \\w+\
+ 		ssp\\. \\w+\
+ 		sp\\.\
+ 		X Ranunculus californicus\
+		\\w+ \\w+ to new document (to remove lone genera)\
+		removed duplicates \'85add sequences back to capture diversity!!\
+	- Edited spelling: \cf2 Honkenya peploides ##Misspelled in island.data (
+\f2\fs20 \cf0 should be Honckenya peploides)\
+	- Removed: 
+\f1\fs28 \cf2 Vicia gigantea ## In island press/abs but occurs 0 times\cf0 \
+
+\f0 \
+NOTE: Species list and island data edited to match genbank search (tree): i.e. changed synonymous taxa in island data and not tree\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+\pard\pardeftab720
+
+\b \cf2 1_PHLAWD
+\b0 : search GenBank for available sequence data for each gene region\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural
+\cf0 *.keep = know sequences for each gene region to restrict the query (self compiled)\
+*.cong = configuration file, with parameters for search \
+listfile = includefile (species names to search for; 416 species)\
+\pard\pardeftab720
+\cf2 \
+\
+\pard\pardeftab720
+\cf0 nohup PHLAWD assemble config.txt > log.txt &\
+\
+*.aln\
+*.aln.full = species names, 
+\f1 \cf3 \expnd0\expndtw0\kerning0
+ncbi numbers, genbank ID
+\f0 \cf0 \kerning1\expnd0\expndtw0 \
+*.aln.rn = just species names\
+\
+\
+\pard\pardeftab720
+
+\f3\b\fs26 \cf2 2_SpeciesList
+\b0 : use ParsePHLAWD.R to remove NCBI ID, and get longest unique sequences (May 15, 2013)\
+***The new PHLAWD search did increase the number of unique sequences \
+read.csv("splistfinal") #416\
+parsePHLAWD("atpB.FINAL.aln.full") ##64, 64\
+parsePHLAWD("ITS.FINAL.aln.full") ##403, 298\
+parsePHLAWD("matK.FINAL.aln.full") ##293, 240\
+parsePHLAWD("rbcL.FINAL.aln.full") ##309, 253\
+parsePHLAWD("trnTLF.FINAL.aln.full") ##220, 220
+\f0\fs28 \cf0 \
+\
+\
+\pard\pardeftab720
+
+\f1\b \cf0 2b_Remove
+\b0 : incorrect / outlier sequences from *unique.GB.fasta\
+\
+atpB:\
+ncbi|Agrostis_stolonifera|63632|343459250|46|1\
+ncbi|Fragaria_vesca_subsp__vesca|101020|402238841|49|1\
+\
+rbcL:\
+>ncbi|Urtica_dioica_subsp__pubescens|1211622|404244225|93|1\
+>ncbi|Arenaria_serpyllifolia_subsp__serpyllifolia|1211432|404243443|75|1\
+>ncbi|Cuscuta_salina|437298|218140468|61|1\
+>ncbi|Eleocharis_palustris|110297|359388355|217|1\
+rbcL: from *unique.GB.fasta.rem  (removing from files that were removed already) \
+>ncbi|Narcissus_pseudonarcissus|39639|379031539|136|1\
+>ncbi|Philadelphus_lewisii|23115|7240405|257|1\
+\
+matK:\
+**try new accession  Ilex (124358487)\
+\
+trnTLF: from *unique.GB.fasta\
+>ncbi|Stellaria_crispa|1137901|374351415|187|1\
+>ncbi|Stellaria_nitens|1137912|374351392|185|1\
+>ncbi|Taxus_brevifolia|46220|151301919|109|1\
+>ncbi|Thuja_plicata|3316|66644285|69|1\
+>ncbi|Pseudotsuga_menziesii|3357|27462513|323|1 # longer sequence than the other\'85\
+>ncbi|Abies_grandis|46611|365775256|188|1\
+>ncbi|Equisetum_arvense|3258|31324636|45|1\
+>ncbi|Equisetum_hyemale_subsp__affine|232202|31324621|55|1 #differnt\'85\
+>ncbi|Equisetum_telmateia_subsp__braunii|232204|31324630|56|1\
+Sedum spathulifolium???wasn't there...maybe b/c changed to 0.05?\
+Toxicoscordion??\
+>ncbi|Tsuga_heterophylla|3359|148613426|152|1\
+>ncbi|Picea_sitchensis|3332|186898335|187|1\
+>ncbi|Pteridium_aquilinum_subsp__pinetorum|112004|310707260|243|1\
+>ncbi|Athyrium_filix-femina|32110|45250284|79|1\
+>ncbi|Cystopteris_fragilis|32112|17063804|321|1\
+>ncbi|Dryopteris_expansa|239563|33622446|62|1\
+>ncbi|Polystichum_munitum|3279|142934519|141|1\
+>ncbi|Polypodium_glycyrrhiza|38390|10281042|291|1\
+\
+ITS: *unique.GB.fasta\
+>ncbi|Pinus_contorta|3339|2898145|345|1\
+>ncbi|Nemophila_parviflora|79377|10440925|369|1\
+>ncbi|Toxicoscordion_venenosum_var__venenosum|164848|16326416|399|1\
+>ncbi|Pseudotsuga_menziesii|3357|2921576|346|1 ##wasn't there\'85maybe b/c changed to 0.05?\
+Sedum_spath \'85the only one keep\
+>ncbi|Equisetum_arvense|3258|1865784|351|1\
+>ncbi|Equisetum_telmateia_subsp__telmateia|371059|87245048|129|1\
+\
+parseREMOVED("atpB.unique.GB.fasta.rem") #62\
+parseREMOVED("ITS.unique.GB.fasta.rem") #296\
+parseREMOVED("matK.unique.GB.fasta") #253\
+parseREMOVED("rbcL.unique.GB.fasta.rem") #249\
+parseREMOVED("trnTLF.unique.GB.fasta.rem") #212\
+\'97> renames files *.unique.rem.name.fasta\
+\pard\pardeftab720
+
+\f0 \cf0 \
+\
+\pard\pardeftab720
+
+\f3\b\fs26 \cf2 3_Clean
+\b0 : delete sites with gaps from 50% of each gene region alignment \
+\
+phyutility -clean 0.5 -in ITS.unique.rem.name.fasta -out ITS.unique.rem.name.fasta.clean
+\f0\fs28 \cf0 \
+\
+\
+\
+\pard\pardeftab720
+
+\b \cf0 [[4_Weight]]\
+\
+
+\b0 \'97Experimented with weighting using Zorro (Wu M, Chatterji S, Eisen JA (2012) Accounting For Alignment Uncertainty in Phylogenomics. PLoS ONE 7(1): e30288. doi:10.1371/journal.pone.0030288)\
+\
+\'97Made tree inference worse, so did not use, and will not include files here\
+\
+\pard\pardeftab720
+
+\f3\b\fs26 \cf2 5_Concatenate: 367 sp, 5686 bp\
+
+\b0 \
+phyutility -concat -in atpB.unique.rem.name.fasta.clean rbcL.unique.rem.name.fasta.clean matK.unique.rem.name.fasta.clean trnTLF.unique.rem.name.fasta.clean ITS.unique.rem.name.fasta.clean -out align.concat0530.nex\
+\
+\'97Convert to *.phy in TextWrangler\
+\'97save as *.fst in Se-Al\'85to visualize in JalView 
+\f0\fs28 \cf0 \
+\
+\
+
+\f3\b\fs26 \cf2 6_Tree
+\f0\b0\fs28 \cf0 \
+
+\f3\fs26 \cf2 ###Gene Trees\
+
+\b \
+
+\b0 Marvin: \
+nohup raxmlHPC -f a -s ITS.unique.rem.name.fasta.clean.phy -x 12345 -# 100 -m GTRCAT -n ITS.100.0530 &\
+\
+HAL9000:\
+\pard\pardeftab720
+
+\f1\fs28 \cf0 nohup  raxmlHPC-PTHREADS -T 6 -f a -s 
+\f3\fs26 \cf2 ITS.unique.rem.name.fasta.clean.phy
+\f1\fs28 \cf0  -x 12345 -# 100 -m GTRCAT -p 12345 -n 
+\f3\fs26 \cf2 ITS.100.0530
+\f1\fs28 \cf0  > log.txt &
+\f0 \
+\
+\pard\pardeftab720
+
+\f3\fs26 \cf2 ####Concatenated\
+\pard\pardeftab720
+
+\f1\fs28 \cf0 \
+\pard\pardeftab720
+
+\f3\b\fs26 \cf2 HAL9000:\
+\pard\pardeftab720
+
+\f1\fs28 \cf0 nohup  raxmlHPC-PTHREADS -T 6 -f a -s align.concat0530.phy -x 12345 -# 1000 -m GTRCAT -p 12345 -q align.concat0530.model.sj -n align.concat0530.1000.unweight > log.txt &
+\f0\b0 \
+\
+\
+
+\f1 FINAL TREE:\
+align.concat0530.1000.unweight\
+\
+
+\b 7_Scaling\
+
+\b0 congruify (R):
+\b \
+
+\b0 \'97use to match concordant dates, write.treePL (intree, infile)\
+RAxML_bipartitions.align.concat0530.1000.unweight.nex = SJ ML tree, saved as rooted in Fig Tree\
+out_dates.tre  = dataed reference tree, Soltis et al. 2011\
+fleshed_genera.csv = taxonomic lookup table\
+\
+treePL (Smith & O'Meara 2012):\
+\pard\pardeftab720\sa240
+
+\f0\fs32 \cf0 \'97\'93If 
+\f4\fs26 smoothing 
+\f0\fs32 is set to be large, he objective function will be dominated by the roughness penalty
+\f5\fs24  and 
+\f0\fs32 then the model is reasonably clocklike; if it is small then the roughness penalty will not contribute much and much rate variation is permitted.\'94\
+Run on fortytwo:
+\f5\fs24  module load treepl\
+\pard\pardeftab720
+
+\f1\fs28 \cf0 treePL SJ0530.100.unweight.treePL.infile\
+\
+outfile = SJ0530.1000.unweight.treePL.dated.tre\
+\'97changed tip labels back in R \'97> SJ0530.1000.unweight.treePL.dated.rename.tre\
+\
+Labeled taxonomy on nodes: SJtreePL1000.pdf\
+Labeled bootstrap support on unscaled ML tree:  SJbootsup2.pdf
+\b \
+
+\b0 \
+
+\b FINAL ML TREE:  
+\b0 SJtreePL.bootstrap.tre
+\b \
+
+\b0 \'97scaled with treePL \
+\'97bootstrap support added (SanJuans_TreeVisFinal2Dec2014.R\'85plotTreePLBoot)\
+Total = 367 / 416 == 88%\
+\
+
+\b Tree Visualization:\
+
+\b0 \'97Prune taxa
+\b  (
+\b0 Arctostaphylos_media # Not in pres/abs) before congruity, then plot, then get SJtreePLbootsStatusDrop.pdf\
+\
+
+\b 8_IslData\
+
+\b0 Update SJdata (status/habit/islands):\
+SJdata.csv -> SJdata0611.csv [adding new synonyms in Excel] == 415 species (missing Arctostaphylos media)\
+SJdata0611.csv \'97> SJdata0613.csv ( island pres/abs data with "." replaces with \'93_\'94)\
+\pard\pardeftab720\sl460
+\cf0 Organize Island data: SJmetaEDIT.csv == 80 islands (#added Yellow Islands)\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0 \cf0 Pres/Abs Data: SJdata0613.csv --> removed growth form --> AppendixS1_SpList.csv\
+--415 species (infraspecific taxa collapsed into species) \
+--origin\
+--islands in alphabetical order\
+\'97> DRYAD3_SpList.csv\
+\pard\pardeftab720\sl460
+
+\f1 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0 \cf0 6 Nov 2014: Had to change the Area by *10\'85.thanks Solene!! \
+AppendixS3_SJcommSummary.csv \'85edited to multiply hectares by 10000 (East_Sucia_3 == 60 m^2)\
+\pard\pardeftab720\sl460
+
+\f1 \cf0 \'97> DRYAD2_SJcommSummary.csv\
+\
+\pard\pardeftab720
+
+\b \cf0 9_Traits\
+
+\b0 NOTE:\
+OrriginalData/DataSourceCheck : has original datasets, new height data added, code to take harmonic mean
+\b \
+# from SJtraitsFINAL.csv == edited NESCent (edited to average values for synonymous taxa); \
+# trait data (including "Status" column); Updated height data using Flora of B.C., taking harmonic mean of NESCent Heitht -Moles\
+# Status Habit woodiness      sla leafletSize    seedMass    leafN  maxHeight\
+# Discrete traits coded into numeric; see SJtraits.newHeight.Final.numeric.META\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\f5\b0\fs24 \cf0 ######### 19 Nov. 2013\
+compiled traits used for Amy Zanne: SJ_NESCentDataUsed.csv\
+added trait values for synonymous taxa (those with different names from PHLAWD search vs. include file). Where there were different values, took the average.  \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\f1\fs28 \cf0 \
+SJ_NESCentDataFINAL.csv ==  edited, averaged synonymous taxa\
+SJtraitsFINAL.csv == edited NESCent + Origin + growth form + press/abs islands \
+\pard\pardeftab720\sl460
+\cf0 SJtraitsMasterFINAL.csv == re-organized SJtraitsFINAL.csv == origin + pres/abs + edited NESCent\
+SJtraitsUsed.csv == origin, habit, sla, leafN, logseed, logleaflet, logheight \
+SJtraitsIslFinal.csv == origin, habit, sla, leafN, logseed, logleaflet, logheight, 80 islands
+\b \
+\pard\pardeftab720
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b0 \cf0 SJtraitsUsed.csv --> AppendixS2_Traits.csv ****** CHANGED 2 Feb 2014\
+--415 species \
+--Origin, Habit, sla, leafN, LogSeedMass, LogLeafletSize, LogMaxHeight ****\
+\'97added trait values for synonymous taxa (those with different names from PHLAWD search vs. include file). Where there were different values, took the average.  (19 Nov. 2013)\
+\
+21 Oct. 2014: FINAL FINAL TRAIT DATASET\
+SJtraits.newHeight.Final.csv\
+\'97removed Moles height data, added my height data from Flora of BC to other height data by taking harmonic mean (SJ_TraitDataCheck.R)\
+\
+SJtraitsFinal.csv --> SJtraitsFinal_ni.csv -> AppendixS2_Traits.csv\
+\'97added trait values for synonymous taxa (those with different names from PHLAWD search vs. include file). Where there were different values, took the average.  (19 Nov. 2013)\
+--415 species \
+--"Status", "sla", "leafletSize", "seedMass", "leafN", "maxHeight" (NOT logged)\
+\
+\'97> DRYAD1_SJtraits.newHeight.Final.numeric.csv\
+\
+\pard\pardeftab720\sl460
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+\
+########## MANUSCRIPT NOTES\
+Both phylogenetic similarity and functional distinctiveness important: Global comparison of phylogenetic and functional variability showed a contrasting trend\'97introduced species were closely related to natives in the community, yet were functionally distinct (Ordonez,  Accepted Global Ecology and Biogeography)\
+ (Ordonez,  Accepted Global Ecology and Biogeography)\
+1. filling gaps in niche space (phenotypic similarity, Proches et al. 2008)\
+2. placing at the edge of the spectrum\'97esp. if natives clustered (phylogenetic, DNH, Daehler)\
+3. broad environmental preference\'97esp. if natives even (spatial, Proches et al. 2008 , Gerhold et al. 2011)\
+\
+p.rank.DNNS.inv <- min(DNNS.inv.rankLo, DNNS.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed\
+\
+Jones et al. 2014\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f1 \cf0 \
+
+\b TO READ:\
+
+\b0 \
+\pard\pardeftab720
+\cf0 Baraloto 2012: Using functional traits and phylogenetic trees to\
+examine the assembly of tropical tree communities\
+\
+Hulme 2013: Integrating trait- and niche-based approaches to\
+assess contemporary evolution in alien plant species\
+\
+MacDougall 2009 : Plant invasions and the niche\
+\
+\pard\pardeftab720
+
+\f0 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+}

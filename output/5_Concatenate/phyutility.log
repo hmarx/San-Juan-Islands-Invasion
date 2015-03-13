@@ -1,0 +1,40 @@
+starting log: 27/05/13 11:54
+concat
+in filename: atpB.unique.rem.name.fasta.clean
+in filename: rbcL.unique.rem.name.fasta.clean
+in filename: matK.unique.rem.name.fasta.clean
+in filename: trnTLF.unique.rem.name.fasta.clean
+in filename: ITS.unique.rem.name.fasta.clean
+outfile: align.concat0527.nex
+starting log: 27/05/13 04:42
+concat
+in filename: atpB.unique.rem.name.fasta.clean
+in filename: rbcL.unique.rem.name.fasta.clean
+in filename: matK.unique.rem.name.fasta.clean
+in filename: trnTLF.unique.rem.name.fasta.clean
+in filename: ITS.unique.rem.name.fasta.clean
+outfile: align.concat0527.nex
+starting log: 29/05/13 02:11
+concat
+in filename: atpB.unique.rem.name.fasta.clean
+in filename: rbcL.unique.rem.name.fasta.clean
+in filename: matK.unique.rem.name.fasta.clean
+in filename: trnTLF.unique.rem.name.fasta.clean
+in filename: ITS.unique.rem.name.fasta.clean
+outfile: align.concat0529.nex
+starting log: 29/05/13 05:32
+concat
+in filename: atpB.unique.rem.name.fasta.clean
+in filename: rbcL.unique.rem.name.fasta.clean
+in filename: matK.unique.rem.name.fasta.clean
+in filename: trnTLF.unique.rem.name.fasta.clean
+in filename: ITS.unique.rem.name.fasta.clean
+outfile: align.concat0529b.nex
+starting log: 31/05/13 03:30
+concat
+in filename: atpB.unique.rem.name.fasta.clean
+in filename: rbcL.unique.rem.name.fasta.clean
+in filename: matK.unique.rem.name.fasta.clean
+in filename: trnTLF.unique.rem.name.fasta.clean
+in filename: ITS.unique.rem.name.fasta.clean
+outfile: align.concat0530.nex
