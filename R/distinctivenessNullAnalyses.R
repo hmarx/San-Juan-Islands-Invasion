@@ -1016,12 +1016,12 @@ dev.off()
 MNNFD_inv <- na.omit(ses.SJ.MNNFD.SeedMass[which(ses.SJ.MNNFD.SeedMass$Metric == "MNNFD_inv"), ] )
 nrow(MNNFD_inv[which(as.numeric(as.character(MNNFD_inv$p.value.ranks)) <= 0.05), ]) #13
 nrow(MNNFD_inv[which(as.numeric(as.character(MNNFD_inv$p.value.ranks)) >= 0.05), ]) #59 NS
-13/72
+13/72 #0.1805556
 #### ses MPDin 
 MFD_inv_nat <- ses.SJ.MNNFD.SeedMass[which(ses.SJ.MNNFD.SeedMass$Metric == "MFD_inv_nat"), ] 
 nrow(MFD_inv_nat[which(as.numeric(as.character(MFD_inv_nat$p.value.ranks)) <= 0.05), ]) #18
 nrow(MFD_inv_nat[which(as.numeric(as.character(MFD_inv_nat$p.value.ranks)) >= 0.05), ]) #54 NS
-18/72
+18/72 # 0.25
 
 sigseedmassMNNFD_inv <- (MNNFD_inv[which(as.numeric(as.character(MNNFD_inv$p.value.ranks)) <= 0.05), ]) #45 NS
 sigseedmassMPD_inv <- (MFD_inv_nat[which(as.numeric(as.character(MFD_inv_nat$p.value.ranks)) <= 0.05), ]) #45 NS
