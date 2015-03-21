@@ -24,6 +24,7 @@ library(phytools)
 library(phylobase)
 library(picante)
 library(scales)
+library(plyr)
 
 ################# PHYLOGENY
 #### Final ML tree, scaled with treePL, bootstrap support added to nodes

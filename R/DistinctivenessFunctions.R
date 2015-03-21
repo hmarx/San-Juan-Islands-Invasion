@@ -1035,13 +1035,14 @@ read.nullOutput <- function(sim.output, islands.sim){
 
 # plottype = "NullInvOcc" (boxplot showing distribution of null means, with observed mean) 
 #             OR "ses.allIslands" (points of z-scores for SES of each observed mean to null for each island, significant islands hightlighted)
+#             OR "summary.Bar" (barplot of frequency of significant islands for MNNFD / MFD clustered/overdispersed)
 # sim.output = directory of .csv file for the output of the null distribution 
 # islands.sim = list of the island names to use
 # phyloObs = output of phyloDistinct() applies across all communities 
 # traits = trait file; rownames = species, column[1] = "Status", other columns = trait values
 # traitname = name of the trait to analize
 # metadata = rownames = island names; one column == "Area.m2
-sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands"), sim.output, islands.sim, phyloObs, 
+sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summary.Bar"), sim.output, islands.sim, phyloObs, 
                                 traits, traitname, metadata){
   ## Observed Values
   obs.MNNFD <- lapply(islands.sim, function(x) functionDistinct(output=phyloObs[[x]], traits, traitname)) 
@@ -1154,13 +1155,57 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands"), sim.
       geom_abline(intercept = 0, slope = 0, colour = "grey", size = .5) +
       geom_vline(xintercept = c(18.5, 53.5)) +
       theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
-      ggtitle(paste("Significane of", traitname, "difference for\n invasive species to nearest native (NNFDi),\n and native community (MFDNi)\n", sep=" ")) +
+      ggtitle(paste("Significane of", traitname, "difference for\n invasive species to nearest native (MNNFD i),\n and native community (MFD_inv_nat)\n", sep=" ")) +
       theme(plot.title=element_text(size=rel(1.5))) +
       theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
     print(p3)
     dev.off()
     
   }
+  
+  if(plottype[1] == "summary.Bar"){
+    ################################## ses FUNCTIONAL summary final #################################################################### 
+    sesMNNPD <- ses.SJ.MNNFD[ses.SJ.MNNFD[,"Metric"] =="MNNFD_inv",]
+    sesMPD <- ses.SJ.MNNFD[ses.SJ.MNNFD[,"Metric"] =="MFD_inv_nat",]
+    
+    sesMNNPDPos = cbind("Island"=rownames(sesMNNPD), "Size.cat"=as.character(sesMNNPD[,"Size.cat"]), 
+                        "Metric"=rep(x = "MNNFD inv > 0", times = nrow(sesMNNPD)), 
+                        "Significance"=ifelse(sesMNNPD[,"p.value.ranks"] <= 0.05 & 
+                                                as.numeric(as.character(sesMNNPD[,"obs.z"])) >= 0, 1,0))
+    sesMNNPDNeg = cbind("Island"=rownames(sesMNNPD), "Size.cat"=as.character(sesMNNPD[,"Size.cat"]), 
+                        "Metric"=rep(x = "MNNFD inv < 0", times = nrow(sesMNNPD)), 
+                        "Significance"=ifelse(sesMNNPD[,"p.value.ranks"] <= 0.05 & 
+                                                as.numeric(as.character(sesMNNPD[,"obs.z"])) <= 0, 1,0))
+    sesMPDPos = cbind("Island"=rownames(sesMPD), "Size.cat"=as.character(sesMPD[,"Size.cat"]), 
+                      "Metric"=rep(x = "MFD inv > 0", times = nrow(sesMPD)), 
+                      "Significance"=ifelse(sesMPD[,"p.value.ranks"] <= 0.05 & 
+                                              as.numeric(as.character(sesMPD[,"obs.z"])) >= 0, 1,0))
+    sesMPDNeg = cbind("Island"=rownames(sesMPD), "Size.cat"=as.character(sesMPD[,"Size.cat"]), 
+                      "Metric"=rep(x = "MFD inv < 0", times = nrow(sesMPD)), 
+                      "Significance"=ifelse(sesMPD[,"p.value.ranks"] <= 0.05 & 
+                                              as.numeric(as.character(sesMPD[,"obs.z"])) <= 0, 1,0))
+    sesFunctional <- as.data.frame(rbind(sesMNNPDPos, sesMNNPDNeg, sesMPDPos, sesMPDNeg))
+    
+    length(which(sesMPD[,"p.value.ranks"] <= 0.05 & 
+                   as.numeric(as.character(sesMPD[,"obs.z"])) <= 0))
+    
+    neworder <- c("MNNFD inv > 0", "MFD inv > 0", "MNNFD inv < 0", "MFD inv < 0")
+    sesFunctional2 <- arrange(transform(sesFunctional, Metric=factor(Metric,levels=neworder)),Metric)
+    
+    pdf(paste("figs/plots/functionDiv/ses/", traitname, "Functional.SummaryBar.pdf", sep=""))
+    p4 <- ggplot(sesFunctional2, aes(x=Significance, fill=factor(Size.cat))) + 
+      geom_bar(stat="bin") +
+      scale_fill_manual(name="Size Category",
+                        breaks=c("sm", "med", "lg"),
+                        values=c("sm"="dodgerblue4", "med"="orangered3", "lg"="gold1")) +
+      theme_bw() +
+      scale_x_discrete(name="", labels=c("0"="NS", "1"="Significant")) +
+      facet_wrap(~Metric, ncol = 2) +
+      ggtitle(paste(traitname, "SES Functional Difference\n",sep=" "))
+    print(p4)
+    dev.off()
+  }
+  
   
   #### summarize significance data by size categories
   ses.SJ.MNNFD$Size.cat <- as.character(ses.SJ.MNNFD$Size.cat)
@@ -1200,7 +1245,6 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands"), sim.
   return(sum)
   
 }
-
 
 
 
