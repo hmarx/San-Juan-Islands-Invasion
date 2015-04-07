@@ -1,9 +1,8 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
 {\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;\f1\froman\fcharset0 Times-Roman;\f2\fnil\fcharset0 Verdana;
 \f3\fswiss\fcharset0 ArialMT;\f4\fmodern\fcharset0 CourierNewPSMT;\f5\fnil\fcharset0 LucidaGrande;
-\f6\fnil\fcharset0 Cambria;}
-{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red59\green59\blue59;\red255\green255\blue51;
 }
+{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red59\green59\blue59;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww13680\viewh14100\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
 
@@ -267,14 +266,17 @@ HAL9000:\
 \f0\b0 \
 \
 \
+\pard\pardeftab720
 
-\f1 FINAL TREE:\
+\f1 \cf0 FINAL TREE:\
 align.concat0530.1000.unweight\
 \
+\pard\pardeftab720
 
-\b 7_Scaling\
+\b \cf0 7_Scaling\
+\pard\pardeftab720
 
-\b0 congruify (R):
+\b0 \cf0 congruify (R):
 \b \
 
 \b0 \'97use to match concordant dates, write.treePL (intree, infile)\
@@ -304,26 +306,32 @@ Labeled bootstrap support on unscaled ML tree:  SJbootsup2.pdf
 \b \
 
 \b0 \
+\pard\pardeftab720
 
-\b FINAL ML TREE:  
+\b \cf0 FINAL ML TREE:  
 \b0 SJtreePL.bootstrap.tre
 \b \
+\pard\pardeftab720
 
-\b0 \'97scaled with treePL \
+\b0 \cf0 \'97scaled with treePL \
 \'97bootstrap support added (SanJuans_TreeVisFinal2Dec2014.R\'85plotTreePLBoot)\
 Total = 367 / 416 == 88%\
 \
+\pard\pardeftab720
 
-\b Tree Visualization:\
+\b \cf0 Tree Visualization:\
+\pard\pardeftab720
 
-\b0 \'97Prune taxa
+\b0 \cf0 \'97Prune taxa
 \b  (
 \b0 Arctostaphylos_media # Not in pres/abs) before congruity, then plot, then get SJtreePLbootsStatusDrop.pdf\
 \
+\pard\pardeftab720
 
-\b 8_IslData\
+\b \cf0 8_IslData\
+\pard\pardeftab720
 
-\b0 Update SJdata (status/habit/islands):\
+\b0 \cf0 Update SJdata (status/habit/islands):\
 SJdata.csv -> SJdata0611.csv [adding new synonyms in Excel] == 415 species (missing Arctostaphylos media)\
 SJdata0611.csv \'97> SJdata0613.csv ( island pres/abs data with "." replaces with \'93_\'94)\
 \pard\pardeftab720\sl460
@@ -350,8 +358,9 @@ AppendixS3_SJcommSummary.csv \'85edited to multiply hectares by 10000 (East_Suci
 \pard\pardeftab720
 
 \b \cf0 9_Traits\
+\pard\pardeftab720
 
-\b0 NOTE:\
+\b0 \cf0 NOTE:\
 OrriginalData/DataSourceCheck : has original datasets, new height data added, code to take harmonic mean
 \b \
 # from SJtraitsFINAL.csv == edited NESCent (edited to average values for synonymous taxa); \
@@ -395,95 +404,5 @@ SJtraitsFinal.csv --> SJtraitsFinal_ni.csv -> AppendixS2_Traits.csv\
 \'97> DRYAD1_SJtraits.newHeight.Final.numeric.csv\
 \
 \pard\pardeftab720\sl460
-\cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
-\cf0 \
-\
-########## MANUSCRIPT NOTES\
-Both phylogenetic similarity and functional distinctiveness important: Global comparison of phylogenetic and functional variability showed a contrasting trend\'97introduced species were closely related to natives in the community, yet were functionally distinct (Ordonez,  Ecology 2014)\
-1. filling gaps in niche space (phenotypic similarity, Proches et al. 2008) == FILLING \
-2. placing at the edge of the spectrum\'97esp. if recipient natives clustered (phylogenetic, DNH, Daehler 2001)\
-3. broad environmental preference\'97esp. if natives even (spatial, Proches et al. 2008 , \cb4 Gerhold et al. 2011\cb1 ) == MATCHING\
-\
-  # p-values of observed mean vs. distribution of randomized means \
-p.rank.DNNS.inv <- min(DNNS.inv.rankLo, DNNS.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed\
-\
-  #Z-value assuming that the null hypothesis is true  == SESmetric\
-  z.MPD.inv <- (obs.MPD.i - mean.sim.MPD.inv) / sd.sim.MPD.inv \
-\
-\
-\
-Question the utility of phylogeny \
-Jones et al. 2014\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
-
-\f1 \cf0 Godoy 2014 \
-\
-
-\b TO INCLUDE?\
-\pard\pardeftab720\ri380
-
-\f6\i\b0\fs24 \cf0 Diego: 
-\i0 \
-Maybe a figure of archipelago and its location could be nice for the intro.  Also in your presentations you always give short description of the island like the origin, soil and type of plant communities, but I don\'92t see it here and I think it could be important to include it if you have space.  \
-\
-
-\i Maribeth:
-\i0 \
-megaphylogeny OR mega-phylogeny\
-\
-In the intro, you mention that you\'92re going after relevant functional traits, without explaining why they\'92re relevant. It\'92s fleshed out more here, but maybe a similar sentence to this one could go into the intro as well?\
-\
-Tree of Life (capitalised?)\
-\
-You mentioned in your presentation that the definition of community is subjective. Does it warrant an explanation in the text, as well, like you did for \'91invasiveness\'92? Earlier in the text, you indicated that some of the islands encompass different habitats. I think it\'92s fine, but I\'92m not sure if reviewers/readers would pick at this or not. (MOVE SOME OF DISCUSSION INTO METHODS?)\
-\
-In discussion: \
-\'93A phylogeny is often considered an appropriate proxy for ecological similarity in community phylogenetic studies. \'93 \'97redundant\'85.\
-\
-Yay! Nice. \
-I think the paper is clean and concise. I suppose you could add more of a conservation hook, as well \'96 e.g. Cadotte and Davies 2010. Habitat fragmentation (\'91islands\'92 in a mosaic of other communities) and susceptibility to invasion, etc\'85 Tscharntke et. al 2012.\
-Although I don\'92t know if you\'92re maxed out on space/refs. \
-\
-
-\i Dave: \
-
-\i0 for a discussion of null models relevant to \'85.add in more of a discussion??\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
-
-\f1\fs28 \cf0 \
-
-\i Sarah: \
-\pard\pardeftab720\ri380
-
-\f6\i0\fs24 \cf0 height, and seed mass are assumed to be correlated \'85just assumed? Shown somewhere? \
-\
-are considered an appropriate proxy for selective forces \'85are there other traits as proxy? if so, among traits considered to be proxies \
-\
-Some movement of methods section to intro (invasive definition, phylogeny with branch lengths)??
-\f1\fs28 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
-\cf0 \
-Seed size vs. seed mass\'85.??\
-\
-
-\b TO READ:\
-
-\b0 \
-\pard\pardeftab720
-\cf0 Baraloto 2012: Using functional traits and phylogenetic trees to\
-examine the assembly of tropical tree communities\
-\
-Hulme 2013: Integrating trait- and niche-based approaches to\
-assess contemporary evolution in alien plant species\
-\
-MacDougall 2009 : Plant invasions and the niche\
-\
-\
-InkScape\
-\pard\pardeftab720
-
-\f0 \cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
 \cf0 \
 }
