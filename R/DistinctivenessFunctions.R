@@ -1140,6 +1140,8 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
                                                  ifelse(ses.SJ.MNNFD[,"p.value.ranks"] >= 0.05 & as.numeric(as.character(ses.SJ.MNNFD[,"obs.z"])) <= 0, 3, 4)))
   
   if(plottype[1] == "ses.allIslands"){
+    x1 <- length(which(ses.SJ.MNNFD$Size.cat == "sm"))/2 + .5
+    x2 <- x1 + length(which(ses.SJ.MNNFD$Size.cat == "med"))/2
     pdf(paste("figs/plots/functionDiv/ses/ses.SJ.MNNFD", traitname, "pdf", sep="."), width=20, height=10)
     p3 <- ggplot(ses.SJ.MNNFD, aes(x=reorder(factor(island),as.numeric(as.character(Area.m2))), 
                                    y=as.numeric(as.character((obs.z))), color=factor(sig), shape=Metric, fill=factor(sig))) +
@@ -1153,7 +1155,7 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
       theme_bw() +
       theme(legend.position="top") +
       geom_abline(intercept = 0, slope = 0, colour = "grey", size = .5) +
-      geom_vline(xintercept = c(18.5, 53.5)) +
+      geom_vline(xintercept = c(x1, x2)) +
       theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
       ggtitle(paste("Significane of", traitname, "difference for\n invasive species to nearest native (MNNFD i),\n and native community (MFD_inv_nat)\n", sep=" ")) +
       theme(plot.title=element_text(size=rel(1.5))) +

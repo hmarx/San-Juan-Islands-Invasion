@@ -163,7 +163,7 @@ ggplot(ses.MNNPD.MPD, aes(x=reorder(factor(island),as.numeric(as.character(Area.
   geom_abline(intercept = 0, slope = 0, colour = "grey", size = .5) +
   geom_vline(xintercept = c(18.5, 54.5)) +
   theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
-  ggtitle("Significane of Phylogenetic Distances for\n invasive species to nearest native (MNNPD),\n and native community (MPDN)\n") +
+  ggtitle("Significane of Phylogenetic Distances for\n invasive species to nearest native (MNNPD),\n and native community (MPD)\n") +
   theme(plot.title=element_text(size=rel(1.5))) +
   theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
 dev.off()
