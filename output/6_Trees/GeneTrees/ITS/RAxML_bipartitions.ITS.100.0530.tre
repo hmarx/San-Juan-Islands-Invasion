@@ -1,0 +1,381 @@
+#NEXUS
+begin taxa;
+	dimensions ntax=302;
+	taxlabels
+	Cotoneaster_dielsianus
+	Cotoneaster_franchetii
+	Cotoneaster_horizontalis
+	Malus_pumila
+	Malus_fusca
+	Pyrus_calleryana
+	Pyrus_communis
+	Sorbus_intermedia
+	Sorbus_aucuparia
+	Crataegus_douglasii
+	Crataegus_monogyna
+	Amelanchier_alnifolia
+	Holodiscus_discolor
+	Oemleria_cerasiformis
+	Prunus_avium
+	Prunus_cerasus
+	Prunus_emarginata
+	Prunus_mahaleb
+	Prunus_virginiana
+	Rubus_leucodermis
+	Rubus_ursinus
+	Rubus_spectabilis
+	Rubus_parviflorus
+	Fragaria_virginiana
+	Fragaria_vesca
+	Potentilla_anserina
+	Vicia_cracca
+	Vicia_nigricans
+	Vicia_sativa
+	Vicia_americana
+	Lathyrus_nevadensis
+	Lathyrus_japonicus
+	Lathyrus_aphaca
+	Vicia_hirsuta
+	Trifolium_dubium
+	Trifolium_microdon
+	Trifolium_microcephalum
+	Trifolium_macraei
+	Trifolium_oliganthum
+	Trifolium_variegatum
+	Trifolium_subterraneum
+	Trifolium_incarnatum
+	Trifolium_repens
+	Oxytropis_campestris
+	Lupinus_microcarpus
+	Lupinus_bicolor
+	Acmispon_denticulatus
+	Acmispon_parviflorus
+	Lotus_corniculatus
+	Urtica_dioica
+	Shepherdia_canadensis
+	Cardamine_hirsuta
+	Cardamine_oligosperma
+	Cardamine_flexuosa
+	Barbarea_orthoceras
+	Barbarea_vulgaris
+	Conringia_orientalis
+	Turritis_glabra
+	Capsella_bursa_pastoris
+	Arabidopsis_thaliana
+	Lepidium_virginicum
+	Sinapis_arvensis
+	Brassica_nigra
+	Brassica_rapa
+	Cakile_maritima
+	Arabis_hirsuta
+	Erophila_verna
+	Epilobium_minutum
+	Epilobium_ciliatum
+	Chamerion_angustifolium
+	Gayophytum_diffusum
+	Alnus_rubra
+	Alnus_alnobetula
+	Corylus_cornuta
+	Betula_papyrifera
+	Hypericum_perforatum
+	Paxistima_myrsinites
+	Crepis_capillaris
+	Lapsana_communis
+	Taraxacum_officinale
+	Sonchus_oleraceus
+	Sonchus_asper
+	Lactuca_serriola
+	Sonchus_arvensis
+	Lactuca_muralis
+	Hypochaeris_glabra
+	Hypochaeris_radicata
+	Scorzoneroides_autumnalis
+	Agoseris_grandiflora
+	Tragopogon_porrifolius
+	Castilleja_attenuata
+	Triphysaria_pusilla
+	Castilleja_hispida
+	Orobanche_californica
+	Orobanche_uniflora
+	Cuscuta_salina
+	Nemophila_parviflora
+	Solanum_dulcamara
+	Amsinckia_spectabilis
+	Amsinckia_menziesii
+	Myosotis_discolor
+	Buglossoides_arvensis
+	Veronica_serpyllifolia
+	Veronica_peregrina
+	Veronica_officinalis
+	Veronica_arvensis
+	Veronica_chamaedrys
+	Plantago_major
+	Plantago_lanceolata
+	Plantago_maritima
+	Digitalis_purpurea
+	Linaria_genistifolia
+	Collinsia_parviflora
+	Collinsia_grandiflora
+	Mimulus_guttatus
+	Mimulus_alsinoides
+	Nepeta_cataria
+	Prunella_vulgaris
+	Galium_aparine
+	Sherardia_arvensis
+	Sambucus_racemosa
+	Ilex_aquifolium
+	Campanula_rotundifolia
+	Anisocarpus_madioides
+	Hemizonella_minima
+	Eriophyllum_lanatum
+	Coreopsis_lanceolata
+	Senecio_sylvaticus
+	Senecio_vulgaris
+	Jacobaea_vulgaris
+	Vitis_vinifera
+	Vitis_riparia
+	Acer_glabrum
+	Acer_macrophyllum
+	Daphne_laureola
+	Geranium_carolinianum
+	Geranium_dissectum
+	Erodium_cicutarium
+	Geranium_robertianum
+	Ribes_divaricatum
+	Ribes_lacustre
+	Ribes_sanguineum
+	Lithophragma_parviflorum
+	Tellima_grandiflora
+	Arctostaphylos_media
+	Arctostaphylos_uva_ursi
+	Arbutus_menziesii
+	Lomatium_nudicaule
+	Petroselinum_crispum
+	Heracleum_maximum
+	Oenanthe_sarmentosa
+	Perideridia_gairdneri
+	Osmorhiza_chilensis
+	Osmorhiza_purpurea
+	Anthriscus_caucalis
+	Daucus_pusillus
+	Sanicula_crassicaulis
+	Sanicula_arctopoides
+	Sanicula_bipinnatifida
+	Hedera_helix
+	Vaccinium_ovatum
+	Vaccinium_parvifolium
+	Gaultheria_shallon
+	Monotropa_uniflora
+	Anagallis_arvensis
+	Cirsium_arvense
+	Cirsium_vulgare
+	Adenocaulon_bicolor
+	Gamochaeta_purpurea
+	Anaphalis_margaritacea
+	Grindelia_hirsutula
+	Grindelia_integrifolia
+	Symphyotrichum_subspicatum
+	Bellis_perennis
+	Artemisia_suksdorfii
+	Artemisia_campestris
+	Anthemis_arvensis
+	Achillea_millefolium
+	Plectritis_congesta
+	Valeriana_hookeri
+	Valerianella_locusta
+	Linnaea_borealis
+	Lonicera_involucrata
+	Lonicera_hispidula
+	Symphoricarpos_albus
+	Atriplex_gmelinii
+	Atriplex_prostrata
+	Chenopodium_album
+	Sarcocornia_perennis
+	Spergularia_macrotheca
+	Spergularia_rubra
+	Silene_menziesii
+	Silene_scouleri
+	Silene_antirrhina
+	Silene_gallica
+	Silene_coronaria
+	Minuartia_rubella
+	Sagina_decumbens
+	Honckenya_peploides
+	Cerastium_glomeratum
+	Cerastium_fontanum
+	Arenaria_serpyllifolia
+	Stellaria_nitens
+	Stellaria_crispa
+	Polygonum_fowleri
+	Polygonum_aviculare
+	Polygonum_douglasii
+	Rumex_acetosella
+	Rumex_crispus
+	Ranunculus_occidentalis
+	Ranunculus_uncinatus
+	Myosurus_minimus
+	Berberis_nervosa
+	Berberis_aquifolium
+	Delphinium_nuttallianum
+	Delphinium_menziesii
+	Eschscholzia_californica
+	Claytonia_parviflora
+	Claytonia_perfoliata
+	Claytonia_rubra
+	Claytonia_exigua
+	Opuntia_fragilis
+	Calandrinia_ciliata
+	Montia_parvifolia
+	Montia_fontana
+	Armeria_maritima
+	Juncus_effusus
+	Juncus_balticus
+	Juncus_bufonius
+	Luzula_comosa
+	Danthonia_californica
+	Distichlis_spicata
+	Triglochin_maritima
+	Zostera_marina
+	Corallorhiza_maculata
+	Calypso_bulbosa
+	Epipactis_helleborine
+	Spiranthes_romanzoffiana
+	Goodyera_oblongifolia
+	Maianthemum_racemosum
+	Asparagus_officinalis
+	Olsynium_douglasii
+	Vulpia_microstachys
+	Vulpia_myuros
+	Festuca_rubra
+	Vulpia_bromoides
+	Festuca_pratensis
+	Lolium_perenne
+	Festuca_arundinacea
+	Cynosurus_echinatus
+	Cynosurus_cristatus
+	Dactylis_glomerata
+	Puccinellia_nutkaensis
+	Aira_caryophyllea
+	Agrostis_exarata
+	Polypogon_monspeliensis
+	Calamagrostis_purpurascens
+	Agrostis_scabra
+	Agrostis_stolonifera
+	Phalaris_arundinacea
+	Trisetum_cernuum
+	Koeleria_macrantha
+	Avena_fatua
+	Anthoxanthum_odoratum
+	Holcus_lanatus
+	Poa_compressa
+	Poa_secunda
+	Poa_trivialis
+	Poa_pratensis
+	Poa_bulbosa
+	Poa_annua
+	Hordeum_jubatum
+	Hordeum_depressum
+	Elymus_repens
+	Elymus_glaucus
+	Hordeum_murinum
+	Leymus_mollis
+	Hordeum_brachyantherum
+	Taeniatherum_caput_medusae
+	Elymus_trachycaulus
+	Bromus_sterilis
+	Bromus_tectorum
+	Bromus_diandrus
+	Bromus_carinatus
+	Bromus_commutatus
+	Bromus_hordeaceus
+	Festuca_roemeri
+	Festuca_occidentalis
+	Achnatherum_lemmonii
+	Carex_obnupta
+	Carex_lyngbyei
+	Carex_inops
+	Carex_deweyana
+	Carex_pansa
+	Bolboschoenus_maritimus
+	Eleocharis_palustris
+	Allium_acuminatum
+	Allium_cernuum
+	Narcissus_pseudonarcissus
+	Fritillaria_affinis
+	Lilium_columbianum
+	Erythronium_oregonum
+;
+end;
+
+begin trees;
+	tree tree_1 = [&R] ((((((((((((((((((((((Cotoneaster_dielsianus:0.010028950482067422,Cotoneaster_franchetii:0.006243125865946553):0.003773439035429149,Cotoneaster_horizontalis:0.0015876504008094372):0.017597289828913176,(Malus_pumila:0.047908161630761725,Malus_fusca:0.020366275086981744):0.004784080903994514):0.002634524708167163,(Pyrus_calleryana:0.013674061498445411,Pyrus_communis:0.016741016437944012):0.018931381737357533):0.0065783600314919255,(Sorbus_intermedia:9.961034050931517E-7,Sorbus_aucuparia:0.004224013941668048):0.013023000585580924):0.007987980464704059,((Crataegus_douglasii:0.018866701798713414,Crataegus_monogyna:0.015004128121817395):0.020956723948666323,Amelanchier_alnifolia:0.02138868787358028):0.008762636045304362):0.04118656795871889,Holodiscus_discolor:0.11542543550264917):0.022592334886206267,Oemleria_cerasiformis:0.09469596780528544):0.025738633569607927,((((Prunus_avium:9.961034050931517E-7,Prunus_cerasus:9.961034050931517E-7):0.004140846147502764,Prunus_emarginata:0.004024156912226573):0.0028355632156689126,Prunus_mahaleb:0.012271026811497165):0.0049414317262117535,Prunus_virginiana:0.008757965820348268):0.031740591270413177):0.013070880009431463,((((Rubus_leucodermis:0.006366186494099146,Rubus_ursinus:0.006723649070537796):0.006749138950739919,Rubus_spectabilis:0.0027173988279454164):0.013708890273917973,Rubus_parviflorus:0.02007992557045757):0.00978775208204663,((Fragaria_virginiana:0.004026773722514143,Fragaria_vesca:9.961034042049732E-7):0.03201514855567833,Potentilla_anserina:0.05881901570480519):0.07671705422958386):0.04398883416020993):0.10321795037062209,((((((((((Vicia_cracca:0.019373508600462053,Vicia_nigricans:0.009528061354300732):9.961034042049732E-7,(Vicia_sativa:0.015371467516354542,Vicia_americana:0.00960478396883424):0.002204102050787249):9.961034042049732E-7,((Lathyrus_nevadensis:0.006361105760812613,Lathyrus_japonicus:0.005292653761149069):0.0023013791934642924,Lathyrus_aphaca:0.016111139105713157):0.012356924401434988):0.0049104611515007335,Vicia_hirsuta:0.009949254776123517):0.010497861584166657,Trifolium_dubium:0.053111997137303746):0.008188324045062423,(((((Trifolium_microdon:0.010284866483153188,Trifolium_microcephalum:0.011140543389186242):0.008966478519949028,Trifolium_macraei:0.027463962590453583):0.0035888339109000356,Trifolium_oliganthum:0.007841782844834277):9.961034050931517E-7,Trifolium_variegatum:0.015535622245392844):0.01234838702730201,((Trifolium_subterraneum:0.02718951118682167,Trifolium_incarnatum:0.0226135123210085):0.0012392095144848625,Trifolium_repens:0.018050793125508058):0.002837134964088328):0.0028759457568448):0.08807301796929679,Oxytropis_campestris:0.05376664185008906):0.05516222538661886,(Lupinus_microcarpus:0.014161818555521677,Lupinus_bicolor:9.961034042049732E-7):0.1304935106109193):0.03016896569599492,((Acmispon_denticulatus:0.013661223268019107,Acmispon_parviflorus:0.014157714424745116):0.054300525539940026,Lotus_corniculatus:0.07076698534131332):0.12753066311851136):0.1591765873723503,(Urtica_dioica:0.17022023853373458,Shepherdia_canadensis:0.11274356915765793):0.07376910305831164):0.08205410981646732):0.08055230862458362,(((((((Cardamine_hirsuta:0.005195927618025564,Cardamine_oligosperma:0.0025780193903255366):0.02241142986010214,Cardamine_flexuosa:0.014736898221343608):0.008232419137613967,(Barbarea_orthoceras:0.006341015133959793,Barbarea_vulgaris:0.008608412785010344):0.023877745725192412):0.02361257533008221,((((Conringia_orientalis:0.013687197135942242,Turritis_glabra:0.02822391988788553):0.007170853880421824,Capsella_bursa_pastoris:0.03898873691948346):0.008385358862525116,Arabidopsis_thaliana:0.0360850583397303):0.014271101949615783,Lepidium_virginicum:0.068616078609403):0.009814468095188822):0.028821223133974172,(((Sinapis_arvensis:0.0025303210555147615,Brassica_nigra:0.0025817472580182965):0.010821941737066076,Brassica_rapa:0.038685107246313244):0.010103335389231916,Cakile_maritima:0.050079521779659686):0.035602886401651546):9.961034042049732E-7,(Arabis_hirsuta:0.03388650091705703,Erophila_verna:0.03643468749465928):0.017072620948996864):0.19005158161726943,(((Epilobium_minutum:0.02440601905860973,Epilobium_ciliatum:0.0026009514839921977):0.05285645957714813,Chamerion_angustifolium:0.05525894031411305):7.076148192819431E-4,Gayophytum_diffusum:0.018315872437279168):0.15460240176691809):0.16699066122428796):0.08422460889446182,(((((Alnus_rubra:0.018792035189846068,Alnus_alnobetula:0.006758116138292358):0.021842454727304172,Corylus_cornuta:0.040184417507243886):0.02030020526421694,Betula_papyrifera:0.02166952058584215):0.09019563990561785,Hypericum_perforatum:0.24892360456003626):0.012872661049835088,Paxistima_myrsinites:0.18065602537056247):0.13212037346652572):0.05627763636094851,((((((((Crepis_capillaris:0.0483424237434944,Lapsana_communis:0.03625537398329559):0.00582247781063483,Taraxacum_officinale:0.06253014809315438):0.014502948457118414,(Sonchus_oleraceus:9.961034042049732E-7,Sonchus_asper:0.0013241150408038749):0.11931403769603754):0.016051506259977977,((Lactuca_serriola:0.03546775712503969,Sonchus_arvensis:0.02984223637899408):0.010759657902357667,Lactuca_muralis:0.04701737209539747):0.020230726246101227):0.012588473791623755,((Hypochaeris_glabra:0.04647227084781136,Hypochaeris_radicata:0.04006246730734464):0.01286141727446477,Scorzoneroides_autumnalis:0.06538925129737905):0.011782462655171244):0.0066635859149482,(Agoseris_grandiflora:0.08265260964481058,Tragopogon_porrifolius:0.17168870354864119):0.035105740346355496):0.16857892601895053,(((((Castilleja_attenuata:0.01931529386566666,Triphysaria_pusilla:0.050023122525991504):0.0050466816692100736,Castilleja_hispida:0.01908295985752595):0.09499169382502348,(Orobanche_californica:0.07580651945889194,Orobanche_uniflora:0.0786607030684987):0.0947411455367968):0.09626142692283679,((Cuscuta_salina:0.4239104257025179,Nemophila_parviflora:0.05960946430577785):0.08486898747638794,Solanum_dulcamara:0.1090882467826102):0.07343849595125729):0.05065222368221889,(((Amsinckia_spectabilis:0.005929205733201215,Amsinckia_menziesii:9.961034042049732E-7):0.04759703876382293,Myosotis_discolor:0.04632104131262782):0.020337091882137948,Buglossoides_arvensis:0.10637846011121876):0.309435163906314):0.03445753225085024):0.040156587812616884,(((((((Veronica_serpyllifolia:0.02679936844692765,Veronica_peregrina:0.024886040956284994):0.027052747621203466,Veronica_officinalis:0.06167115765840503):0.027224534713386817,(Veronica_arvensis:0.033321131929842096,Veronica_chamaedrys:0.042757811115918365):0.052902441055442395):0.06177200243596914,((Plantago_major:0.0432943431150008,Plantago_lanceolata:0.04352990638800769):0.02706610375506102,Plantago_maritima:0.03158520199864334):0.08498006240108236):0.021130975363408133,Digitalis_purpurea:0.08972390024549082):0.020962708055652257,Linaria_genistifolia:0.10828523498461706):0.027591102904972686,(Collinsia_parviflora:0.021387203154008994,Collinsia_grandiflora:0.029550337370559454):0.09589625810687075):0.125859079436208):0.015619176728961293):0.0832257745661602,((((((Mimulus_guttatus:0.009863128561638845,Mimulus_alsinoides:0.030548437584299037):0.10673853471889228,(Nepeta_cataria:0.04262292887983765,Prunella_vulgaris:0.03959965316384295):0.07610334519375339):0.037856046441385516,(Galium_aparine:0.08206321218154056,Sherardia_arvensis:0.10503528836428089):0.17969506597379414):0.06481240602015603,((Sambucus_racemosa:0.09494860551073447,Ilex_aquifolium:0.12422830345734415):0.029089057850780975,Campanula_rotundifolia:0.18202452815861303):0.07890607744093892):0.01794122587758551,((((Anisocarpus_madioides:0.03003254832409663,Hemizonella_minima:0.04311899075087133):0.052879978762672586,Eriophyllum_lanatum:0.04436651897996313):0.03261894671602583,Coreopsis_lanceolata:0.09124283289633706):0.052759080029707306,((Senecio_sylvaticus:0.006660348545629802,Senecio_vulgaris:0.013317380915093047):0.044126491424901104,Jacobaea_vulgaris:0.08778889581730276):0.062067918279971046):0.15772978431001317):0.0702507487120494,(((((Vitis_vinifera:0.07589431278381831,Vitis_riparia:0.02533669305463171):0.7289688305409312,Acer_glabrum:9.961034050931517E-7):0.025938841909739274,Acer_macrophyllum:0.013786933975470816):0.07593365231756266,Daphne_laureola:0.3592741892273503):0.11220506141654418,((Geranium_carolinianum:0.019618891537172445,Geranium_dissectum:0.04106567395078109):0.008803702288677329,(Erodium_cicutarium:0.11433714482512336,Geranium_robertianum:0.05913295856285927):0.03872798573370062):0.2709219964291414):0.10796888025453111):0.07292199001129607):0.06813644027671728,((((Ribes_divaricatum:0.01552011067350545,Ribes_lacustre:0.013068068472842143):0.008469522733846269,Ribes_sanguineum:0.004849726721290359):0.07623823639042904,(Lithophragma_parviflorum:0.01366237160052819,Tellima_grandiflora:0.011444546054327098):0.14616160493847374):0.08946132387451033,((Arctostaphylos_media:0.0012071763315830708,Arctostaphylos_uva_ursi:0.0054163745786484085):0.058861715179812535,Arbutus_menziesii:0.03364428184261925):0.24199374554333364):0.09193838761696593):0.01718358842688872,(((((((((Lomatium_nudicaule:0.03336670058419866,Petroselinum_crispum:0.061708884634138705):0.25111614279712224,Heracleum_maximum:0.0363444056253277):0.027804638409024918,(Oenanthe_sarmentosa:0.05821844899024953,Perideridia_gairdneri:0.043734953354259254):0.03904000389508688):0.011087771915443412,(((Osmorhiza_chilensis:0.0024616415846852036,Osmorhiza_purpurea:0.0028724732471356873):0.016869413758415774,Anthriscus_caucalis:0.040941722968422134):0.039925842329099126,Daucus_pusillus:0.13237803836089412):0.09253082600681317):0.0481525453713747,((Sanicula_crassicaulis:0.020771653362733566,Sanicula_arctopoides:0.017395907727411064):0.012251895821321135,Sanicula_bipinnatifida:0.01064621091882767):0.0877390815484862):0.02375089209660608,Hedera_helix:0.1256306538343921):0.025126418354878055,((((Vaccinium_ovatum:0.009540192032054584,Vaccinium_parvifolium:0.005431963595596834):0.018921598495959202,Gaultheria_shallon:0.030879125536571905):0.048191312732090985,Monotropa_uniflora:0.18744639825917098):0.07124691285429474,Anagallis_arvensis:0.16252792404758765):0.13285549789204598):0.0795451816836934,(((Cirsium_arvense:0.010459120960578439,Cirsium_vulgare:9.961034050931517E-7):0.08189968873235376,Adenocaulon_bicolor:0.07934406110435788):0.02280837701774452,(Gamochaeta_purpurea:0.017992729684704223,Anaphalis_margaritacea:0.03138193827899016):0.08415575681624787):0.11964367661390884):0.09209227008989718,((((Grindelia_hirsutula:9.961034042049732E-7,Grindelia_integrifolia:0.001205708577262321):0.013665647968612582,Symphyotrichum_subspicatum:0.01311782289233765):0.036164109405760314,Bellis_perennis:0.03570645859417354):0.061577275940372544,((Artemisia_suksdorfii:0.020580835394197194,Artemisia_campestris:0.03880004169343465):0.027375674372788872,(Anthemis_arvensis:0.012064735518963587,Achillea_millefolium:0.015464534979898303):0.01846375257157984):0.06962255690148123):0.17662748352064472):0.051274430801178106):0.041501905629752756,((((((Plectritis_congesta:0.1002944897725433,Valeriana_hookeri:0.046903183935303794):0.035814523611913174,Valerianella_locusta:0.06349733859907047):0.1302985049497689,Linnaea_borealis:0.04551066162343087):0.03178156567068324,Lonicera_involucrata:0.0036834920169184215):0.012888381795505666,Lonicera_hispidula:0.009826543805005805):0.00527560372616076,Symphoricarpos_albus:0.0037569296358004323):0.18892008558584372):0.03646727303471842,(((((((((((Atriplex_gmelinii:0.0064495870325194105,Atriplex_prostrata:0.003340301228901943):0.03716010440635209,Chenopodium_album:0.035480948131374035):0.056137404609443387,Sarcocornia_perennis:0.11759382294750331):0.11378823384931191,(Spergularia_macrotheca:0.05220734665703919,Spergularia_rubra:0.0031883471357954107):0.13944351970632063):0.029409684639297495,(((Silene_menziesii:0.015559304742857272,Silene_scouleri:0.03228126821369237):0.013745244561447656,Silene_antirrhina:0.022080843823721885):0.008546832492000611,(Silene_gallica:9.961034042049732E-7,Silene_coronaria:0.004012884171199715):0.023275855872105566):0.06192720195101842):0.029343267958001462,(Minuartia_rubella:0.03956445319121382,Sagina_decumbens:0.05796721785300374):0.03355064018873666):0.01611404064882116,Honckenya_peploides:0.09405103007235205):0.040923268668159096,((Cerastium_glomeratum:9.961034042049732E-7,Cerastium_fontanum:0.0032223803484523472):0.09863534232367055,Arenaria_serpyllifolia:0.04038573584350491):0.010165166923483682):0.07610921958015826,(Stellaria_nitens:0.03081613066030453,Stellaria_crispa:0.03031477909008551):0.044897126620889516):0.15147998652982864,(((Polygonum_fowleri:0.014210593197287125,Polygonum_aviculare:0.01274687079433967):0.06276630446521647,Polygonum_douglasii:0.049549175854933125):0.07181147916781772,(Rumex_acetosella:0.05743168099133911,Rumex_crispus:0.0690663607001527):0.04651205458701124):0.21328872570554314):0.07546626681548663,(((((Ranunculus_occidentalis:0.0037786763173448534,Ranunculus_uncinatus:0.005583502032921572):0.06295116953065527,Myosurus_minimus:0.03813946357866893):6.342530911540578E-4,(Berberis_nervosa:0.004778605922178603,Berberis_aquifolium:0.031410264990090475):1.5971457981912156):0.08913115981554931,(Delphinium_nuttallianum:0.0030130969725146173,Delphinium_menziesii:9.961034042049732E-7):0.1732870068604786):0.16206504171823433,Eschscholzia_californica:0.2670442313414627):0.14129809293897289):0.02117089652255366):0.09616744265422561,(((((Claytonia_parviflora:9.961034042049732E-7,Claytonia_perfoliata:0.0014739310859948063):0.0018141130747828527,Claytonia_rubra:0.008618584796209028):0.01159527144010486,Claytonia_exigua:0.04971592520378376):0.022412540302442885,((Opuntia_fragilis:0.05416790664321436,Calandrinia_ciliata:0.02478375541303901):0.015814700688324912,(Montia_parvifolia:0.017761283837083752,Montia_fontana:0.03971610510748569):0.015961204025380482):0.03716292814735134):0.10644180809505155,Armeria_maritima:0.23898694235684026):0.18044838541461683):0.21190484182825475,(((((((Juncus_effusus:0.004489481627338421,Juncus_balticus:0.010399469589988719):0.016029050417217583,Juncus_bufonius:0.07012834987053385):0.07091395893651953,Luzula_comosa:0.1773067765493348):0.1295114129358419,(Danthonia_californica:0.10485336625442088,Distichlis_spicata:0.11195341053220709):0.24728645877773925):0.17203345627709332,(Triglochin_maritima:0.2779259367547713,Zostera_marina:0.5132842837382325):0.33902459240807037):0.07091029242600833,(((Corallorhiza_maculata:0.062251353406737486,Calypso_bulbosa:0.07058008060415233):0.03141023979647439,Epipactis_helleborine:0.16953483430184502):0.41002227888365717,(Spiranthes_romanzoffiana:0.1332408407247696,Goodyera_oblongifolia:0.07622153439745638):0.14853343565617116):0.21917839379435033):0.09811511246560656,((Maianthemum_racemosum:0.06653758318324154,Asparagus_officinalis:0.15204375207625898):0.060474060853461076,Olsynium_douglasii:0.2623655685070778):0.03912668513343043):0.09452861370369092):0.022629057242225466,((((((((((((((Vulpia_microstachys:0.01594203301759123,Vulpia_myuros:0.027666300593216064):0.00974156780417701,(Festuca_rubra:0.013250948497029569,Vulpia_bromoides:0.042989766591229994):0.0077736228431808385):0.024313963433898245,((Festuca_pratensis:0.004774445188955312,Lolium_perenne:0.020290943563884944):0.017391087758027446,Festuca_arundinacea:0.010649732386312394):0.005203586059641552):0.010031071202289965,((Cynosurus_echinatus:0.02433482254832242,Cynosurus_cristatus:0.02106956102165647):0.034313031791983306,Dactylis_glomerata:0.0643958607783155):0.007255125886650227):0.02452516992768672,(Puccinellia_nutkaensis:0.05496906147335068,Aira_caryophyllea:0.03855766790580173):0.01260675497299868):0.005950152911041506,(((((Agrostis_exarata:9.961034042049732E-7,Polypogon_monspeliensis:0.002754469069256693):0.016021422969067167,Calamagrostis_purpurascens:0.00419845038151756):0.002666436678924633,(Agrostis_scabra:0.010013632252180216,Agrostis_stolonifera:0.004026111646106223):0.013117552854450487):0.004799773646047001,Phalaris_arundinacea:0.04659114785530338):0.0058103657790891106,((Trisetum_cernuum:0.0072902030749686375,Koeleria_macrantha:0.004594607486835045):0.02415213053619958,(Avena_fatua:0.03971599506400647,Anthoxanthum_odoratum:0.06803157488338396):0.020981774064695813):0.00878955031513673):0.008552856096244454):0.003131041357445241,Holcus_lanatus:0.05181483610671389):0.002024617668696216,((((Poa_compressa:0.003829636774812961,Poa_secunda:0.0042782135733707705):0.015811701584611093,Poa_trivialis:0.026664604684360604):0.005699300543795971,(Poa_pratensis:0.00344594272714982,Poa_bulbosa:0.01046124898954659):0.0034563250434516135):0.011545106875987088,Poa_annua:0.05845333991642043):0.021484335368956664):0.01449869309276508,((((((Hordeum_jubatum:0.008267832196962033,Hordeum_depressum:0.00823851507368456):0.006058142851633086,(Elymus_repens:0.004330241340195329,Elymus_glaucus:0.0010337407962310863):0.007624467574609994):0.019729433600223167,Hordeum_murinum:0.04077465856187601):0.004548970468964519,(Leymus_mollis:0.012114369836987215,Hordeum_brachyantherum:0.016256321447084332):0.005568406750711574):0.002443974482397415,(Taeniatherum_caput_medusae:0.04418338327739946,Elymus_trachycaulus:0.0023292966900045897):0.016072166234502028):0.017460190503355122,((((Bromus_sterilis:0.013534678315752835,Bromus_tectorum:9.961034042049732E-7):0.0026731959958148366,Bromus_diandrus:0.0012511061992039885):0.009933116307193401,Bromus_carinatus:0.009228504636919155):0.018450659531280778,(Bromus_commutatus:0.025100651193699086,Bromus_hordeaceus:0.03785901052558582):0.006966092103705357):0.05269258057075188):0.04263410018625535):0.052436943493812116,(Festuca_roemeri:0.0016796638192975166,Festuca_occidentalis:0.0016736344413805782):6.571015352242608):9.961034042049732E-7,Achnatherum_lemmonii:0.046598501988818875):0.21912652604979677,((((Carex_obnupta:0.013909053482002776,Carex_lyngbyei:0.01552209286184425):0.007443661534437318,Carex_inops:0.023223780557480644):0.012034177974470595,(Carex_deweyana:0.0220387471825072,Carex_pansa:0.024699915727993016):0.02955307722537892):0.15666979829206973,(Bolboschoenus_maritimus:0.10605564008809587,Eleocharis_palustris:0.11288788957569906):0.17017011910044388):0.1771238876253305):0.07056175432954959,((Allium_acuminatum:0.07926325023538539,Allium_cernuum:0.048596717562880976):0.2660671717410459,Narcissus_pseudonarcissus:0.2398733430896467):0.15805083630270822):0.2244211757272394,((Fritillaria_affinis:0.019724919953637787,Lilium_columbianum:0.047074975709557876):0.12041725483839194,Erythronium_oregonum:0.0710241562754117):0.46955376531945614):0.022629057242225362);
+end;
+
+begin figtree;
+	set appearance.backgroundColorAttribute="User Selection";
+	set appearance.backgroundColour=#-1;
+	set appearance.branchColorAttribute="User Selection";
+	set appearance.branchLineWidth=1.0;
+	set appearance.foregroundColour=#-16777216;
+	set appearance.selectionColour=#-2144520576;
+	set branchLabels.colorAttribute="User Selection";
+	set branchLabels.displayAttribute="Branch times";
+	set branchLabels.fontName="Abadi MT Condensed Extra Bold";
+	set branchLabels.fontSize=8;
+	set branchLabels.fontStyle=0;
+	set branchLabels.isShown=false;
+	set branchLabels.significantDigits=4;
+	set layout.expansion=0;
+	set layout.layoutType="RECTILINEAR";
+	set layout.zoom=0;
+	set nodeBars.barWidth=4.0;
+	set nodeLabels.colorAttribute="User Selection";
+	set nodeLabels.displayAttribute="Node ages";
+	set nodeLabels.fontName="Abadi MT Condensed Extra Bold";
+	set nodeLabels.fontSize=8;
+	set nodeLabels.fontStyle=0;
+	set nodeLabels.isShown=false;
+	set nodeLabels.significantDigits=4;
+	set polarLayout.alignTipLabels=false;
+	set polarLayout.angularRange=0;
+	set polarLayout.rootAngle=0;
+	set polarLayout.rootLength=100;
+	set polarLayout.showRoot=true;
+	set radialLayout.spread=0.0;
+	set rectilinearLayout.alignTipLabels=false;
+	set rectilinearLayout.curvature=0;
+	set rectilinearLayout.rootLength=100;
+	set scale.offsetAge=0.0;
+	set scale.rootAge=1.0;
+	set scale.scaleFactor=1.0;
+	set scale.scaleRoot=false;
+	set scaleAxis.automaticScale=true;
+	set scaleAxis.fontSize=8.0;
+	set scaleAxis.isShown=false;
+	set scaleAxis.lineWidth=1.0;
+	set scaleAxis.majorTicks=1.0;
+	set scaleAxis.origin=0.0;
+	set scaleAxis.reverseAxis=false;
+	set scaleAxis.showGrid=true;
+	set scaleAxis.significantDigits=4;
+	set scaleBar.automaticScale=true;
+	set scaleBar.fontSize=10.0;
+	set scaleBar.isShown=true;
+	set scaleBar.lineWidth=1.0;
+	set scaleBar.scaleRange=0.0;
+	set scaleBar.significantDigits=4;
+	set tipLabels.colorAttribute="User Selection";
+	set tipLabels.displayAttribute="Names";
+	set tipLabels.fontName="Abadi MT Condensed Extra Bold";
+	set tipLabels.fontSize=8;
+	set tipLabels.fontStyle=0;
+	set tipLabels.isShown=true;
+	set tipLabels.significantDigits=4;
+	set trees.order=false;
+	set trees.orderType="increasing";
+	set trees.rooting=false;
+	set trees.rootingType="User Selection";
+	set trees.transform=false;
+	set trees.transformType="cladogram";
+end;
+

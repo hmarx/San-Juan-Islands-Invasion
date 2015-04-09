@@ -1,0 +1,39 @@
+starting log: 08/04/15 10:08
+clean
+cleannum: 0.5
+in filename: ITS.unique.GB.fasta.rem
+outfile: ITS.unique.GB.fasta.rem.clean
+starting log: 08/04/15 10:09
+clean
+cleannum: 0.5
+in filename: atpB.unique.GB.fasta.rem
+outfile: atpB.unique.GB.fasta.rem.clean
+starting log: 08/04/15 10:09
+clean
+cleannum: 0.5
+in filename: matK.unique.GB.fasta.rem
+outfile: matK.unique.GB.fasta.rem.clean
+starting log: 08/04/15 10:11
+clean
+cleannum: 0.5
+in filename: atpB.unique.GB.fasta
+outfile: atpB.unique.GB.fasta.clean
+starting log: 08/04/15 10:12
+clean
+cleannum: 0.5
+in filename: matK.unique.GB.fasta
+outfile: matK.unique.GB.fasta.clean
+starting log: 08/04/15 10:12
+clean
+cleannum: 0.5
+in filename: rbcL.unique.GB.fasta.rem
+outfile: rbcL.unique.GB.fasta.rem.clean
+starting log: 08/04/15 10:12
+clean
+cleannum: 0.5
+in filename: trnTLF.unique.GB.fasta.rem
+outfile: trnTLF.unique.GB.fasta.rem.clean
+starting log: 08/04/15 10:31
+starting log: 08/04/15 10:38
+in filename: ITS.unique.GB.fasta.rem.clean
+outfile: ITS.unique.GB.fasta.rem.clean.phy
