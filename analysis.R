@@ -36,13 +36,18 @@ plot(ladderize(SJfinalTree), type="fan", cex=.1)
 # from SJtraitsFINAL.csv == edited NESCent (edited to average values for synonymous taxa); 
 # rows == species names (matching SJfinalTree$tip.label)
 # columns == trait data (including "Status") 
-# Status    maxHeight   seedMass   sla   leafletSize    leafN  
+# Status   seedMass  maxHeight sla   leafletSize    leafN  
+
 SJtrait <- read.csv("data/SJtraits.csv", as.is=T, row.names=1) 
+names(SJtrait)
+#SJtrait <- SJtrait[c("Status", "Geometric.mean.Seed.mass", "MAX.Height", "Geometic.mean.SLA", "Geometric.mean.Leaflet.size", "Geometric.mean.Leaf.N" )]
 head(SJtrait)
 dim(SJtrait) #415 8 
 summary(SJtrait)
 length(which(SJtrait["Status"] =="i")) #150 invasive species
 length(which(SJtrait["Status"] =="n")) #265 native species
+150/415
+
 
 ## plot the trait data to visualize
 pairs(SJtrait[,2:length(SJtrait)], main="Raw Trait Data")  # check distribution of data

@@ -254,7 +254,7 @@ traitSummary(phy=SJfinalTree, traits=SJtrait, col=4) #summarize one trait for al
 foo4 <- lapply(trait.list, function(x) traitSummary(SJfinalTree, SJtrait, x)) #summarize all traits
 SJtraitSummary <- as.data.frame(do.call(cbind, foo4)) #bring together in a data.frame
 SJtraitSummary
-# write.csv(SJtraitSummary, file="SJtraitSummary.csv")  ## edited in excel to make Table1_SJtraitSummary.csv
+#write.csv(SJtraitSummary, file="figs/plots/SJtraitSummary.csv")  ## edited in excel to make Table1_SJtraitSummary.csv
 
 
 ######## Prune trait data to get just species with all trait data for all SJ coommunity (col=1)
@@ -483,7 +483,7 @@ dev.off()
 
 ############# Nearest Neighbor Trait Difference (MNNFD) ##################################################################
 ## Entire archipelago
-seedMass_SJ <- functionDstinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="seedMass")
+seedMass_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="seedMass")
 maxHeight_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="maxHeight")
 SLA_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="sla") #one community, one trait
 leafletSize_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="leafletSize")

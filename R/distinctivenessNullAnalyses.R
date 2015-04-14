@@ -256,20 +256,20 @@ sim.null.distrib.SeedMass <- lapply(SJ_islands.sim, function(x) sim.meanMNNFD.MF
 names(sim.null.distrib.SeedMass) <- SJ_islands.sim
 head(sim.null.distrib.SeedMass)
 head(sim.null.distrib.SeedMass["Willow_Island"])
-#write.csv(sim.null.distrib.Height, file="sim.null.distrib.SeedMass.1000.CSV")
+#write.csv(sim.null.distrib.SeedMass, file="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.SeedMass.1000.CSV")
 
 ####  Height
 sim.null.distrib.Height <- lapply(SJ_islands.sim, function(x) sim.meanMNNFD.MFD(phy=SJfinalTree, com=SJcommNewSim, traits=SJtraitLog, island=x, traitname="maxHeight", N = 1000))
 names(sim.null.distrib.Height) <- SJ_islands.sim
 head(sim.null.distrib.Height)
 head(sim.null.distrib.Height["Willow_Island"])
-#write.csv(sim.null.distrib.Height, file="sim.null.distrib.Height.null1000.csv")
+#write.csv(sim.null.distrib.Height, file="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.Height.null1000.csv")
 
 #### SLA
 ## Null distribution 
 sim.null.distrib.SLA <- lapply(SJ_islands.sim, function(x) sim.meanMNNFD.MFD(phy=SJfinalTree, com=SJcommNewSim, traits=SJtraitLog, island=x, traitname="sla", N = 1000))
 names(sim.null.distrib.SLA) <- SJ_islands.sim
-#write.csv(sim.null.distrib.SLA, file="sim.null.distrib.SLA.1000.csv")
+#write.csv(sim.null.distrib.SLA, file="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.SLA.1000.csv")
 
 ####### leaflet
 ## Null distribution 
@@ -277,7 +277,7 @@ sim.null.distrib.leafletSize <- lapply(SJ_islands.sim, function(x) sim.meanMNNFD
 names(sim.null.distrib.leafletSize) <- SJ_islands.sim
 head(sim.null.distrib.leafletSize)
 head(sim.null.distrib.leafletSize["Willow_Island"])
-#write.csv(sim.null.distrib.leafletSize, file="sim.null.distrib.leafletSize.1000.csv")
+#write.csv(sim.null.distrib.leafletSize, file="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.leafletSize.1000.csv")
 
 ####### leaf N
 ## Null distribution 
@@ -285,7 +285,7 @@ sim.null.distrib.leafN <- lapply(SJ_islands.sim, function(x) sim.meanMNNFD.MFD(p
 names(sim.null.distrib.leafN) <- SJ_islands.sim
 head(sim.null.distrib.leafN)
 head(sim.null.distrib.leafN["Willow_Island"])
-#write.csv(sim.null.distrib.Height, file="sim.null.distrib.leafN.1000.csv")
+#write.csv(sim.null.distrib.leafN, file="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.leafN.1000.csv")
 
 
 ##################### Summarize results with plots
