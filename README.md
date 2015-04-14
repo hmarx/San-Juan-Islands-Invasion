@@ -3,4 +3,3 @@ Phylogenetic and functional distinctiveness of invasive and native vascular plan
 
 ***
 ![](figs/misc/PipelineDNC.png)
-
