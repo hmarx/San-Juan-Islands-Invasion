@@ -19,11 +19,11 @@ dim(metadata)
 ####################################################################################################################################
 ######################################### PHYLOGENETIC DISTINCTIVENESS #############################################################
 
-######### Calculate observed distances to nearest native (MNNPD) and mean distance to native community (MPD) #######################
+######### Calculate observed distances to nearest native (DNNS) and mean distance to native community (MDNS) #######################
 
 ### Calculate observed phylo distinctiveness for each species across all islands
 com.list <- 1:ncol(SJcommNew) # make a list of the columns in the community data you want the fucntion to itterate across
-# Observed find MNNPD / MPD
+# Observed find DNNS / MDNS
 phyloObs <- lapply(com.list, function(x) phyloDistinct(SJfinalTree, SJcommNew, x)) #apply across all communities
 head(phyloObs)
 length(phyloObs) #74
@@ -34,27 +34,27 @@ dim(phyloObs[[1]]) #366   7
 #write.csv(phyloObs[[1]], file="phyloDistinct.AllSJ.csv")
 
 ##### Summarize means for natives and introduced on each island
-phyloObsSum.tmp <- lapply(com.list, function(x) summary.MNNPD.MPD(phyloObs[[x]])) #apply summary funciton across all communities...summary.MNNPD
+phyloObsSum.tmp <- lapply(com.list, function(x) summary.DNNS.MDNS(phyloObs[[x]])) #apply summary funciton across all communities...summary.DNNS
 names(phyloObsSum.tmp) <- colnames(SJcommNew)
 phyloObsSum <- as.data.frame(do.call(cbind, phyloObsSum.tmp), stringsAsFactors=F)
 colnames(phyloObsSum) <- colnames(SJcommNew)
 phyloObsSum <-  as.data.frame(t(phyloObsSum), stringsAsFactors=F)
-#write.csv(phyloObsSum, file="phyloObsSum.MPD.csv")
+#write.csv(phyloObsSum, file="phyloObsSum.MDNS.csv")
 head(phyloObsSum)
 phyloObsSum <- merge(phyloObsSum, metadata, by=0) # add metadata for islands for plotting and discussing
 
 # indicate islands with significant difference in observed means between status groups for each island
-phyloObsSum[,"Significance"] <- ifelse(phyloObsSum[,"t.MNNPD.p.value"] <= 0.05, 1,
-                                            ifelse(phyloObsSum[,"t.MPD.p.value"] <= 0.05, 2, 0)) 
+phyloObsSum[,"Significance"] <- ifelse(phyloObsSum[,"t.DNNS.p.value"] <= 0.05, 1,
+                                            ifelse(phyloObsSum[,"t.MDNS.p.value"] <= 0.05, 2, 0)) 
 
 #### summarize significance data by size categories
 phyloObsSum$Size.cat <- as.character(phyloObsSum$Size.cat)
 phyloObsSum$Size.cat <- factor(phyloObsSum$Size.cat, levels=c("sm", "med", "lg"))
 
 
-sigDNNS = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "MNNPD", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.MNNPD.p.value"] <= 0.05, 1,0))
-sigMPD = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "MPD", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.MPD.p.value"] <= 0.05, 1,0))
-obs.phylo <- as.data.frame(rbind(sigDNNS, sigMPD))
+sigDNNS = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "DNNS", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.DNNS.p.value"] <= 0.05, 1,0))
+sigMDNS = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "MDNS", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.MDNS.p.value"] <= 0.05, 1,0))
+obs.phylo <- as.data.frame(rbind(sigDNNS, sigMDNS))
 
 pdf("figs/plots/phyloDiv/observed/obs.phylo.SummaryBar.pdf")
 ggplot(obs.phylo, aes(x=Significance, fill=factor(Size.cat))) + 
@@ -70,33 +70,33 @@ ggplot(obs.phylo, aes(x=Significance, fill=factor(Size.cat))) +
 dev.off()
 
 ##### significance in observed difference bewteen mean MMNPDi / mean MMNPDn 
-length(phyloObsSum$t.MNNPD.p.value[which(phyloObsSum$t.MNNPD.p.value >= 0.05)]) # 34 islands NS
-length(phyloObsSum$t.MNNPD.p.value[which(phyloObsSum$t.MNNPD.p.value <= 0.05)]) 
+length(phyloObsSum$t.DNNS.p.value[which(phyloObsSum$t.DNNS.p.value >= 0.05)]) # 34 islands NS
+length(phyloObsSum$t.DNNS.p.value[which(phyloObsSum$t.DNNS.p.value <= 0.05)]) 
 # 40 isalnds with significant differnece in mean betweenmean MMNPDi / mean MMNPDn 
-phyloObsSum.MNNPD.sig <- phyloObsSum[which(phyloObsSum$t.MNNPD.p.value <= 0.05),]
-phyloObsSum[which(phyloObsSum$t.MNNPD.p.value <= 0.005),] # 3
+phyloObsSum.DNNS.sig <- phyloObsSum[which(phyloObsSum$t.DNNS.p.value <= 0.05),]
+phyloObsSum[which(phyloObsSum$t.DNNS.p.value <= 0.005),] # 3
 40/74 # 0.5405405 
 
-nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "sm"),], phyloObsSum.MNNPD.sig, by=1)) # 7/74 small islands sig MNNPD 0.09459459
-nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "med"),], phyloObsSum.MNNPD.sig, by=1)) # 20/74 medium isl sig MNNPD 0.2702703
-nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "lg"),], phyloObsSum.MNNPD.sig, by=1)) # 13/74 large isl sig MNNPD 0.1756757
+nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "sm"),], phyloObsSum.DNNS.sig, by=1)) # 7/74 small islands sig DNNS 0.09459459
+nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "med"),], phyloObsSum.DNNS.sig, by=1)) # 20/74 medium isl sig DNNS 0.2702703
+nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "lg"),], phyloObsSum.DNNS.sig, by=1)) # 13/74 large isl sig DNNS 0.1756757
 
-#### significance in observed difference bewteen mean MPDin / mean MPDnn
-length(phyloObsSum$t.MPD.p.value[which(phyloObsSum$t.MPD.p.value >= 0.05)]) # 53 NS
-length(phyloObsSum$t.MPD.p.value[which(phyloObsSum$t.MPD.p.value <= 0.05)]) # 21 significant differneces between mean MPD
-phyloObsSum.MPD.sig <- phyloObsSum[which(phyloObsSum$t.MPD.p.value <= 0.05),]
-phyloObsSum[which(phyloObsSum$t.MPD.p.value <= 0.005),] # 5
+#### significance in observed difference bewteen mean MDNSin / mean MDNSnn
+length(phyloObsSum$t.MDNS.p.value[which(phyloObsSum$t.MDNS.p.value >= 0.05)]) # 53 NS
+length(phyloObsSum$t.MDNS.p.value[which(phyloObsSum$t.MDNS.p.value <= 0.05)]) # 21 significant differneces between mean MDNS
+phyloObsSum.MDNS.sig <- phyloObsSum[which(phyloObsSum$t.MDNS.p.value <= 0.05),]
+phyloObsSum[which(phyloObsSum$t.MDNS.p.value <= 0.005),] # 5
 21/74 # 0.2837838
 
-nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "sm"),], phyloObsSum.MPD.sig, by=1)) # 2/74 small islands sig MPD 0.02702703
-nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "med"),], phyloObsSum.MPD.sig, by=1)) # 4/74 med islands sig MPD 0.05405405
-nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "lg"),], phyloObsSum.MPD.sig, by=1)) # 15/74 large isl sig MPD 0.2027027
+nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "sm"),], phyloObsSum.MDNS.sig, by=1)) # 2/74 small islands sig MDNS 0.02702703
+nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "med"),], phyloObsSum.MDNS.sig, by=1)) # 4/74 med islands sig MDNS 0.05405405
+nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "lg"),], phyloObsSum.MDNS.sig, by=1)) # 15/74 large isl sig MDNS 0.2027027
 
 
 
 ########################  Plot observed phylogenetic distinctiveness for each island, ordered by increasing island size
 
-### append metadata for island area to column in list of MNNPD/MPD for each island
+### append metadata for island area to column in list of DNNS/MDNS for each island
 list <- phyloObs
 list.meta <- list()
 for (i in 1:length(list)){ 
@@ -116,92 +116,92 @@ dim(phyloObs_melt) # 4835   11
 model <- lm(as.numeric(as.character(MinDist.Nearest.native)) ~ value , data=phyloObs_melt)
 summary(model)
 anova(model)
-r2.MNNPD <- paste("R^2 = ", signif(summary(model)$r.squared, 3), sep="") #Explained variation / Total variation
-p.MNNPD <- paste("p-value = ", signif(anova(model)[[5]][1], 3), "***", sep="")
+r2.DNNS <- paste("R^2 = ", signif(summary(model)$r.squared, 3), sep="") #Explained variation / Total variation
+p.DNNS <- paste("p-value = ", signif(anova(model)[[5]][1], 3), "***", sep="")
 
 head(phyloObs_melt)
-pdf("figs/plots/phyloDiv/observed/Observed.MNNPD.islIncSize.pdf", width=20, height=10)
-MNNPD <- ggplot(phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MinDist.Nearest.native))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
-MNNPD <- MNNPD + geom_boxplot(aes(fill = Species.Status), width = 1)
-MNNPD <- MNNPD + geom_smooth(method="lm", se=T, color="black", aes(group=1))
-MNNPD <- MNNPD + coord_cartesian(ylim=c(.5, 5000)) 
-MNNPD <- MNNPD + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
-MNNPD <- MNNPD + scale_y_log10("Log MNNPD") #+ coord_fixed(ratio=4) 
-MNNPD <- MNNPD + theme_bw() 
-MNNPD <- MNNPD + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MMNPDi", "n"="MMNPDn")) ##breaks=rev(factor(SJnew$status)),
-MNNPD <- MNNPD + guides(fill=guide_legend(title=""))
-MNNPD <- MNNPD + theme(legend.position="top")
-MNNPD <- MNNPD + theme(axis.text.x = element_text(angle = -45, hjust = 0))
-MNNPD <- MNNPD + ggtitle("Phylogenetic Distance to the Nearest Native Species (MNNPD)") + theme(plot.title=element_text(size=rel(1.5)))
-MNNPD <- MNNPD + annotate("text", label=r2.MNNPD, x=3, y=0.9, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
-MNNPD <- MNNPD + annotate("text", label=p.MNNPD, x=4, y=0.7, size=4) 
-MNNPD <- MNNPD + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
-MNNPD
+pdf("figs/plots/phyloDiv/observed/Observed.DNNS.islIncSize.pdf", width=20, height=10)
+DNNS <- ggplot(phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MinDist.Nearest.native))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+DNNS <- DNNS + geom_boxplot(aes(fill = Species.Status), width = 1)
+DNNS <- DNNS + geom_smooth(method="lm", se=T, color="black", aes(group=1))
+DNNS <- DNNS + coord_cartesian(ylim=c(.5, 5000)) 
+DNNS <- DNNS + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+DNNS <- DNNS + scale_y_log10("Log DNNS") #+ coord_fixed(ratio=4) 
+DNNS <- DNNS + theme_bw() 
+DNNS <- DNNS + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MMNPDi", "n"="MMNPDn")) ##breaks=rev(factor(SJnew$status)),
+DNNS <- DNNS + guides(fill=guide_legend(title=""))
+DNNS <- DNNS + theme(legend.position="top")
+DNNS <- DNNS + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+DNNS <- DNNS + ggtitle("Phylogenetic Distance to the Nearest Native Species (DNNS)") + theme(plot.title=element_text(size=rel(1.5)))
+DNNS <- DNNS + annotate("text", label=r2.DNNS, x=3, y=0.9, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+DNNS <- DNNS + annotate("text", label=p.DNNS, x=4, y=0.7, size=4) 
+DNNS <- DNNS + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+DNNS
 dev.off()
 
 four.islands.phyloObs_melt <- phyloObs_melt[phyloObs_melt$L2 %in% four.islands, ]
 pdf("figs/plots/phyloDiv/observed/four.islands.phyloObs.pdf")
-MNNPD.four <- ggplot(four.islands.phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MinDist.Nearest.native))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
-MNNPD.four <- MNNPD.four+ geom_boxplot(aes(fill = Species.Status), width = 1)
-#MNNPD.four+ geom_smooth(method="lm", se=T, color="black", aes(group=1))
-MNNPD.four <- MNNPD.four+ coord_cartesian(ylim=c(.5, 5000))
-MNNPD.four <- MNNPD.four+ scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
-MNNPD.four <- MNNPD.four+ scale_y_log10("Log MNNPD") #+ coord_fixed(ratio=4) 
-MNNPD.four <- MNNPD.four+ theme_bw() 
-MNNPD.four <- MNNPD.four+ scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MMNPDi", "n"="MMNPDn")) ##breaks=rev(factor(SJnew$status)),
-MNNPD.four <- MNNPD.four+ guides(fill=guide_legend(title=""))
-MNNPD.four <- MNNPD.four+ theme(legend.position="top")
-MNNPD.four <- MNNPD.four+ theme(axis.text.x = element_text(angle = -45, hjust = 0))
-MNNPD.four <- MNNPD.four+ ggtitle("Phylogenetic Distance to the Nearest Native Species (MNNPD)") + theme(plot.title=element_text(size=rel(1.5)))
-#MNNPD.four+ annotate("text", label=r2.MNNPD, x=5, y=0.09, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
-#MNNPD.four+ annotate("text", label=p.MNNPD, x=5, y=0.05, size=4) 
-MNNPD.four <- MNNPD.four+ theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
-MNNPD.four
+DNNS.four <- ggplot(four.islands.phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MinDist.Nearest.native))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+DNNS.four <- DNNS.four+ geom_boxplot(aes(fill = Species.Status), width = 1)
+#DNNS.four+ geom_smooth(method="lm", se=T, color="black", aes(group=1))
+DNNS.four <- DNNS.four+ coord_cartesian(ylim=c(.5, 5000))
+DNNS.four <- DNNS.four+ scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+DNNS.four <- DNNS.four+ scale_y_log10("Log DNNS") #+ coord_fixed(ratio=4) 
+DNNS.four <- DNNS.four+ theme_bw() 
+DNNS.four <- DNNS.four+ scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MMNPDi", "n"="MMNPDn")) ##breaks=rev(factor(SJnew$status)),
+DNNS.four <- DNNS.four+ guides(fill=guide_legend(title=""))
+DNNS.four <- DNNS.four+ theme(legend.position="top")
+DNNS.four <- DNNS.four+ theme(axis.text.x = element_text(angle = -45, hjust = 0))
+DNNS.four <- DNNS.four+ ggtitle("Phylogenetic Distance to the Nearest Native Species (DNNS)") + theme(plot.title=element_text(size=rel(1.5)))
+#DNNS.four+ annotate("text", label=r2.DNNS, x=5, y=0.09, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+#DNNS.four+ annotate("text", label=p.DNNS, x=5, y=0.05, size=4) 
+DNNS.four <- DNNS.four+ theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+DNNS.four
 dev.off()
 
 ## Regression of differnence in means to island size
-modelMPD <- lm(as.numeric(as.character(MeanDist.NativeCommunity)) ~ value , data=phyloObs_melt)
-summary(modelMPD)
-anova(modelMPD)
-r2.MPD <- paste("R^2 = ", signif(summary(modelMPD)$r.squared, 3)) #Explained variation / Total variation
-p.MPD <- paste("p-value = ", signif(anova(modelMPD)[[5]][1], 3), "**", sep="")
+modelMDNS <- lm(as.numeric(as.character(MeanDist.NativeCommunity)) ~ value , data=phyloObs_melt)
+summary(modelMDNS)
+anova(modelMDNS)
+r2.MDNS <- paste("R^2 = ", signif(summary(modelMDNS)$r.squared, 3)) #Explained variation / Total variation
+p.MDNS <- paste("p-value = ", signif(anova(modelMDNS)[[5]][1], 3), "**", sep="")
 
-pdf("figs/plots/phyloDiv/observed/Observed.MPD.islIncSize.pdf", width=20, height=10)
-MPD <- ggplot(phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MeanDist.NativeCommunity))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
-MPD <- MPD + geom_boxplot(aes(fill = Species.Status), width = 1)
-MPD <- MPD + geom_smooth(method="lm", se=T, color="black", aes(group=1))
-MPD <- MPD + coord_cartesian(ylim=c(100, 2000))
-MPD <- MPD + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
-MPD <- MPD + scale_y_log10("Log MPD")  
-MPD <- MPD + theme_bw() 
-MPD <- MPD + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MPDNi", "n"="MPDNn")) ##breaks=rev(factor(SJnew$status)),
-MPD <- MPD + guides(fill=guide_legend(title=""))
-MPD <- MPD + theme(legend.position="top")
-MPD <- MPD + theme(axis.text.x = element_text(angle = -45, hjust = 0))
-MPD <- MPD + ggtitle("Mean Phylogenetic Distance to Native Community (MPD)") + theme(plot.title=element_text(size=rel(1.5)))
-MPD <- MPD + annotate("text", label=r2.MPD, x=3, y=130, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
-MPD <- MPD + annotate("text", label=p.MPD, x=3.5, y=120, size=4) 
-MPD <- MPD + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
-MPD
+pdf("figs/plots/phyloDiv/observed/Observed.MDNS.islIncSize.pdf", width=20, height=10)
+MDNS <- ggplot(phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MeanDist.NativeCommunity))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+MDNS <- MDNS + geom_boxplot(aes(fill = Species.Status), width = 1)
+MDNS <- MDNS + geom_smooth(method="lm", se=T, color="black", aes(group=1))
+MDNS <- MDNS + coord_cartesian(ylim=c(100, 2000))
+MDNS <- MDNS + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+MDNS <- MDNS + scale_y_log10("Log MDNS")  
+MDNS <- MDNS + theme_bw() 
+MDNS <- MDNS + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MDNSNi", "n"="MDNSNn")) ##breaks=rev(factor(SJnew$status)),
+MDNS <- MDNS + guides(fill=guide_legend(title=""))
+MDNS <- MDNS + theme(legend.position="top")
+MDNS <- MDNS + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+MDNS <- MDNS + ggtitle("Mean Phylogenetic Distance to Native Community (MDNS)") + theme(plot.title=element_text(size=rel(1.5)))
+MDNS <- MDNS + annotate("text", label=r2.MDNS, x=3, y=130, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+MDNS <- MDNS + annotate("text", label=p.MDNS, x=3.5, y=120, size=4) 
+MDNS <- MDNS + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+MDNS
 dev.off()
 
-pdf("four.islands.MPD.islIncSize.pdf")
-MPD.four <- ggplot(four.islands.NN_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MeanDist.NativeCommunity))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
-MPD.four <- MPD.four + geom_boxplot(aes(fill = Species.Status), width = 1)
-MPD.four <- MPD.four  + coord_cartesian(ylim=c(100, 2000))
-#MPD.four <- MPD.four  + geom_smooth(method="lm", se=T, color="black", aes(group=1))
-MPD.four <- MPD.four  + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
-MPD.four <- MPD.four  + scale_y_log10("Log MPDN")  
-MPD.four <- MPD.four  + theme_bw() 
-MPD.four <- MPD.four  + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MPDi", "n"="MPDn")) ##breaks=rev(factor(SJnew$status)),
-MPD.four <- MPD.four  + guides(fill=guide_legend(title=""))
-MPD.four <- MPD.four  + theme(legend.position="top")
-MPD.four <- MPD.four  + theme(axis.text.x = element_text(angle = -45, hjust = 0))
-MPD.four <- MPD.four  + ggtitle("Mean Phylogenetic Distance to Native Community (MPDN)") + theme(plot.title=element_text(size=rel(1.5)))
-#MPD.four <- MPD.four  + annotate("text", label=r2.MPD, x=5, y=100, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
-#MPD.four <- MPD.four  + annotate("text", label=p.MPD, x=5, y=90, size=4) 
-MPD.four <- MPD.four  + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
-MPD.four 
+pdf("figs/plots/phyloDiv/observed/four.islands.MDNS.islIncSize.pdf")
+MDNS.four <- ggplot(four.islands.phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MeanDist.NativeCommunity))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+MDNS.four <- MDNS.four + geom_boxplot(aes(fill = Species.Status), width = 1)
+MDNS.four <- MDNS.four  + coord_cartesian(ylim=c(100, 2000))
+#MDNS.four <- MDNS.four  + geom_smooth(method="lm", se=T, color="black", aes(group=1))
+MDNS.four <- MDNS.four  + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+MDNS.four <- MDNS.four  + scale_y_log10("Log MDNSN")  
+MDNS.four <- MDNS.four  + theme_bw() 
+MDNS.four <- MDNS.four  + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MDNSi", "n"="MDNSn")) ##breaks=rev(factor(SJnew$status)),
+MDNS.four <- MDNS.four  + guides(fill=guide_legend(title=""))
+MDNS.four <- MDNS.four  + theme(legend.position="top")
+MDNS.four <- MDNS.four  + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+MDNS.four <- MDNS.four  + ggtitle("Mean Phylogenetic Distance to Native Community (MDNS)") + theme(plot.title=element_text(size=rel(1.5)))
+#MDNS.four <- MDNS.four  + annotate("text", label=r2.MDNS, x=5, y=100, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+#MDNS.four <- MDNS.four  + annotate("text", label=p.MDNS, x=5, y=90, size=4) 
+MDNS.four <- MDNS.four  + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+MDNS.four 
 dev.off()
 
 ###################### Other summary figures
@@ -479,21 +479,21 @@ melt.trait.to.meta(list = leafN.four, metadata = metadata, meta.data.column.name
 dev.off()
 
 ####################################################################################################################################
-######### Calculate observed difference in trait values to nearest native (MNNFD) and to mean value odnative community (MFD) #######################
+######### Calculate observed difference in trait values to nearest native (NNFD) and to mean value odnative community (MFD) #######################
 
-############# Nearest Neighbor Trait Difference (MNNFD) ##################################################################
+############# Nearest Neighbor Trait Difference (NNFD) ##################################################################
 ## Entire archipelago
 seedMass_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="seedMass")
 maxHeight_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="maxHeight")
 SLA_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="sla") #one community, one trait
 leafletSize_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="leafletSize")
 leafN_SJ <- functionDistinct(output=phyloObs[[1]], traits=SJtraitLog, traitname="leafN")
-a2 <- plot.functionDistinct.Obs(MNNFDoutput=seedMass_SJ, islandname="", traitname="seedMass", metric = 2)
-b2 <- plot.functionDistinct.Obs(MNNFDoutput=maxHeight_SJ, islandname="", traitname="maxHeight", metric = 2)
-c2 <- plot.functionDistinct.Obs(MNNFDoutput=SLA_SJ, islandname="", traitname="sla", metric = 2)
-d2 <- plot.functionDistinct.Obs(MNNFDoutput=leafletSize_SJ, islandname="", traitname="leafletSize", metric = 2)
-e2 <- plot.functionDistinct.Obs(MNNFDoutput=leafN_SJ, islandname="", traitname="leafN", metric = 2)
-grid.arrange(a2, b2, c2, d2, e2, ncol=6, main=textGrob(vjust = .8, hjust=.5,"MNNFD \nAll San Juan Islands",gp=gpar(cex=1.5,font=2)))
+a2 <- plot.functionDistinct.Obs(NNFDoutput=seedMass_SJ, islandname="", traitname="seedMass", metric = 2)
+b2 <- plot.functionDistinct.Obs(NNFDoutput=maxHeight_SJ, islandname="", traitname="maxHeight", metric = 2)
+c2 <- plot.functionDistinct.Obs(NNFDoutput=SLA_SJ, islandname="", traitname="sla", metric = 2)
+d2 <- plot.functionDistinct.Obs(NNFDoutput=leafletSize_SJ, islandname="", traitname="leafletSize", metric = 2)
+e2 <- plot.functionDistinct.Obs(NNFDoutput=leafN_SJ, islandname="", traitname="leafN", metric = 2)
+grid.arrange(a2, b2, c2, d2, e2, ncol=6, main=textGrob(vjust = .8, hjust=.5,"NNFD \nAll San Juan Islands",gp=gpar(cex=1.5,font=2)))
 
 ## All Islands (n = 74)
 seedmass.distObs <- lapply(com.list, function(x) functionDistinct(output=phyloObs[[x]], traits=SJtraitLog, traitname="seedMass"))
@@ -512,24 +512,24 @@ leafN.distObs <- lapply(com.list, function(x) functionDistinct(output=phyloObs[[
 names(leafN.distObs) <- names(SJcommNew) 
 
 #SeedMass
-pdf("figs/plots/functionDiv/observed/SeedMass_ObservedMNNFD.pdf", width=20, height=10)
-melt.MNNFD.to.meta(list = seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass MNNFD", y.axis.title="Seed Mass")
+pdf("figs/plots/functionDiv/observed/SeedMass_ObservedNNFD.pdf", width=20, height=10)
+melt.NNFD.to.meta(list = seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass NNFD", y.axis.title="NNFD (Seed Mass)")
 dev.off()
 #maxHeight
-pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedMNNFD.pdf", width=20, height=10)
-melt.MNNFD.to.meta(list = maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height MNNFD", y.axis.title="Maximum Height")
+pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedNNFD.pdf", width=20, height=10)
+melt.NNFD.to.meta(list = maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height NNFD", y.axis.title="NNFD (Maximum Height)")
 dev.off()
 #SLA
-pdf("figs/plots/functionDiv/observed/SLA_ObservedMNNFD.pdf", width=20, height=10)
-melt.MNNFD.to.meta(list = sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA MNNFD", y.axis.title="SLA")
+pdf("figs/plots/functionDiv/observed/SLA_ObservedNNFD.pdf", width=20, height=10)
+melt.NNFD.to.meta(list = sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA NNFD", y.axis.title="NNFD (SLA)")
 dev.off()
 #leafSize
-pdf("figs/plots/functionDiv/observed/Leaflet_ObservedMNNFD.pdf", width=20, height=10)
-melt.MNNFD.to.meta(list = leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size MNNFD", y.axis.title="Leaflet Size")
+pdf("figs/plots/functionDiv/observed/Leaflet_ObservedNNFD.pdf", width=20, height=10)
+melt.NNFD.to.meta(list = leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size NNFD", y.axis.title="NNFD (Leaflet Size)")
 dev.off()
 #leafN
-pdf("figs/plots/functionDiv/observed/LeafN_ObservedMNNFD.pdf", width=20, height=10)
-melt.MNNFD.to.meta(list = leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N MNNFD", y.axis.title="% Leaf N")
+pdf("figs/plots/functionDiv/observed/LeafN_ObservedNNFD.pdf", width=20, height=10)
+melt.NNFD.to.meta(list = leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N NNFD", y.axis.title="NNFD (% Leaf N)")
 dev.off()
 
 
@@ -556,24 +556,24 @@ names(four.islands.leafN.distObs) <- four.islands
 
 
 #SLA
-pdf("figs/plots/functionDiv/observed/4Islands_SLA_ObservedMNNFD.pdf")
-melt.MNNFD.to.meta(list = four.islands.sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA MNNFD", y.axis.title="SLA")
+pdf("figs/plots/functionDiv/observed/4Islands_SLA_ObservedNNFD.pdf")
+melt.NNFD.to.meta(list = four.islands.sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA NNFD", y.axis.title="SLA")
 dev.off()
 #leafSize
-pdf("figs/plots/functionDiv/observed/4Islands_Leaflet_ObservedMNNFD.pdf")
-melt.MNNFD.to.meta(list = four.islands.leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size MNNFD", y.axis.title="Leaflet Size")
+pdf("figs/plots/functionDiv/observed/4Islands_Leaflet_ObservedNNFD.pdf")
+melt.NNFD.to.meta(list = four.islands.leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size NNFD", y.axis.title="Leaflet Size")
 dev.off()
 #SeedMass
-pdf("figs/plots/functionDiv/observed/4Islands_SeedMass_ObservedMNNFD.pdf")
-melt.MNNFD.to.meta(list = four.islands.seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass MNNFD", y.axis.title="Seed Mass")
+pdf("figs/plots/functionDiv/observed/4Islands_SeedMass_ObservedNNFD.pdf")
+melt.NNFD.to.meta(list = four.islands.seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass NNFD", y.axis.title="Seed Mass")
 dev.off()
 #leafN
-pdf("figs/plots/functionDiv/observed/4Islands_LeafN_ObservedMNNFD.pdf")
-melt.MNNFD.to.meta(list = four.islands.leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N MNNFD", y.axis.title="% Leaf N")
+pdf("figs/plots/functionDiv/observed/4Islands_LeafN_ObservedNNFD.pdf")
+melt.NNFD.to.meta(list = four.islands.leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N NNFD", y.axis.title="% Leaf N")
 dev.off()
 #maxHeight
-pdf("figs/plots/functionDiv/observed/4Islands_MaxHeight_ObservedMNNFD.pdf")
-melt.MNNFD.to.meta(list = four.islands.maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height MNNFD", y.axis.title="Maximum Height")
+pdf("figs/plots/functionDiv/observed/4Islands_MaxHeight_ObservedNNFD.pdf")
+melt.NNFD.to.meta(list = four.islands.maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height NNFD", y.axis.title="Maximum Height")
 dev.off()
 
 
@@ -582,23 +582,23 @@ dev.off()
 ####### All Islands
 #SeedMass
 pdf("figs/plots/functionDiv/observed/SeedMass_ObservedMFD.pdf", width=20, height=10)
-melt.MFD.to.meta(list = seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass Mean Functional Distance to Native Community (MFD)", y.axis.title="Seed Mass")
+melt.MFD.to.meta(list = seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (Seed Mass)")
 dev.off()
 #maxHeight
 pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedMFD.pdf", width=20, height=10)
-melt.MFD.to.meta(list = maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height Mean Functional Distance to Native Community (MFD)", y.axis.title="Maximum Height")
+melt.MFD.to.meta(list = maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (Maximum Height)")
 dev.off()
 #SLA
 pdf("figs/plots/functionDiv/observed/SLA_ObservedMFD.pdf", width=20, height=10)
-melt.MFD.to.meta(list = sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA Mean Functional Distance to Native Community (MFD)", y.axis.title="SLA")
+melt.MFD.to.meta(list = sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (SLA)")
 dev.off()
 #leafSize
 pdf("figs/plots/functionDiv/observed/Leaflet_ObservedMFD.pdf", width=20, height=10)
-melt.MFD.to.meta(list = leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size Mean Functional Distance to Native Community (MFD)", y.axis.title="Leaflet Size")
+melt.MFD.to.meta(list = leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (Leaflet Size)")
 dev.off()
 #leafN
 pdf("figs/plots/functionDiv/observed/LeafN_ObservedMFD.pdf", width=20, height=10)
-melt.MFD.to.meta(list = leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N Mean Functional Distance to Native Community (MFD)", y.axis.title="% Leaf N")
+melt.MFD.to.meta(list = leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (% Leaf N)")
 dev.off()
 
 
@@ -625,23 +625,23 @@ melt.MFD.to.meta(list = four.islands.leafN.distObs, metadata = metadata, meta.da
 dev.off()
 
 
-################### Summarize means for MNNFDi / MNNFDn and MFD inv-nat / MFD nat-nat for each trait on each island
+################### Summarize means for NNFDi / NNFDn and MFD inv-nat / MFD nat-nat for each trait on each island
 
 ### Seed Mass 
-SeedMass.distObsSum <- lapply(com.list, function(x) functionObsSum(seedmass.distObs[[x]])) #apply summary funciton across all communities...summary.MNNPD
+SeedMass.distObsSum <- lapply(com.list, function(x) functionObsSum(seedmass.distObs[[x]])) #apply summary funciton across all communities...summary.DNNS
 names(SeedMass.distObsSum) <- colnames(SJcommNew)
 SeedMass.distObsSum <- as.data.frame(do.call(cbind, SeedMass.distObsSum), stringsAsFactors=F)
 colnames(SeedMass.distObsSum) <- colnames(SJcommNew)
 SeedMass.distObsSum <-  as.data.frame(t(SeedMass.distObsSum), stringsAsFactors=F)
 #write.csv(SeedMass.distObsSum, file="SeedMass.distObsSum.MFD.csv")
 head(SeedMass.distObsSum)
-SeedMass.distObsSum.ranm <- SeedMass.distObsSum[SeedMass.distObsSum$t.MNNFD.p.value != "NA",]
+SeedMass.distObsSum.ranm <- SeedMass.distObsSum[SeedMass.distObsSum$t.NNFD.p.value != "NA",]
 
 seedtmp <- transform(merge(seedmassSummary, SeedMass.distObsSum, by=0), row.names=Row.names,Row.names=NULL)
 seedmass <- (merge(seedtmp, metadata, by=0))
 dim(seedtmp)
 seedmass[,"Significance"] <- ifelse(seedmass[,"p.value.seedMass"] <= 0.05, 1,
-                                    ifelse(seedmass[,"t.MNNFD.p.value"] <= 0.05, 2,
+                                    ifelse(seedmass[,"t.NNFD.p.value"] <= 0.05, 2,
                                            ifelse(seedmass[,"t.MFD.p.value"] <= 0.05, 3, 0)))
 head(seedmass)
 #### summarize significance data by size categories
@@ -650,40 +650,40 @@ seedmass$Size.cat <- factor(seedmass$Size.cat, levels=c("sm", "med", "lg"))
 
 
 ##### mean MMNPDi / mean MMNPDn 
-length(SeedMass.distObsSum.ranm$t.MNNFD.p.value[which(SeedMass.distObsSum.ranm$t.MNNFD.p.value >= 0.05)]) # 72 NS
-length(SeedMass.distObsSum.ranm$t.MNNFD.p.value[which(SeedMass.distObsSum.ranm$t.MNNFD.p.value <= 0.05)]) # 1 significant differneces between mean MNNPD 
-sigSeedMass.distObsSum <- (SeedMass.distObsSum.ranm[which(SeedMass.distObsSum.ranm$t.MNNFD.p.value <= 0.05), ]) # 1 significant differneces between mean MNNPD 
+length(SeedMass.distObsSum.ranm$t.NNFD.p.value[which(SeedMass.distObsSum.ranm$t.NNFD.p.value >= 0.05)]) # 72 NS
+length(SeedMass.distObsSum.ranm$t.NNFD.p.value[which(SeedMass.distObsSum.ranm$t.NNFD.p.value <= 0.05)]) # 1 significant differneces between mean DNNS 
+sigSeedMass.distObsSum <- (SeedMass.distObsSum.ranm[which(SeedMass.distObsSum.ranm$t.NNFD.p.value <= 0.05), ]) # 1 significant differneces between mean DNNS 
 1/73 #0.01369863
-#### mean MPDin / mean MPDnn
+#### mean MDNSin / mean MDNSnn
 length(SeedMass.distObsSum.ranm$t.MFD.p.value[which(SeedMass.distObsSum.ranm$t.MFD.p.value >= 0.05)]) # 62 NS
-length(SeedMass.distObsSum.ranm$t.MFD.p.value[which(SeedMass.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 11 significant differneces between mean MPD
-sigSeedMasssummaryMPD <- (SeedMass.distObsSum.ranm[which(SeedMass.distObsSum.ranm$t.MFD.p.value <= 0.05),]) # 11 significant differneces between mean MPD
+length(SeedMass.distObsSum.ranm$t.MFD.p.value[which(SeedMass.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 11 significant differneces between mean MDNS
+sigSeedMasssummaryMDNS <- (SeedMass.distObsSum.ranm[which(SeedMass.distObsSum.ranm$t.MFD.p.value <= 0.05),]) # 11 significant differneces between mean MDNS
 11/73 #0.1506849
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSeedMass.distObsSum, by=0)) # 0 small islands sig MPD
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSeedMass.distObsSum, by=0)) # 1/73 med islands sig MPD 0.01369863
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSeedMass.distObsSum, by=0)) # 0 large isl sig MPD
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSeedMass.distObsSum, by=0)) # 0 small islands sig MDNS
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSeedMass.distObsSum, by=0)) # 1/73 med islands sig MDNS 0.01369863
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSeedMass.distObsSum, by=0)) # 0 large isl sig MDNS
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSeedMasssummaryMPD, by=0)) #2/73 small islands sig MPD 0.02739726
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSeedMasssummaryMPD, by=0)) #4/73 med islands sig MPD 0.05479452
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSeedMasssummaryMPD, by=0)) # 5/73 large isl sig MPD 0.06849315
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSeedMasssummaryMDNS, by=0)) #2/73 small islands sig MDNS 0.02739726
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSeedMasssummaryMDNS, by=0)) #4/73 med islands sig MDNS 0.05479452
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSeedMasssummaryMDNS, by=0)) # 5/73 large isl sig MDNS 0.06849315
 
 
 ### Maximum height
-Heightsummary.distObsSum <- lapply(com.list, function(x) functionObsSum(maxheight.distObs[[x]])) #apply summary funciton across all communities...summary.MNNPD
+Heightsummary.distObsSum <- lapply(com.list, function(x) functionObsSum(maxheight.distObs[[x]])) #apply summary funciton across all communities...summary.DNNS
 names(Heightsummary.distObsSum) <- colnames(SJcommNew)
 Heightsummary.distObsSum <- as.data.frame(do.call(cbind, Heightsummary.distObsSum), stringsAsFactors=F)
 colnames(Heightsummary.distObsSum) <- colnames(SJcommNew)
 Heightsummary.distObsSum <-  as.data.frame(t(Heightsummary.distObsSum), stringsAsFactors=F)
 #write.csv(Heightsummary.distObsSum, file="Heightsummary.distObsSum.MFD.csv")
 head(Heightsummary.distObsSum)
-Heightsummary.distObsSum.ranm <- Heightsummary.distObsSum[Heightsummary.distObsSum$t.MNNFD.p.value != "NA",]
+Heightsummary.distObsSum.ranm <- Heightsummary.distObsSum[Heightsummary.distObsSum$t.NNFD.p.value != "NA",]
 
 heighttmp <- transform(merge(maxheightSummary, Heightsummary.distObsSum, by=0), row.names=Row.names,Row.names=NULL)
 height <- (merge(heighttmp, metadata, by=0))
 head(height)
 height[,"Significance"] <- ifelse(height[,"p.value.maxHeight"] <= 0.05, 1,
-                                  ifelse(height[,"t.MNNFD.p.value"] <= 0.05, 2,
+                                  ifelse(height[,"t.NNFD.p.value"] <= 0.05, 2,
                                          ifelse(height[,"t.MFD.p.value"] <= 0.05, 3, 0)))
 
 #### summarize significance data by size categories
@@ -692,39 +692,39 @@ height$Size.cat <- factor(height$Size.cat, levels=c("sm", "med", "lg"))
 
 
 ##### mean MMNPDi / mean MMNPDn 
-length(Heightsummary.distObsSum.ranm$t.MNNFD.p.value[which(Heightsummary.distObsSum.ranm$t.MNNFD.p.value >= 0.05)]) # 51 NS
-length(Heightsummary.distObsSum.ranm$t.MNNFD.p.value[which(Heightsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05)]) # 20 significant differneces between mean MNNPD 
-sigHeightsummary.distObsSum <- (Heightsummary.distObsSum.ranm[which(Heightsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05),]) # 20 significant differneces between mean MNNPD 
+length(Heightsummary.distObsSum.ranm$t.NNFD.p.value[which(Heightsummary.distObsSum.ranm$t.NNFD.p.value >= 0.05)]) # 51 NS
+length(Heightsummary.distObsSum.ranm$t.NNFD.p.value[which(Heightsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05)]) # 20 significant differneces between mean DNNS 
+sigHeightsummary.distObsSum <- (Heightsummary.distObsSum.ranm[which(Heightsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05),]) # 20 significant differneces between mean DNNS 
 20/71 #0.2816901
-#### mean MPDin / mean MPDnn
+#### mean MDNSin / mean MDNSnn
 length(Heightsummary.distObsSum.ranm$t.MFD.p.value[which(Heightsummary.distObsSum.ranm$t.MFD.p.value >= 0.05)]) # 54 NS
-length(Heightsummary.distObsSum.ranm$t.MFD.p.value[which(Heightsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 17 significant differneces between mean MPD
-sigHeightsummaryMPD <- (Heightsummary.distObsSum.ranm[which(Heightsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),]) # 17 significant differneces between mean MPD
+length(Heightsummary.distObsSum.ranm$t.MFD.p.value[which(Heightsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 17 significant differneces between mean MDNS
+sigHeightsummaryMDNS <- (Heightsummary.distObsSum.ranm[which(Heightsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),]) # 17 significant differneces between mean MDNS
 17/71 #0.2394366
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigHeightsummary.distObsSum, by=0)) # 4/71 small islands sig MPD 0.05633803
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigHeightsummary.distObsSum, by=0)) # 12/71 med islands sig MPD 0.1690141
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigHeightsummary.distObsSum, by=0)) # 4/71 large isl sig MPD  0.05633803
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigHeightsummary.distObsSum, by=0)) # 4/71 small islands sig MDNS 0.05633803
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigHeightsummary.distObsSum, by=0)) # 12/71 med islands sig MDNS 0.1690141
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigHeightsummary.distObsSum, by=0)) # 4/71 large isl sig MDNS  0.05633803
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigHeightsummaryMPD, by=0)) # 3/71 small islands sig MPD 0.04225352
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigHeightsummaryMPD, by=0)) # 8/71 med islands sig MPD 0.1126761
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigHeightsummaryMPD, by=0)) # 6/71 large isl sig MPD 0.08450704
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigHeightsummaryMDNS, by=0)) # 3/71 small islands sig MDNS 0.04225352
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigHeightsummaryMDNS, by=0)) # 8/71 med islands sig MDNS 0.1126761
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigHeightsummaryMDNS, by=0)) # 6/71 large isl sig MDNS 0.08450704
 
 ### SLA
-SLAsummary.distObsSum  <- lapply(com.list, function(x) functionObsSum(sla.distObs[[x]])) #apply summary funciton across all communities...summary.MNNPD
+SLAsummary.distObsSum  <- lapply(com.list, function(x) functionObsSum(sla.distObs[[x]])) #apply summary funciton across all communities...summary.DNNS
 names(SLAsummary.distObsSum) <- colnames(SJcommNew)
 SLAsummary.distObsSum <- as.data.frame(do.call(cbind, SLAsummary.distObsSum), stringsAsFactors=F)
 colnames(SLAsummary.distObsSum) <- colnames(SJcommNew)
 SLAsummary.distObsSum <-  as.data.frame(t(SLAsummary.distObsSum), stringsAsFactors=F)
 #write.csv(SLAsummary.distObsSum, file="SLAsummary.distObsSum.MFD.csv")
 head(SLAsummary.distObsSum)
-SLAsummary.distObsSum.ranm <- SLAsummary.distObsSum[SLAsummary.distObsSum$meanMNNFDnatives != "NA",]
+SLAsummary.distObsSum.ranm <- SLAsummary.distObsSum[SLAsummary.distObsSum$meanNNFDnatives != "NA",]
 
 SLAtmp <- transform(merge(SLAtraitSummary, SLAsummary.distObsSum, by=0), row.names=Row.names, Row.names=NULL)
 SLA <- (merge(SLAtmp, metadata, by=0))
 
 SLA[,"Significance"] <- ifelse(SLA[,"p.value.sla"] <= 0.05, 1,
-                              ifelse(SLA[,"t.MNNFD.p.value"] <= 0.05, 2,
+                              ifelse(SLA[,"t.NNFD.p.value"] <= 0.05, 2,
                                ifelse(SLA[,"t.MFD.p.value"] <= 0.05, 3, 0)))
 
 #### summarize significance data by size categories
@@ -732,40 +732,40 @@ SLA$Size.cat <- as.character(SLA$Size.cat)
 SLA$Size.cat <- factor(SLA$Size.cat, levels=c("sm", "med", "lg"))
 
 ##### mean MMNPDi / mean MMNPDn 
-length(SLAsummary.distObsSum.ranm$t.MNNFD.p.value[which(SLAsummary.distObsSum.ranm$t.MNNFD.p.value >= 0.05)]) # 51 NS
-length(SLAsummary.distObsSum.ranm$t.MNNFD.p.value[which(SLAsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05)]) # 10 
-sigSLAsummary.distObsSum <- (SLAsummary.distObsSum.ranm[which(SLAsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05),]) # 10 
+length(SLAsummary.distObsSum.ranm$t.NNFD.p.value[which(SLAsummary.distObsSum.ranm$t.NNFD.p.value >= 0.05)]) # 51 NS
+length(SLAsummary.distObsSum.ranm$t.NNFD.p.value[which(SLAsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05)]) # 10 
+sigSLAsummary.distObsSum <- (SLAsummary.distObsSum.ranm[which(SLAsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05),]) # 10 
 10/61 #0.1639344
-#### mean MPDin / mean MPDnn
+#### mean MDNSin / mean MDNSnn
 length(SLAsummary.distObsSum.ranm$t.MFD.p.value[which(SLAsummary.distObsSum.ranm$t.MFD.p.value >= 0.05)]) # 57 NS
-length(SLAsummary.distObsSum.ranm$t.MFD.p.value[which(SLAsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 4 significant differneces between mean MPD
-sigSLAsummaryMPD <- SLAsummary.distObsSum.ranm[which(SLAsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),] # 4 significant differneces between mean MPD
+length(SLAsummary.distObsSum.ranm$t.MFD.p.value[which(SLAsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 4 significant differneces between mean MDNS
+sigSLAsummaryMDNS <- SLAsummary.distObsSum.ranm[which(SLAsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),] # 4 significant differneces between mean MDNS
 4/61 #0.06557377
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSLAsummary.distObsSum, by=0)) # 1/61 small islands sig MPD 0.01639344
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSLAsummary.distObsSum, by=0)) # 6/61 med islands sig MPD 0.09836066
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSLAsummary.distObsSum, by=0)) # 3/61 large isl sig MPD 0.04918033
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSLAsummary.distObsSum, by=0)) # 1/61 small islands sig MDNS 0.01639344
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSLAsummary.distObsSum, by=0)) # 6/61 med islands sig MDNS 0.09836066
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSLAsummary.distObsSum, by=0)) # 3/61 large isl sig MDNS 0.04918033
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSLAsummaryMPD, by=0)) # 2/61 small islands sig MPD 0.03278689
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSLAsummaryMPD, by=0)) # 1/61 med islands sig MPD 0.01639344
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSLAsummaryMPD, by=0)) # 1/61 large isl sig MPD 0.01639344
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSLAsummaryMDNS, by=0)) # 2/61 small islands sig MDNS 0.03278689
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSLAsummaryMDNS, by=0)) # 1/61 med islands sig MDNS 0.01639344
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSLAsummaryMDNS, by=0)) # 1/61 large isl sig MDNS 0.01639344
 
 
 ### Leaflet 
-Leafletsummary.distObsSum <- lapply(com.list, function(x) functionObsSum(leaflet.distObs[[x]])) #apply summary funciton across all communities...summary.MNNPD
+Leafletsummary.distObsSum <- lapply(com.list, function(x) functionObsSum(leaflet.distObs[[x]])) #apply summary funciton across all communities...summary.DNNS
 names(Leafletsummary.distObsSum) <- colnames(SJcommNew)
 Leafletsummary.distObsSum <- as.data.frame(do.call(cbind, Leafletsummary.distObsSum), stringsAsFactors=F)
 colnames(Leafletsummary.distObsSum) <- colnames(SJcommNew)
 Leafletsummary.distObsSum <-  as.data.frame(t(Leafletsummary.distObsSum), stringsAsFactors=F)
 #write.csv(Leafletsummary.distObsSum, file="Leafletsummary.distObsSum.MFD.csv")
 head(Leafletsummary.distObsSum)
-Leafletsummary.distObsSum.ranm <- Leafletsummary.distObsSum[Leafletsummary.distObsSum$t.MNNFD.p.value != "NA",]
+Leafletsummary.distObsSum.ranm <- Leafletsummary.distObsSum[Leafletsummary.distObsSum$t.NNFD.p.value != "NA",]
 
 leaflettmp <-transform(merge(leafletSummary, Leafletsummary.distObsSum, by=0), row.names=Row.names,Row.names=NULL)
 leaflet <- (merge(leaflettmp, metadata,by=0))
 head(leaflet)
 leaflet[,"Significance"] <- ifelse(leaflet[,"p.value.leafletSize"] <= 0.05, 1,
-                               ifelse(leaflet[,"t.MNNFD.p.value"] <= 0.05, 2,
+                               ifelse(leaflet[,"t.NNFD.p.value"] <= 0.05, 2,
                                       ifelse(leaflet[,"t.MFD.p.value"] <= 0.05, 3, 0)))
 
 #### summarize significance data by size categories
@@ -773,40 +773,40 @@ leaflet$Size.cat <- as.character(leaflet$Size.cat)
 leaflet$Size.cat <- factor(leaflet$Size.cat, levels=c("sm", "med", "lg"))
 
 ##### mean MMNPDi / mean MMNPDn 
-length(Leafletsummary.distObsSum.ranm$t.MNNFD.p.value[which(Leafletsummary.distObsSum.ranm$t.MNNFD.p.value >= 0.05)]) # 54 NS
-length(Leafletsummary.distObsSum.ranm$t.MNNFD.p.value[which(Leafletsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05)]) # 3 significant differneces between mean MNNPD 
-Leafletsummary.distObsSumsig <- (Leafletsummary.distObsSum[which(Leafletsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05),]) # 3 significant differneces between mean MNNPD 
+length(Leafletsummary.distObsSum.ranm$t.NNFD.p.value[which(Leafletsummary.distObsSum.ranm$t.NNFD.p.value >= 0.05)]) # 54 NS
+length(Leafletsummary.distObsSum.ranm$t.NNFD.p.value[which(Leafletsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05)]) # 3 significant differneces between mean DNNS 
+Leafletsummary.distObsSumsig <- (Leafletsummary.distObsSum[which(Leafletsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05),]) # 3 significant differneces between mean DNNS 
 3/57 #0.05263158
-#### mean MPDin / mean MPDnn
+#### mean MDNSin / mean MDNSnn
 length(Leafletsummary.distObsSum.ranm$t.MFD.p.value[which(Leafletsummary.distObsSum.ranm$t.MFD.p.value >= 0.05)]) # 53 NS
-length(Leafletsummary.distObsSum.ranm$t.MFD.p.value[which(Leafletsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 4 significant differneces between mean MPD
-sigLeafletsummaryMPD <- Leafletsummary.distObsSum.ranm[which(Leafletsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),] # 4 significant differneces between mean MPD
+length(Leafletsummary.distObsSum.ranm$t.MFD.p.value[which(Leafletsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 4 significant differneces between mean MDNS
+sigLeafletsummaryMDNS <- Leafletsummary.distObsSum.ranm[which(Leafletsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),] # 4 significant differneces between mean MDNS
 4/57 #0.07017544
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], Leafletsummary.distObsSumsig, by=0)) # 1/57 small islands sig MPD 0.01754386
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], Leafletsummary.distObsSumsig, by=0)) # 1 med islands sig MPD 0.01754386
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], Leafletsummary.distObsSumsig, by=0)) # 1 large isl sig MPD  0.01754386
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], Leafletsummary.distObsSumsig, by=0)) # 1/57 small islands sig MDNS 0.01754386
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], Leafletsummary.distObsSumsig, by=0)) # 1 med islands sig MDNS 0.01754386
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], Leafletsummary.distObsSumsig, by=0)) # 1 large isl sig MDNS  0.01754386
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigLeafletsummaryMPD, by=0)) # 1 small islands sig MPD 0.01754386
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigLeafletsummaryMPD, by=0)) # 2/57 med islands sig MPD  0.03508772
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigLeafletsummaryMPD, by=0)) # 1 large isl sig MPD 0.01754386
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigLeafletsummaryMDNS, by=0)) # 1 small islands sig MDNS 0.01754386
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigLeafletsummaryMDNS, by=0)) # 2/57 med islands sig MDNS  0.03508772
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigLeafletsummaryMDNS, by=0)) # 1 large isl sig MDNS 0.01754386
 
 
 ### Leaf N
-LeafNsummary.distObsSum <- lapply(com.list, function(x) functionObsSum(leafN.distObs[[x]])) #apply summary funciton across all communities...summary.MNNPD
+LeafNsummary.distObsSum <- lapply(com.list, function(x) functionObsSum(leafN.distObs[[x]])) #apply summary funciton across all communities...summary.DNNS
 names(LeafNsummary.distObsSum) <- colnames(SJcommNew)
 LeafNsummary.distObsSum <- as.data.frame(do.call(cbind, LeafNsummary.distObsSum), stringsAsFactors=F)
 colnames(LeafNsummary.distObsSum) <- colnames(SJcommNew)
 LeafNsummary.distObsSum <-  as.data.frame(t(LeafNsummary.distObsSum), stringsAsFactors=F)
 #write.csv(LeafNsummary.distObsSum, file="LeafNsummary.distObsSum.MFD.csv")
 head(LeafNsummary.distObsSum)
-LeafNsummary.distObsSum.ranm <- LeafNsummary.distObsSum[LeafNsummary.distObsSum$t.MNNFD.p.value != "NA",]
+LeafNsummary.distObsSum.ranm <- LeafNsummary.distObsSum[LeafNsummary.distObsSum$t.NNFD.p.value != "NA",]
 
 leafNtmp <- transform(merge(leafNSummary, LeafNsummary.distObsSum, by=0), row.names=Row.names,Row.names=NULL)
 leafN <- (merge(leafNtmp, metadata, by=0))
 head(leafN)
 leafN[,"Significance"] <- ifelse(leafN[,"p.value.leafN"] <= 0.05, 1,
-                                    ifelse(leafN[,"t.MNNFD.p.value"] <= 0.05, 2,
+                                    ifelse(leafN[,"t.NNFD.p.value"] <= 0.05, 2,
                                            ifelse(leafN[,"t.MFD.p.value"] <= 0.05, 3, 0)))
 
 #### summarize significance data by size categories
@@ -814,60 +814,60 @@ leafN$Size.cat <- as.character(leafN$Size.cat)
 leafN$Size.cat <- factor(leafN$Size.cat, levels=c("sm", "med", "lg"))
 
 ##### mean MMNPDi / mean MMNPDn 
-length(LeafNsummary.distObsSum.ranm$t.MNNFD.p.value[which(LeafNsummary.distObsSum.ranm$t.MNNFD.p.value >= 0.05)]) # 44 NS
-length(LeafNsummary.distObsSum.ranm$t.MNNFD.p.value[which(LeafNsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05)]) # 3 significant differneces between mean MNNPD 
-sigLeafNsummary.distObsSum <- (LeafNsummary.distObsSum.ranm[which(LeafNsummary.distObsSum.ranm$t.MNNFD.p.value <= 0.05),]) # 3 significant differneces between mean MNNPD 
+length(LeafNsummary.distObsSum.ranm$t.NNFD.p.value[which(LeafNsummary.distObsSum.ranm$t.NNFD.p.value >= 0.05)]) # 44 NS
+length(LeafNsummary.distObsSum.ranm$t.NNFD.p.value[which(LeafNsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05)]) # 3 significant differneces between mean DNNS 
+sigLeafNsummary.distObsSum <- (LeafNsummary.distObsSum.ranm[which(LeafNsummary.distObsSum.ranm$t.NNFD.p.value <= 0.05),]) # 3 significant differneces between mean DNNS 
 3/47 #0.06382979
-#### mean MPDin / mean MPDnn
+#### mean MDNSin / mean MDNSnn
 length(LeafNsummary.distObsSum.ranm$t.MFD.p.value[which(LeafNsummary.distObsSum.ranm$t.MFD.p.value >= 0.05)]) # 45 NS
-length(LeafNsummary.distObsSum.ranm$t.MFD.p.value[which(LeafNsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 2 significant differneces between mean MPD
-LeafNsummaryMPD <- (LeafNsummary.distObsSum.ranm[which(LeafNsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),]) # 2 significant differneces between mean MPD
+length(LeafNsummary.distObsSum.ranm$t.MFD.p.value[which(LeafNsummary.distObsSum.ranm$t.MFD.p.value <= 0.05)]) # 2 significant differneces between mean MDNS
+LeafNsummaryMDNS <- (LeafNsummary.distObsSum.ranm[which(LeafNsummary.distObsSum.ranm$t.MFD.p.value <= 0.05),]) # 2 significant differneces between mean MDNS
 2/47 #0.04255319
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigLeafNsummary.distObsSum, by=0)) # 0 small islands sig MPD 
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigLeafNsummary.distObsSum, by=0)) # 3/47 med islands sig MPD 0.06382979
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigLeafNsummary.distObsSum, by=0)) # 0 large isl sig MPD  
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigLeafNsummary.distObsSum, by=0)) # 0 small islands sig MDNS 
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigLeafNsummary.distObsSum, by=0)) # 3/47 med islands sig MDNS 0.06382979
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigLeafNsummary.distObsSum, by=0)) # 0 large isl sig MDNS  
 
-nrow(merge(metadata[which(metadata$Size.cat == "sm"),], LeafNsummaryMPD, by=0)) # 0 small islands sig MPD 
-nrow(merge(metadata[which(metadata$Size.cat == "med"),], LeafNsummaryMPD, by=0)) # 0 med islands sig MPD 
-nrow(merge(metadata[which(metadata$Size.cat == "lg"),], LeafNsummaryMPD, by=0)) # 2/47 large isl sig MPD 0.04255319
+nrow(merge(metadata[which(metadata$Size.cat == "sm"),], LeafNsummaryMDNS, by=0)) # 0 small islands sig MDNS 
+nrow(merge(metadata[which(metadata$Size.cat == "med"),], LeafNsummaryMDNS, by=0)) # 0 med islands sig MDNS 
+nrow(merge(metadata[which(metadata$Size.cat == "lg"),], LeafNsummaryMDNS, by=0)) # 2/47 large isl sig MDNS 0.04255319
 
 
 ##################### TOTAL OBSERVED SUMMARY BAR PLOTS #########################
-sigDNNS = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "MNNPD", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.MNNPD.p.value"] <= 0.05, 1,0))
-sigMPD = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "MPD", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.MPD.p.value"] <= 0.05, 1,0))
+sigDNNS = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "DNNS", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.DNNS.p.value"] <= 0.05, 1,0))
+sigMDNS = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), "Metric"=rep(x = "MDNS", times = nrow(phyloObsSum)), "Significance"=ifelse(phyloObsSum[,"t.MDNS.p.value"] <= 0.05, 1,0))
 
 sigSeed = cbind("Island"=seedmass[,1], "Size.cat"=as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "Seed Mass", times = nrow(seedmass)), "Significance"=ifelse(seedmass[,"p.value.seedMass"] <= 0.05, 1,0))
-sigMNNFDSeed = cbind("Island"=seedmass[,1], "Size.cat"=as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "MNNFD Seed Mass", times = nrow(seedmass)), "Significance"=ifelse(seedmass[,"t.MNNFD.p.value"] <= 0.05, 1,0))
+sigNNFDSeed = cbind("Island"=seedmass[,1], "Size.cat"=as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "NNFD Seed Mass", times = nrow(seedmass)), "Significance"=ifelse(seedmass[,"t.NNFD.p.value"] <= 0.05, 1,0))
 sigMFDSeed = cbind("Island"=seedmass[,1], "Size.cat"=as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "MFD Seed Mass", times = nrow(seedmass)), "Significance"=ifelse(seedmass[,"t.MFD.p.value"] <= 0.05, 1,0))
 
 sigHeight = cbind("Island"=height[,1], "Size.cat"=as.character(height[,"Size.cat"]), "Metric"=rep(x = "Height", times = nrow(height)), "Significance"=ifelse(height[,"p.value.maxHeight"] <= 0.05, 1,0))
-sigMNNFDheight = cbind("Island"=height[,1], "Size.cat"=as.character(height[,"Size.cat"]), "Metric"=rep(x = "MNNFD Height", times = nrow(height)), "Significance"=ifelse(height[,"t.MNNFD.p.value"] <= 0.05, 1,0))
+sigNNFDheight = cbind("Island"=height[,1], "Size.cat"=as.character(height[,"Size.cat"]), "Metric"=rep(x = "NNFD Height", times = nrow(height)), "Significance"=ifelse(height[,"t.NNFD.p.value"] <= 0.05, 1,0))
 sigMFDheight = cbind("Island"=height[,1], "Size.cat"=as.character(height[,"Size.cat"]), "Metric"=rep(x = "MFD Height", times = nrow(height)), "Significance"=ifelse(height[,"t.MFD.p.value"] <= 0.05, 1,0))
 
 sigSLA = cbind("Island"=SLA[,1], "Size.cat"=as.character(SLA[,"Size.cat"]), "Metric"=rep(x = "SLA", times = nrow(SLA)), "Significance"=ifelse(SLA[,"p.value.sla"] <= 0.05, 1,0))
-sigMNNFDSLA = cbind("Island"=SLA[,1], "Size.cat"=as.character(SLA[,"Size.cat"]), "Metric"=rep(x = "MNNFD SLA", times = nrow(SLA)), "Significance"=ifelse(SLA[,"t.MNNFD.p.value"] <= 0.05, 1,0))
+sigNNFDSLA = cbind("Island"=SLA[,1], "Size.cat"=as.character(SLA[,"Size.cat"]), "Metric"=rep(x = "NNFD SLA", times = nrow(SLA)), "Significance"=ifelse(SLA[,"t.NNFD.p.value"] <= 0.05, 1,0))
 sigMFDSLA = cbind("Island"=SLA[,1], "Size.cat"=as.character(SLA[,"Size.cat"]), "Metric"=rep(x = "MFD SLA", times = nrow(SLA)), "Significance"=ifelse(SLA[,"t.MFD.p.value"] <= 0.05, 1,0))
 
 sigleaflet = cbind("Island"=leaflet[,1], "Size.cat"=as.character(leaflet[,"Size.cat"]), "Metric"=rep(x = "Leaf Size", times = nrow(leaflet)), "Significance"=ifelse(leaflet[,"p.value.leafletSize"] <= 0.05, 1,0))
-sigMNNFDleaflet = cbind("Island"=leaflet[,1], "Size.cat"=as.character(leaflet[,"Size.cat"]), "Metric"=rep(x = "MNNFD Leaf Size", times = nrow(leaflet)), "Significance"=ifelse(leaflet[,"t.MNNFD.p.value"] <= 0.05, 1,0))
+sigNNFDleaflet = cbind("Island"=leaflet[,1], "Size.cat"=as.character(leaflet[,"Size.cat"]), "Metric"=rep(x = "NNFD Leaf Size", times = nrow(leaflet)), "Significance"=ifelse(leaflet[,"t.NNFD.p.value"] <= 0.05, 1,0))
 sigMFDleaflet = cbind("Island"=leaflet[,1], "Size.cat"=as.character(leaflet[,"Size.cat"]), "Metric"=rep(x = "MFD Leaf Size", times = nrow(leaflet)), "Significance"=ifelse(leaflet[,"t.MFD.p.value"] <= 0.05, 1,0))
 
 sigleafN = cbind("IleafNnd"=leafN[,1], "Size.cat"=as.character(leafN[,"Size.cat"]), "Metric"=rep(x = "Leaf N", times = nrow(leafN)), "Significance"=ifelse(leafN[,"p.value.leafN"] <= 0.05, 1,0))
-sigMNNFDleafN = cbind("IleafNnd"=leafN[,1], "Size.cat"=as.character(leafN[,"Size.cat"]), "Metric"=rep(x = "MNNFD Leaf N", times = nrow(leafN)), "Significance"=ifelse(leafN[,"t.MNNFD.p.value"] <= 0.05, 1,0))
+sigNNFDleafN = cbind("IleafNnd"=leafN[,1], "Size.cat"=as.character(leafN[,"Size.cat"]), "Metric"=rep(x = "NNFD Leaf N", times = nrow(leafN)), "Significance"=ifelse(leafN[,"t.NNFD.p.value"] <= 0.05, 1,0))
 sigMFDleafN = cbind("IleafNnd"=leafN[,1], "Size.cat"=as.character(leafN[,"Size.cat"]), "Metric"=rep(x = "MFD Leaf N", times = nrow(leafN)), "Significance"=ifelse(leafN[,"t.MFD.p.value"] <= 0.05, 1,0))
 
-obs <- as.data.frame(rbind(sigSeed, sigMNNFDSeed, sigMFDSeed, 
-                           sigHeight, sigMNNFDheight, sigMFDheight,
-                           sigSLA, sigMNNFDSLA, sigMFDSLA,
-                           sigleaflet, sigMNNFDleaflet, sigMFDleaflet,
-                          sigleafN, sigMNNFDleafN, sigMFDleafN))
+obs <- as.data.frame(rbind(sigSeed, sigNNFDSeed, sigMFDSeed, 
+                           sigHeight, sigNNFDheight, sigMFDheight,
+                           sigSLA, sigNNFDSLA, sigMFDSLA,
+                           sigleaflet, sigNNFDleaflet, sigMFDleaflet,
+                          sigleafN, sigNNFDleafN, sigMFDleafN))
 
-neworder <- c('Seed Mass', 'MNNFD Seed Mass', 'MFD Seed Mass', 
-              'Height', 'MNNFD Height', 'MFD Height',
-              'SLA', 'MNNFD SLA', 'MFD SLA',
-              'Leaf Size', 'MNNFD Leaf Size', 'MFD Leaf Size',
-              'Leaf N', 'MNNFD Leaf N', 'MFD Leaf N')
+neworder <- c('Seed Mass', 'NNFD Seed Mass', 'MFD Seed Mass', 
+              'Height', 'NNFD Height', 'MFD Height',
+              'SLA', 'NNFD SLA', 'MFD SLA',
+              'Leaf Size', 'NNFD Leaf Size', 'MFD Leaf Size',
+              'Leaf N', 'NNFD Leaf N', 'MFD Leaf N')
 
 obs2 <- arrange(transform(obs, Metric=factor(Metric,levels=neworder)),Metric)
 

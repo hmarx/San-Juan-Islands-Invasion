@@ -2,8 +2,8 @@
 ###### 6 Nov 2014 ########
 ###### Hannah E. Marx #######
 
-### For analysis of phylogenetic and functional distinctivness to nearest native (MNNPD/MNNFD) 
-###### and mean native community (MPD/MFD)
+### For analysis of phylogenetic and functional distinctivness to nearest native (DNNS/NNFD) 
+###### and mean native community (MDNS/MFD)
 ### Also, standardized effect size compared to null model randomizing invasive species occurences
 ### Used for Marx et al. 2015
 
@@ -15,8 +15,8 @@
 # row = species names (must match format of names in phylogeny); columns = trait value
 
 ##################################### PHYLOGENETIC DISTINCTIVENESS ##################################### 
-############################ Mean Nearest Native Phylogenetic Distance (MNNPD)
-############################ Mean Phylogenetic Distance to Native Community (MPD)
+############################ Mean Nearest Native Phylogenetic Distance (DNNS)
+############################ Mean Phylogenetic Distance to Native Community (MDNS)
 ## phy = phylogenetic tree of species pool
 ## communinty = occurence data for species (rownames match phy), in each community (colnames): invasive species = i, native spcecies = n, absence = 0 
 ## col = the community to calcualte metrics for
@@ -108,46 +108,46 @@ phyloDistinct  <- function(phy, community, col){
 
 #### Summarize phyloDistinct output
 # output = output from phyloDistinct()
-summary.MNNPD.MPD<- function(output){
+summary.DNNS.MDNS<- function(output){
   summ <- data.frame()
   if (nrow(output)==1){
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA")
-    rownames(summ) <- c("meanMNNPDnatives", "meanMNNPDinvasives", "n.natives", "n.invasives", "t.MNNPD.p.value", "t.MNNPD.conf.int.Lo","t.MNNPD.conf.int.Hi", 
-                        "meanMPDnat_nat", "meanMPDinv_nat", "t.MPD.p.value", "t.MPD.conf.int.Lo","t.MPD.conf.int.Hi")
+    rownames(summ) <- c("meanDNNSnatives", "meanDNNSinvasives", "n.natives", "n.invasives", "t.DNNS.p.value", "t.DNNS.conf.int.Lo","t.DNNS.conf.int.Hi", 
+                        "meanMDNSnat_nat", "meanMDNSinv_nat", "t.MDNS.p.value", "t.MDNS.conf.int.Lo","t.MDNS.conf.int.Hi")
     return(summ)
   }
-  MNNPDn <- output[output["Species.Status"]=="n",] # get all native
-  MNNPDi <- output[output["Species.Status"]=="i",] # get all native
+  DNNSn <- output[output["Species.Status"]=="n",] # get all native
+  DNNSi <- output[output["Species.Status"]=="i",] # get all native
   
-  if (nrow(MNNPDn) > 1 && nrow(MNNPDi) > 1) {
-    meanMNNPDn <- mean(as.numeric(as.character(MNNPDn[,"MinDist.Nearest.native"])))  
-    meanMNNPDi <- mean(as.numeric(as.character(MNNPDi[,"MinDist.Nearest.native"]))) 
-    MPDnn <- mean(as.numeric(as.character(MNNPDn[,"MeanDist.NativeCommunity"])))
-    MPDin <- mean(as.numeric(as.character(MNNPDi[,"MeanDist.NativeCommunity"])))
+  if (nrow(DNNSn) > 1 && nrow(DNNSi) > 1) {
+    meanDNNSn <- mean(as.numeric(as.character(DNNSn[,"MinDist.Nearest.native"])))  
+    meanDNNSi <- mean(as.numeric(as.character(DNNSi[,"MinDist.Nearest.native"]))) 
+    MDNSnn <- mean(as.numeric(as.character(DNNSn[,"MeanDist.NativeCommunity"])))
+    MDNSin <- mean(as.numeric(as.character(DNNSi[,"MeanDist.NativeCommunity"])))
     
-    t.MNNPD <- t.test(as.numeric(as.character(MNNPDn[,"MinDist.Nearest.native"])), as.numeric(as.character(MNNPDi[,"MinDist.Nearest.native"])), paired=F)
-    t.MPD <- t.test(as.numeric(as.character(MNNPDn[,"MeanDist.NativeCommunity"])), as.numeric(as.character(MNNPDi[,"MeanDist.NativeCommunity"])), paired=F)
+    t.DNNS <- t.test(as.numeric(as.character(DNNSn[,"MinDist.Nearest.native"])), as.numeric(as.character(DNNSi[,"MinDist.Nearest.native"])), paired=F)
+    t.MDNS <- t.test(as.numeric(as.character(DNNSn[,"MeanDist.NativeCommunity"])), as.numeric(as.character(DNNSi[,"MeanDist.NativeCommunity"])), paired=F)
     
-    summ <- rbind(meanMNNPDn, meanMNNPDi, nrow(MNNPDn), nrow(MNNPDi), t.MNNPD$p.value, t.MNNPD$conf.int[1], t.MNNPD$conf.int[2], MPDnn, MPDin, t.MPD$p.value, t.MPD$conf.int[1], t.MPD$conf.int[2])
+    summ <- rbind(meanDNNSn, meanDNNSi, nrow(DNNSn), nrow(DNNSi), t.DNNS$p.value, t.DNNS$conf.int[1], t.DNNS$conf.int[2], MDNSnn, MDNSin, t.MDNS$p.value, t.MDNS$conf.int[1], t.MDNS$conf.int[2])
     
-  } else if (nrow(MNNPDn) > 1 && nrow(MNNPDi) == 1) {
-    meanMNNPDn <- mean(as.numeric(as.character(MNNPDn[,"MinDist.Nearest.native"])))  
-    meanMNNPDi <- mean(as.numeric(as.character(MNNPDi[,"MinDist.Nearest.native"]))) 
-    MPDnn <- mean(as.numeric(as.character(MNNPDn[,"MeanDist.NativeCommunity"])))
-    MPDin <- mean(as.numeric(as.character(MNNPDi[,"MeanDist.NativeCommunity"])))
+  } else if (nrow(DNNSn) > 1 && nrow(DNNSi) == 1) {
+    meanDNNSn <- mean(as.numeric(as.character(DNNSn[,"MinDist.Nearest.native"])))  
+    meanDNNSi <- mean(as.numeric(as.character(DNNSi[,"MinDist.Nearest.native"]))) 
+    MDNSnn <- mean(as.numeric(as.character(DNNSn[,"MeanDist.NativeCommunity"])))
+    MDNSin <- mean(as.numeric(as.character(DNNSi[,"MeanDist.NativeCommunity"])))
     
-    t.MNNPD <- "NA"
-    t.MPD <- "NA"
+    t.DNNS <- "NA"
+    t.MDNS <- "NA"
     
-    summ <- rbind(meanMNNPDn, meanMNNPDi, nrow(MNNPDn), nrow(MNNPDi), "NA", "NA", "NA", MPDnn, MPDin, "NA", "NA", "NA")
+    summ <- rbind(meanDNNSn, meanDNNSi, nrow(DNNSn), nrow(DNNSi), "NA", "NA", "NA", MDNSnn, MDNSin, "NA", "NA", "NA")
     
   } else {
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA")
     
   }
   
-  rownames(summ) <- c("meanMNNPDnatives", "meanMNNPDinvasives", "n.natives", "n.invasives", "t.MNNPD.p.value", "t.MNNPD.conf.int.Lo","t.MNNPD.conf.int.Hi", 
-                      "meanMPDnat_nat", "meanMPDinv_nat", "t.MPD.p.value", "t.MPD.conf.int.Lo","t.MPD.conf.int.Hi")
+  rownames(summ) <- c("meanDNNSnatives", "meanDNNSinvasives", "n.natives", "n.invasives", "t.DNNS.p.value", "t.DNNS.conf.int.Lo","t.DNNS.conf.int.Hi", 
+                      "meanMDNSnat_nat", "meanMDNSinv_nat", "t.MDNS.p.value", "t.MDNS.conf.int.Lo","t.MDNS.conf.int.Hi")
   return(summ)
 }
 
@@ -365,10 +365,10 @@ melt.trait.to.meta <- function(list, metadata, meta.data.column.name, plot.title
   
 }
 
-############################  Differnece in trait values between 1) each species and nearest Neighbor (MNNFD)
+############################  Differnece in trait values between 1) each species and nearest Neighbor (NNFD)
 ############################                                     2) each species and the native community (MFD)
 
-#### For one trait, calculates Nearest Neighbor Trait Differences (MNNFD), 
+#### For one trait, calculates Nearest Neighbor Trait Differences (NNFD), 
 ## and functional diffference for each species to mean trait value of native (MFD.n) and invasive commmunity (MFD.i)
 # output = results from phyloDistinct for one community
 # traits = results from pruntTrait
@@ -379,84 +379,84 @@ functionDistinct <- function(output, traits, traitname){
   if (nrow(output)==1){
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
-    colnames(diff.data) <-c("Species.Status", paste("MNNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
+    colnames(diff.data) <-c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
     return(diff.data)#(print("has only one species; go fuck yourself"))
   }
   if (nrow(as.data.frame(output[output["Species.Status"]=="n",]))==1){
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
-    colnames(diff.data) <- c("Species.Status", paste("MNNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
+    colnames(diff.data) <- c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
     return(diff.data)#(print("has only one native species; go fuck yourself"))
   }
   if (nrow(as.data.frame(output[output["Species.Status"]=="i",]))==0){
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
-    colnames(diff.data) <- c("Species.Status", paste("MNNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
+    colnames(diff.data) <- c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
     return(diff.data)#(print("has only one native species; go fuck yourself"))
   }
-  output <- as.data.frame(output) ### MNNPD results; have info about nearest native species
+  output <- as.data.frame(output) ### DNNS results; have info about nearest native species
   
   # merge Communty and trait data for one trait: Row.names, Species.Status,  Nearest.native, leafletSize
-  comMNNPDTrait <- merge(output[c("Species.Status","Nearest.native")], na.omit(traits[traitname]), by=0) #merge MNNPD data and trait data; remove NA
-  if (nrow(comMNNPDTrait) == 0) {
+  comDNNSTrait <- merge(output[c("Species.Status","Nearest.native")], na.omit(traits[traitname]), by=0) #merge DNNS data and trait data; remove NA
+  if (nrow(comDNNSTrait) == 0) {
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
-    colnames(diff.data) <- c("Species.Status", paste("MNNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
+    colnames(diff.data) <- c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
     return(diff.data)#(print("has only one native species; go fuck yourself"))
   }
   
-  dim(comMNNPDTrait)
-  i.comMNNPDTrait <- (comMNNPDTrait)[which(comMNNPDTrait[2] == "i"),] ## just invasive species with trait on island
-  n.comMNNPDTrait <- (comMNNPDTrait)[which(comMNNPDTrait[2] == "n"),] ## native species with trait on island
+  dim(comDNNSTrait)
+  i.comDNNSTrait <- (comDNNSTrait)[which(comDNNSTrait[2] == "i"),] ## just invasive species with trait on island
+  n.comDNNSTrait <- (comDNNSTrait)[which(comDNNSTrait[2] == "n"),] ## native species with trait on island
   
   # create distance matrix of trait values == absolute value of difference in trait values between each species 
-  trait.dist <- as.matrix(dist(comMNNPDTrait[4], upper=T))
-  rownames(trait.dist) <- comMNNPDTrait$Row.names
-  colnames(trait.dist) <- comMNNPDTrait$Row.names
+  trait.dist <- as.matrix(dist(comDNNSTrait[4], upper=T))
+  rownames(trait.dist) <- comDNNSTrait$Row.names
+  colnames(trait.dist) <- comDNNSTrait$Row.names
   dim(trait.dist)
   head(trait.dist)
   
   for (i in 1:nrow(trait.dist)){
-    i.traits.new <- i.comMNNPDTrait[i.comMNNPDTrait$Row.names != comMNNPDTrait[i,"Row.names"], "Row.names"] # remove self comparison for invasives
-    n.traits.new <- n.comMNNPDTrait[n.comMNNPDTrait$Row.names != comMNNPDTrait[i,"Row.names"], "Row.names"]# remove self comparison for natives
-    ifelse(colnames(trait.dist)[i] %in% i.comMNNPDTrait$Row.names, ss <- "i", ss <- "n") #lable taxa as Native/introduced
+    i.traits.new <- i.comDNNSTrait[i.comDNNSTrait$Row.names != comDNNSTrait[i,"Row.names"], "Row.names"] # remove self comparison for invasives
+    n.traits.new <- n.comDNNSTrait[n.comDNNSTrait$Row.names != comDNNSTrait[i,"Row.names"], "Row.names"]# remove self comparison for natives
+    ifelse(colnames(trait.dist)[i] %in% i.comDNNSTrait$Row.names, ss <- "i", ss <- "n") #lable taxa as Native/introduced
     
-    sp.name <- comMNNPDTrait[i,"Row.names"]  #name of i
+    sp.name <- comDNNSTrait[i,"Row.names"]  #name of i
     
     mfd.i <- mean(trait.dist[which(rownames(trait.dist) %in% i.traits.new),i]) # mean (differnece in traits between i and each invasive species in community)
     mfd.n <- mean(trait.dist[which(rownames(trait.dist) %in% n.traits.new),i]) # mean (differnece in traits between i and each native species in community)
     
-    near.n <- strsplit(as.character(comMNNPDTrait[i,"Nearest.native"]), split=".", fixed=TRUE)[[1]] #get name of nearest native
-    #near.i <- strsplit(as.character(comMNNPDTrait[i,"Nearest.native"]), split=".", fixed=TRUE)[[1]] #get name of nearest native
+    near.n <- strsplit(as.character(comDNNSTrait[i,"Nearest.native"]), split=".", fixed=TRUE)[[1]] #get name of nearest native
+    #near.i <- strsplit(as.character(comDNNSTrait[i,"Nearest.native"]), split=".", fixed=TRUE)[[1]] #get name of nearest native
     
     ## Calculate differnece in traits between species and nearest native; if near.n > 1, take median of trait  
     if (length(near.n) > 1){
       #print(c(near.n, i))
       tmp <- data.frame()
       for (k in 1:length(near.n)){
-        MNNFD.tmp <- comMNNPDTrait[which(comMNNPDTrait$Row.names==near.n[k]), traitname] # trait value nearest native
-        tmp <- c(tmp, MNNFD.tmp)
+        NNFD.tmp <- comDNNSTrait[which(comDNNSTrait$Row.names==near.n[k]), traitname] # trait value nearest native
+        tmp <- c(tmp, NNFD.tmp)
       }
       tmp <- as.numeric(tmp, na.rm=T)
-      MNNFD <- comMNNPDTrait[i, traitname] - median(tmp, na.rm=T) # 0.06399687
-      if (length(MNNFD) == 0) {
-        MNNFD <- "NA"
-        dat <- cbind(ss, MNNFD, mfd.n, mfd.i)
+      NNFD <- comDNNSTrait[i, traitname] - median(tmp, na.rm=T) # 0.06399687
+      if (length(NNFD) == 0) {
+        NNFD <- "NA"
+        dat <- cbind(ss, NNFD, mfd.n, mfd.i)
         rownames(dat) <- sp.name
       } else {
-        dat <- cbind(ss, MNNFD, mfd.n, mfd.i)
+        dat <- cbind(ss, NNFD, mfd.n, mfd.i)
         rownames(dat) <- sp.name
       }  
     } else{
-      MNNFD <- comMNNPDTrait[i, traitname] -  comMNNPDTrait[which(comMNNPDTrait$Row.names==near.n), traitname] # trait value for i - nearest.native
+      NNFD <- comDNNSTrait[i, traitname] -  comDNNSTrait[which(comDNNSTrait$Row.names==near.n), traitname] # trait value for i - nearest.native
       #trait.dist[i, (colnames(trait.dist) ==near.n)] # the same thing
       
-      if (length(MNNFD) == 0) {
-        MNNFD <- "NA"
-        dat <- cbind(ss, MNNFD, mfd.n, mfd.i)
+      if (length(NNFD) == 0) {
+        NNFD <- "NA"
+        dat <- cbind(ss, NNFD, mfd.n, mfd.i)
         rownames(dat) <- sp.name
       } else {
-        dat <- cbind(ss, MNNFD, mfd.n, mfd.i)
+        dat <- cbind(ss, NNFD, mfd.n, mfd.i)
         rownames(dat) <- sp.name
         
       }
@@ -465,21 +465,21 @@ functionDistinct <- function(output, traits, traitname){
     
     diff.data <- rbind(diff.data, dat)
   }
-  rownames(diff.data) <- comMNNPDTrait$Row.names
-  colnames(diff.data) <- c("Species.Status", paste("MNNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
+  rownames(diff.data) <- comDNNSTrait$Row.names
+  colnames(diff.data) <- c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
   diff.data
 }
 
 #### Plot functional distinctiveness of one trait for one island
-# MNNFDoutput = output from functionDistinct() for one trait
+# NNFDoutput = output from functionDistinct() for one trait
 # islandname = name of island
 # traitname = name of trait
-# metric = which metric (a column number from MNNFDoutput)
-plot.functionDistinct.Obs <- function(MNNFDoutput, islandname, traitname, metric){
-  p <- qplot(data=MNNFDoutput, x=factor(as.character(Species.Status)), y=as.numeric(as.character(MNNFDoutput[,metric])))
+# metric = which metric (a column number from NNFDoutput)
+plot.functionDistinct.Obs <- function(NNFDoutput, islandname, traitname, metric){
+  p <- qplot(data=NNFDoutput, x=factor(as.character(Species.Status)), y=as.numeric(as.character(NNFDoutput[,metric])))
   p <- p + geom_boxplot(aes(fill=factor(as.character(Species.Status))), width = 1)
   p <- p + scale_x_discrete(" ", breaks=seq(0, 80, 10)) 
-  p <- p + ylab("Log MNNFD (species on island)") 
+  p <- p + ylab("Log NNFD (species on island)") 
   p <- p + theme_bw() 
   p <- p + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"="Introduced", "n" ="Native"))
   p <- p + guides(fill=guide_legend(title=""))
@@ -489,14 +489,14 @@ plot.functionDistinct.Obs <- function(MNNFDoutput, islandname, traitname, metric
 }
 
 #### Plot distinctiveness of one trait, across multiple islands, by increasing island size 
-## appends metadata to list all islands MNNFDoutput, melts into dataframe, and output box plot
-#### Specific for Mean Functional Distance Differences (MNNFD)
+## appends metadata to list all islands NNFDoutput, melts into dataframe, and output box plot
+#### Specific for Mean Functional Distance Differences (NNFD)
 # list = results from functionDistinct() for one community, each list element is one community
 # metadata = metadata file (island names as rownames)
 # meta.data.column.name = the column name of metadata to append to each element in list
 # plot.title = main plot title 
 # # y.axis.title = y axis title
-melt.MNNFD.to.meta <- function(list, metadata, meta.data.column.name, plot.title, y.axis.title){
+melt.NNFD.to.meta <- function(list, metadata, meta.data.column.name, plot.title, y.axis.title){
   meta.list <- list()
   for (i in 1:length(list)){ 
     tmp <- metadata[as.character(names(list[i])), meta.data.column.name]
@@ -563,14 +563,14 @@ melt.MFD.to.meta <- function(list, metadata, meta.data.column.name, plot.title, 
   
 }
 
-#### Summarizes MNNFD, MFD across each community for each trait
+#### Summarizes NNFD, MFD across each community for each trait
 #outputTraitDistance = output from functionDistinct() for each trait (list of each community)
 functionObsSum <- function(outputTraitDistance){
   outputTraitDistance.naomit <- (outputTraitDistance)[which(!outputTraitDistance[2] == "NA"), ]
   summ <- data.frame()
   if (nrow(outputTraitDistance.naomit)==0){
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA")
-    rownames(summ) <- c("meanMNNFDnatives", "meanMNNFDinvasives", "n.natives", "n.invasives", "t.MNNFD.p.value", "t.MNNFD.conf.int.Lo","t.MNNFD.conf.int.Hi", 
+    rownames(summ) <- c("meanNNFDnatives", "meanNNFDinvasives", "n.natives", "n.invasives", "t.NNFD.p.value", "t.NNFD.conf.int.Lo","t.NNFD.conf.int.Hi", 
                         "meanMFDnat_nat", "meanMFDinv_nat", "t.MFD.p.value", "t.MFD.conf.int.Lo","t.MFD.conf.int.Hi")  #colnames(summ) <- names(traits[col])
     return(summ)
   }
@@ -578,42 +578,42 @@ functionObsSum <- function(outputTraitDistance){
   invasives <- outputTraitDistance.naomit[outputTraitDistance.naomit["Species.Status"]=="i",] # get all native
   
   if (nrow(natives) > 1 && nrow(invasives) > 1){
-    meanMNNFDn <- mean(as.numeric(as.character(natives[,2])))
+    meanNNFDn <- mean(as.numeric(as.character(natives[,2])))
     meanMFDn <- mean(as.numeric(as.character(natives[,3])))
     
-    meanMNNFDi <- mean(as.numeric(as.character(invasives[,2])))
+    meanNNFDi <- mean(as.numeric(as.character(invasives[,2])))
     meanMFDi <- mean(as.numeric(as.character(invasives[,3])))
     
-    t.MNNFD <- t.test(as.numeric(as.character(natives[,2])), as.numeric(as.character(invasives[,2])), paired=F)
+    t.NNFD <- t.test(as.numeric(as.character(natives[,2])), as.numeric(as.character(invasives[,2])), paired=F)
     t.MFD <- t.test(as.numeric(as.character(natives[,3])), as.numeric(as.character(invasives[,3])), paired=F)
     
-    summ <- rbind(meanMNNFDn, meanMNNFDi, nrow(natives), nrow(invasives), t.MNNFD$p.value, t.MNNFD$conf.int[1], t.MNNFD$conf.int[2], meanMFDn, meanMFDi, t.MFD$p.value, t.MFD$conf.int[1], t.MFD$conf.int[2])
+    summ <- rbind(meanNNFDn, meanNNFDi, nrow(natives), nrow(invasives), t.NNFD$p.value, t.NNFD$conf.int[1], t.NNFD$conf.int[2], meanMFDn, meanMFDi, t.MFD$p.value, t.MFD$conf.int[1], t.MFD$conf.int[2])
     
   } else if (nrow(natives) > 1 && nrow(invasives) == 1){
-    meanMNNFDn <- mean(as.numeric(as.character(natives[,2])))
+    meanNNFDn <- mean(as.numeric(as.character(natives[,2])))
     meanMFDn <- mean(as.numeric(as.character(natives[,3])))
-    meanMNNFDi <- mean(as.numeric(as.character(invasives[,2])))
+    meanNNFDi <- mean(as.numeric(as.character(invasives[,2])))
     meanMFDi <- mean(as.numeric(as.character(invasives[,3])))
     
-    t.MNNFD <- "NA"
+    t.NNFD <- "NA"
     t.MFD <- "NA"
     
-    summ <- rbind(meanMNNFDn, meanMNNFDi, nrow(natives), nrow(invasives), "NA", "NA", "NA", meanMFDn, meanMFDi, "NA", "NA", "NA")
+    summ <- rbind(meanNNFDn, meanNNFDi, nrow(natives), nrow(invasives), "NA", "NA", "NA", meanMFDn, meanMFDi, "NA", "NA", "NA")
     
   } else {
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA")
     
   }
   
-  rownames(summ) <- c("meanMNNFDnatives", "meanMNNFDinvasives", "n.natives", "n.invasives", "t.MNNFD.p.value", "t.MNNFD.conf.int.Lo","t.MNNFD.conf.int.Hi", 
+  rownames(summ) <- c("meanNNFDnatives", "meanNNFDinvasives", "n.natives", "n.invasives", "t.NNFD.p.value", "t.NNFD.conf.int.Lo","t.NNFD.conf.int.Hi", 
                       "meanMFDnat_nat", "meanMFDinv_nat", "t.MFD.p.value", "t.MFD.conf.int.Lo","t.MFD.conf.int.Hi")  #colnames(summ) <- names(traits[col])
   return(summ)
 }
 
 
 ########## Randomize occurence matrix of invasive speices to create a null distributon of invaded communities
-## Random = invasive presence across community (&  phylo. distance of invasive communtiy, MNNPD invasives)
-## Constant = native community matrix (& phylodistances of native community, MNNPD/MNNFD natives, MPD/ MFD native-native)
+## Random = invasive presence across community (&  phylo. distance of invasive communtiy, DNNS invasives)
+## Constant = native community matrix (& phylodistances of native community, DNNS/NNFD natives, MDNS/ MFD native-native)
 
 #For the randomizations:
 #- for each column in community matrix, radomly shuffle presence of invasive, keeping the observed proportion the same (native species remain unchanged)
@@ -666,13 +666,13 @@ randomizeCommunity <- function(phy, com, traits, N){
 }
 
 
-##### Simulate MNNPD, MPD  #####################
+##### Simulate DNNS, MDNS  #####################
 # phy = community phylogeny
 # com = observed community matrix
 # island = name of community (island); = colnames in com 
 # traits = trait dataset; rownames = species names, colnames[,1] = "Status"
 # N = number of communities to simulate 
-sim.meanMNNPD.MPD <- function(phy, com, island, traits, N){
+sim.meanDNNS.MDNS <- function(phy, com, island, traits, N){
   tmp <- treedata(phy, com) 
   new.phy <- tmp$phy ## prune the tree to include just species in larger species pool to draw from
   com.data <- as.data.frame(tmp$data)   ## subset the community data, to make sure in the right order
@@ -687,13 +687,13 @@ sim.meanMNNPD.MPD <- function(phy, com, island, traits, N){
     comm.island <- data.frame(lapply(rand.inv.com[[i]], as.character), stringsAsFactors=F)
     #length(which(comm.island[1] == "n"))
     rownames(comm.island) <- rownames(rand.inv.com[[i]])
-    All.Sim.com.Dist <- phyloDistinct(phy=phy, community=comm.island, col=(names(comm.island)))#apply MNNPD funciton across all communities ...find.NN
-    All.Sim.com.DistsummaryMNNPD <- summary.MNNPD.MPD(All.Sim.com.Dist) #apply summary funciton across all communities...summary.MNNPD
+    All.Sim.com.Dist <- phyloDistinct(phy=phy, community=comm.island, col=(names(comm.island)))#apply DNNS funciton across all communities ...find.NN
+    All.Sim.com.DistsummaryDNNS <- summary.DNNS.MDNS(All.Sim.com.Dist) #apply summary funciton across all communities...summary.DNNS
     
-    tmp <- c(All.Sim.com.DistsummaryMNNPD["n.natives",], All.Sim.com.DistsummaryMNNPD["n.invasives",], All.Sim.com.DistsummaryMNNPD["meanMNNPDinvasives",], All.Sim.com.DistsummaryMNNPD["meanMNNPDnatives",], All.Sim.com.DistsummaryMNNPD["meanMPDinv_nat", ], All.Sim.com.DistsummaryMNNPD["meanMPDnat_nat", ])
+    tmp <- c(All.Sim.com.DistsummaryDNNS["n.natives",], All.Sim.com.DistsummaryDNNS["n.invasives",], All.Sim.com.DistsummaryDNNS["meanDNNSinvasives",], All.Sim.com.DistsummaryDNNS["meanDNNSnatives",], All.Sim.com.DistsummaryDNNS["meanMDNSinv_nat", ], All.Sim.com.DistsummaryDNNS["meanMDNSnat_nat", ])
     sim.mean <- rbind(sim.mean, tmp)
   }
-  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanMNNPDinvasives", "meanMNNPDnatives", "meanMPDinv_nat", "meanMPDnat_nat")
+  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanDNNSinvasives", "meanDNNSnatives", "meanMDNSinv_nat", "meanMDNSnat_nat")
   return(sim.mean)
   
 }
@@ -753,7 +753,7 @@ commSummary  <- function(phy, community, col){
 # phy = community phylogeny
 # com = observed community matrix
 # col = island name
-# simOneIsland = output from sim.meanMNNPD.MPD() ; a list of the randomized means, each element = one community
+# simOneIsland = output from sim.meanDNNS.MDNS() ; a list of the randomized means, each element = one community
 # N = number of simulations done in simOneIsland()
 ses.PhyloDist <- function(phy, com, island, simOneIsland, N){
   ## Summary of community
@@ -764,106 +764,106 @@ ses.PhyloDist <- function(phy, com, island, simOneIsland, N){
   if (output[1,"MinDist.Nearest.native"] == "NA"){
     p <- as.data.frame(cbind(island, "has only one species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA"))
     rownames(p) <- island
-    colnames(p) <- c("island", "status", "ntax", "MNNPD.obs", "MNNPD.rand.mean", "MNNPD.rand.sd", "MNNPD.obs.rankLow", "MNNPD.obs.p.Low", "MNNPD.obs.rankHi", "MNNPD.obs.p.Hi", "MNNPD.obs.z", "runs")
+    colnames(p) <- c("island", "status", "ntax", "DNNS.obs", "DNNS.rand.mean", "DNNS.rand.sd", "DNNS.obs.rankLow", "DNNS.obs.p.Low", "DNNS.obs.rankHi", "DNNS.obs.p.Hi", "DNNS.obs.z", "runs")
     return(p)
   }
   if (length(which(output[,"Species.Status"]=="n")) == 0){
     p <- as.data.frame(cbind(island, "has no native species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA"))
     rownames(p) <- island
-    colnames(p) <- c("island", "status", "ntax", "MNNPD.obs", "MNNPD.rand.mean", "MNNPD.rand.sd", "MNNPD.obs.rankLow", "MNNPD.obs.p.Low", "MNNPD.obs.rankHi", "MNNPD.obs.p.Hi", "MNNPD.obs.z", "runs")
+    colnames(p) <- c("island", "status", "ntax", "DNNS.obs", "DNNS.rand.mean", "DNNS.rand.sd", "DNNS.obs.rankLow", "DNNS.obs.p.Low", "DNNS.obs.rankHi", "DNNS.obs.p.Hi", "DNNS.obs.z", "runs")
     return(p)
   }
   if (length(which(output[,"Species.Status"]=="i")) == 0){
     p <- as.data.frame(cbind(island, "has no invasive species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA"))
     rownames(p) <- island
-    colnames(p) <- c("island", "status", "ntax", "MNNPD.obs", "MNNPD.rand.mean", "MNNPD.rand.sd", "MNNPD.obs.rankLow", "MNNPD.obs.p.Low", "MNNPD.obs.rankHi", "MNNPD.obs.p.Hi", "MNNPD.obs.z", "runs")
+    colnames(p) <- c("island", "status", "ntax", "DNNS.obs", "DNNS.rand.mean", "DNNS.rand.sd", "DNNS.obs.rankLow", "DNNS.obs.p.Low", "DNNS.obs.rankHi", "DNNS.obs.p.Hi", "DNNS.obs.z", "runs")
     return(p)
   }
   if (length(which(output[,"Species.Status"]=="n")) == 1){
     p <- as.data.frame(cbind(island, "has only one native species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA"))
     rownames(p) <- island
-    colnames(p) <- c("island", "status", "ntax", "MNNPD.obs", "MNNPD.rand.mean", "MNNPD.rand.sd", "MNNPD.obs.rankLow", "MNNPD.obs.p.Low", "MNNPD.obs.rankHi", "MNNPD.obs.p.Hi", "MNNPD.obs.z", "runs")
+    colnames(p) <- c("island", "status", "ntax", "DNNS.obs", "DNNS.rand.mean", "DNNS.rand.sd", "DNNS.obs.rankLow", "DNNS.obs.p.Low", "DNNS.obs.rankHi", "DNNS.obs.p.Hi", "DNNS.obs.z", "runs")
     return(p)
   }
-  # observed mean MNNPD /MPD for natives, invasives
-  outputSummary <- summary.MNNPD.MPD(output)
+  # observed mean DNNS /MDNS for natives, invasives
+  outputSummary <- summary.DNNS.MDNS(output)
   
-  # simulated mean MNNPD / MPD by randomizing invasive species in each community
-  #simOneIsland <- sim.meanMNNPD.MPD(phy, com, island, traits, N)
+  # simulated mean DNNS / MDNS by randomizing invasive species in each community
+  #simOneIsland <- sim.meanDNNS.MDNS(phy, com, island, traits, N)
   simOneIsland[island]
 
-  ##### ses.MNNPD.invasives  
+  ##### ses.DNNS.invasives  
   #mean of randomization 
-  meanMNNPDinvasives.inv.dist <- as.numeric(na.omit(simOneIsland[island][[1]][[3]])) #meanMNNPDinvasives
-  mean.sim.MNNPD.inv <- mean(meanMNNPDinvasives.inv.dist, na.rm=T)
-  median.sim.MNNPD.inv <- median(meanMNNPDinvasives.inv.dist, na.rm=T)
-  sd.sim.MNNPD.inv <- sd(meanMNNPDinvasives.inv.dist, na.rm=T)
-  se.sim.MNNPD.inv <- mean.sim.MNNPD.inv / sqrt(N)
+  meanDNNSinvasives.inv.dist <- as.numeric(na.omit(simOneIsland[island][[1]][[3]])) #meanDNNSinvasives
+  mean.sim.DNNS.inv <- mean(meanDNNSinvasives.inv.dist, na.rm=T)
+  median.sim.DNNS.inv <- median(meanDNNSinvasives.inv.dist, na.rm=T)
+  sd.sim.DNNS.inv <- sd(meanDNNSinvasives.inv.dist, na.rm=T)
+  se.sim.DNNS.inv <- mean.sim.DNNS.inv / sqrt(N)
   #observed mean
-  obs.MNNPD.i <- as.numeric(as.character(outputSummary["meanMNNPDinvasives",]))
+  obs.DNNS.i <- as.numeric(as.character(outputSummary["meanDNNSinvasives",]))
   #Z-value assuming that the null hypothesis is true 
-  z.MNNPD.inv <- (obs.MNNPD.i - mean.sim.MNNPD.inv) / sd.sim.MNNPD.inv 
+  z.DNNS.inv <- (obs.DNNS.i - mean.sim.DNNS.inv) / sd.sim.DNNS.inv 
   # quantile / ranks = frequency that oberved pattern is greater than the randomized values
-  MNNPD.inv.rankHi <- sum(meanMNNPDinvasives.inv.dist >= as.numeric(obs.MNNPD.i)) #simulated means as or more extremely lower than observed
-  MNNPD.inv.rankLo <- sum(meanMNNPDinvasives.inv.dist <= as.numeric(obs.MNNPD.i))  #simulated means as or more extremely lower than observed
+  DNNS.inv.rankHi <- sum(meanDNNSinvasives.inv.dist >= as.numeric(obs.DNNS.i)) #simulated means as or more extremely lower than observed
+  DNNS.inv.rankLo <- sum(meanDNNSinvasives.inv.dist <= as.numeric(obs.DNNS.i))  #simulated means as or more extremely lower than observed
   # p-values of observed mean vs. distribution of randomized means 
-  p.rank.MNNPD.inv <- min(MNNPD.inv.rankLo, MNNPD.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed
-  p.rank.MNNPD.inv.oneminusdiff <- 1 - (abs(MNNPD.inv.rankLo - MNNPD.inv.rankHi) / (N + 1)) #proportion of simulated means as or more extreme than observed
-  p.rank.MNNPD.inv.Lo <- 1 - (MNNPD.inv.rankLo / (N + 1)) #proportion of simulated means as or more extreme than observed
-  p.rank.MNNPD.inv.Hi <- 1 - (MNNPD.inv.rankHi / (N + 1)) #proportion of simulated means as or more extreme than observed
+  p.rank.DNNS.inv <- min(DNNS.inv.rankLo, DNNS.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed
+  p.rank.DNNS.inv.oneminusdiff <- 1 - (abs(DNNS.inv.rankLo - DNNS.inv.rankHi) / (N + 1)) #proportion of simulated means as or more extreme than observed
+  p.rank.DNNS.inv.Lo <- 1 - (DNNS.inv.rankLo / (N + 1)) #proportion of simulated means as or more extreme than observed
+  p.rank.DNNS.inv.Hi <- 1 - (DNNS.inv.rankHi / (N + 1)) #proportion of simulated means as or more extreme than observed
   # p-values of z-value
-  one.tailed.p.z.MNNPD.inv <- pnorm(-abs(z.MNNPD.inv))  #p-value of your sample is the lowest alpha level you could have used for your test and still rejected the null hypothesis given your sample. 
+  one.tailed.p.z.DNNS.inv <- pnorm(-abs(z.DNNS.inv))  #p-value of your sample is the lowest alpha level you could have used for your test and still rejected the null hypothesis given your sample. 
   
-  ##### ses.MPD.inv.nat
+  ##### ses.MDNS.inv.nat
   #mean of randomization 
-  meanMPDinvasives.inv.dist <- as.numeric(na.omit(simOneIsland[island][[1]][[5]])) #meanMPDinvasives
-  mean.sim.MPD.inv <- mean(meanMPDinvasives.inv.dist, na.rm=T)
-  median.sim.MPD.inv <- median(meanMPDinvasives.inv.dist, na.rm=T)
-  sd.sim.MPD.inv <- sd(meanMPDinvasives.inv.dist, na.rm=T)
-  se.sim.MPD.inv <- mean.sim.MPD.inv / sqrt(N)
+  meanMDNSinvasives.inv.dist <- as.numeric(na.omit(simOneIsland[island][[1]][[5]])) #meanMDNSinvasives
+  mean.sim.MDNS.inv <- mean(meanMDNSinvasives.inv.dist, na.rm=T)
+  median.sim.MDNS.inv <- median(meanMDNSinvasives.inv.dist, na.rm=T)
+  sd.sim.MDNS.inv <- sd(meanMDNSinvasives.inv.dist, na.rm=T)
+  se.sim.MDNS.inv <- mean.sim.MDNS.inv / sqrt(N)
   #observed mean
-  obs.MPD.i <- as.numeric(as.character(outputSummary["meanMPDinv_nat",]))
+  obs.MDNS.i <- as.numeric(as.character(outputSummary["meanMDNSinv_nat",]))
   #Z-value assuming that the null hypothesis is true 
-  z.MPD.inv <- (obs.MPD.i - mean.sim.MPD.inv) / sd.sim.MPD.inv 
+  z.MDNS.inv <- (obs.MDNS.i - mean.sim.MDNS.inv) / sd.sim.MDNS.inv 
   # quantile / ranks = frequency that oberved pattern is greater than the randomized values
-  MPD.inv.rankHi <- sum(meanMPDinvasives.inv.dist >= as.numeric(obs.MPD.i)) #simulated means as or more extremely lower than observed
-  MPD.inv.rankLo <- sum(meanMPDinvasives.inv.dist <= as.numeric(obs.MPD.i))  #simulated means as or more extremely lower than observed
+  MDNS.inv.rankHi <- sum(meanMDNSinvasives.inv.dist >= as.numeric(obs.MDNS.i)) #simulated means as or more extremely lower than observed
+  MDNS.inv.rankLo <- sum(meanMDNSinvasives.inv.dist <= as.numeric(obs.MDNS.i))  #simulated means as or more extremely lower than observed
   # p-values of observed mean vs. distribution of randomized means 
-  p.rank.MPD.inv <- min(MPD.inv.rankLo, MPD.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed
-  p.rank.MPD.inv.oneminusdiff <- 1 - (abs(MPD.inv.rankLo-MPD.inv.rankHi) / (N + 1)) #proportion of simulated means as or more extreme than observed
-  p.rank.MPD.inv.Lo <- 1 - (MPD.inv.rankLo / (N + 1)) #proportion of simulated means as or more extreme than observed
-  p.rank.MPD.inv.Hi <- 1 - (MPD.inv.rankHi / (N + 1)) #proportion of simulated means as or more extreme than observed
+  p.rank.MDNS.inv <- min(MDNS.inv.rankLo, MDNS.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed
+  p.rank.MDNS.inv.oneminusdiff <- 1 - (abs(MDNS.inv.rankLo-MDNS.inv.rankHi) / (N + 1)) #proportion of simulated means as or more extreme than observed
+  p.rank.MDNS.inv.Lo <- 1 - (MDNS.inv.rankLo / (N + 1)) #proportion of simulated means as or more extreme than observed
+  p.rank.MDNS.inv.Hi <- 1 - (MDNS.inv.rankHi / (N + 1)) #proportion of simulated means as or more extreme than observed
   # p-values of z-value
-  one.tailed.p.z.MPD.inv <- pnorm(-abs(z.MPD.inv))  #p-value of your sample is the lowest alpha level you could have used for your test and still rejected the null hypothesis given your sample. 
+  one.tailed.p.z.MDNS.inv <- pnorm(-abs(z.MDNS.inv))  #p-value of your sample is the lowest alpha level you could have used for your test and still rejected the null hypothesis given your sample. 
   
-  MNNPDp.i <- rbind(island, "MNNPD_inv", outputSummary["n.invasives",], obs.MNNPD.i, mean.sim.MNNPD.inv, median.sim.MNNPD.inv, sd.sim.MNNPD.inv, se.sim.MNNPD.inv,
-                   z.MNNPD.inv, MNNPD.inv.rankLo, MNNPD.inv.rankHi, 
-                   p.rank.MNNPD.inv, p.rank.MNNPD.inv.oneminusdiff, p.rank.MNNPD.inv.Lo, p.rank.MNNPD.inv.Hi,  one.tailed.p.z.MNNPD.inv,  N)
+  DNNSp.i <- rbind(island, "DNNS_inv", outputSummary["n.invasives",], obs.DNNS.i, mean.sim.DNNS.inv, median.sim.DNNS.inv, sd.sim.DNNS.inv, se.sim.DNNS.inv,
+                   z.DNNS.inv, DNNS.inv.rankLo, DNNS.inv.rankHi, 
+                   p.rank.DNNS.inv, p.rank.DNNS.inv.oneminusdiff, p.rank.DNNS.inv.Lo, p.rank.DNNS.inv.Hi,  one.tailed.p.z.DNNS.inv,  N)
   
-  MPDp.i <- rbind(island,  "MPD_inv_nat", outputSummary["n.invasives",], obs.MPD.i, mean.sim.MPD.inv, median.sim.MPD.inv, sd.sim.MPD.inv, se.sim.MPD.inv, 
-                  z.MPD.inv, MPD.inv.rankLo, MPD.inv.rankHi,
-                  p.rank.MPD.inv, p.rank.MPD.inv.oneminusdiff, p.rank.MPD.inv.Lo, p.rank.MPD.inv.Hi, one.tailed.p.z.MPD.inv,  N)
+  MDNSp.i <- rbind(island,  "MDNS_inv_nat", outputSummary["n.invasives",], obs.MDNS.i, mean.sim.MDNS.inv, median.sim.MDNS.inv, sd.sim.MDNS.inv, se.sim.MDNS.inv, 
+                  z.MDNS.inv, MDNS.inv.rankLo, MDNS.inv.rankHi,
+                  p.rank.MDNS.inv, p.rank.MDNS.inv.oneminusdiff, p.rank.MDNS.inv.Lo, p.rank.MDNS.inv.Hi, one.tailed.p.z.MDNS.inv,  N)
   
-  output.MNNPD <- cbind(MNNPDp.i, MPDp.i)
+  output.DNNS <- cbind(DNNSp.i, MDNSp.i)
   
-  rownames(output.MNNPD) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
+  rownames(output.DNNS) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
                              "obs.z", "rankLow", "rankHi", 
                              "p.value.ranks","p.value.ranks.oneminusdiff", "p.value.ranks.lo","p.value.ranks.hi", "one.tailed.p.value.z.", "runs")
 
-  colnames(output.MNNPD) <- c(paste(island), paste(island))
+  colnames(output.DNNS) <- c(paste(island), paste(island))
   
-  return(as.data.frame(output.MNNPD))
+  return(as.data.frame(output.DNNS))
   
 }
 
-#################################### Simulate MNNFD, MFD  #################################### 
+#################################### Simulate NNFD, MFD  #################################### 
 # phy = community phylogeny
 # com = observed community matrix
 # island = name of community (island); = colnames in com 
 # traits = trait dataset; rownames = species names, colnames[,1] = "Status"
 # traitname = name of trait to calculate distance of (= colname in traits)
 # N = number of communities to simulate 
-sim.meanMNNFD.MFD <- function(phy, com, island, traits, traitname, N){
+sim.meanNNFD.MFD <- function(phy, com, island, traits, traitname, N){
   tmp <- treedata(phy, com) 
   new.phy <- tmp$phy ## prune the tree to include just species in larger species pool to draw from
   com.data <- as.data.frame(tmp$data)   ## subset the community data, to make sure in the right order
@@ -878,21 +878,21 @@ sim.meanMNNFD.MFD <- function(phy, com, island, traits, traitname, N){
     comm.island <- data.frame(lapply(rand.inv.com[[i]], as.character), stringsAsFactors=F)
     #length(which(comm.island[1] == "n"))
     rownames(comm.island) <- rownames(rand.inv.com[[i]])
-    All.Sim.com.Dist <- phyloDistinct(phy=phy, community=comm.island, col=(names(comm.island)))#apply MNNPD funciton across all communities ...find.NN
+    All.Sim.com.Dist <- phyloDistinct(phy=phy, community=comm.island, col=(names(comm.island)))#apply DNNS funciton across all communities ...find.NN
     All.Sim.com.Functional.Dist <- functionDistinct(output=All.Sim.com.Dist, traits=traits, traitname=traitname)
     if (nrow(All.Sim.com.Functional.Dist) == 0){
       tmp <- c("NA", "NA", "NA", "NA",  "NA", "NA")
     } else {
-      All.Sim.com.Funct.summaryMNNFD <- functionObsSum(All.Sim.com.Functional.Dist) #apply summary funciton across all communities...summary.MNNPD
+      All.Sim.com.Funct.summaryNNFD <- functionObsSum(All.Sim.com.Functional.Dist) #apply summary funciton across all communities...summary.DNNS
       
-      tmp <- c(All.Sim.com.Funct.summaryMNNFD["n.natives",], All.Sim.com.Funct.summaryMNNFD["n.invasives",], 
-               All.Sim.com.Funct.summaryMNNFD["meanMNNFDinvasives",], All.Sim.com.Funct.summaryMNNFD["meanMNNFDnatives",], 
-               All.Sim.com.Funct.summaryMNNFD["meanMFDinv_nat", ], All.Sim.com.Funct.summaryMNNFD["meanMFDnat_nat", ])
+      tmp <- c(All.Sim.com.Funct.summaryNNFD["n.natives",], All.Sim.com.Funct.summaryNNFD["n.invasives",], 
+               All.Sim.com.Funct.summaryNNFD["meanNNFDinvasives",], All.Sim.com.Funct.summaryNNFD["meanNNFDnatives",], 
+               All.Sim.com.Funct.summaryNNFD["meanMFDinv_nat", ], All.Sim.com.Funct.summaryNNFD["meanMFDnat_nat", ])
     }
     
     sim.mean <- rbind(sim.mean, tmp)
   }
-  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanMNNFDinvasives", "meanMNNFDnatives", "meanMFDinv_nat", "meanMFDnat_nat")
+  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanNNFDinvasives", "meanNNFDnatives", "meanMFDinv_nat", "meanMFDnat_nat")
   return(sim.mean)
   
 }
@@ -904,15 +904,15 @@ sim.meanMNNFD.MFD <- function(phy, com, island, traits, traitname, N){
 # phy = community phylogeny
 # com=SJcommNewSim ## names of communities to simulate
 # island = island name (e.g.g "Reeflet_Island")
-# simOneIslandOneTrait = output of sim.meanMNNFD.MFD()
-# outputMNNPD = phyloObs[["Reeflet_Island"]] 
+# simOneIslandOneTrait = output of sim.meanNNFD.MFD()
+# outputDNNS = phyloObs[["Reeflet_Island"]] 
 # traits=SJtraitLog ## trait dataset
 # traitname = trait name (e.g. "maxHeight")
 # N = number of community randomizations 
-ses.FunctionDist <- function(phy, com, island, simOneIslandOneTrait, outputMNNPD, traits, traitname, N){
+ses.FunctionDist <- function(phy, com, island, simOneIslandOneTrait, outputDNNS, traits, traitname, N){
   
   ## Ouput of phyloDistinct
-  output <- functionDistinct(outputMNNPD, traits, traitname)
+  output <- functionDistinct(outputDNNS, traits, traitname)
   
   if (length(na.omit(as.numeric(as.character(output[,2])))) == 1){
     p <- as.data.frame(cbind(island, "has only one species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA","NA", "NA"))
@@ -947,31 +947,31 @@ ses.FunctionDist <- function(phy, com, island, simOneIslandOneTrait, outputMNNPD
     p <- t(p)
     return(p)
   } else {
-    # observed mean MNNFD /MFD for natives, invasives
+    # observed mean NNFD /MFD for natives, invasives
     outputSummary <- functionObsSum(output)
     
-    # simulated mean MNNFD / MFD by randomizing invasive species in each community
+    # simulated mean NNFD / MFD by randomizing invasive species in each community
     simOneIslandOneTrait[island]
     
-    ##### ses.MNNFD.invasives
+    ##### ses.NNFD.invasives
     #mean of randomization 
-    meanMNNFDinvasives.inv.dist <- as.numeric(na.omit(simOneIslandOneTrait[island][[1]][[3]])) #meanMNNFDinvasives
-    mean.sim.MNNFD.inv <- mean(meanMNNFDinvasives.inv.dist, na.rm=T)
-    median.sim.MNNFD.inv <- median(meanMNNFDinvasives.inv.dist, na.rm=T)
-    sd.sim.MNNFD.inv <- sd(meanMNNFDinvasives.inv.dist, na.rm=T)
-    se.sim.MNNFD.inv <- mean.sim.MNNFD.inv / sqrt(N)
+    meanNNFDinvasives.inv.dist <- as.numeric(na.omit(simOneIslandOneTrait[island][[1]][[3]])) #meanNNFDinvasives
+    mean.sim.NNFD.inv <- mean(meanNNFDinvasives.inv.dist, na.rm=T)
+    median.sim.NNFD.inv <- median(meanNNFDinvasives.inv.dist, na.rm=T)
+    sd.sim.NNFD.inv <- sd(meanNNFDinvasives.inv.dist, na.rm=T)
+    se.sim.NNFD.inv <- mean.sim.NNFD.inv / sqrt(N)
     #observed mean
-    obs.MNNFD.i <- as.numeric(as.character(outputSummary["meanMNNFDinvasives",]))
+    obs.NNFD.i <- as.numeric(as.character(outputSummary["meanNNFDinvasives",]))
     #Z-value assuming that the null hypothesis is true 
-    z.MNNFD.inv <- (obs.MNNFD.i - mean.sim.MNNFD.inv) / sd.sim.MNNFD.inv 
+    z.NNFD.inv <- (obs.NNFD.i - mean.sim.NNFD.inv) / sd.sim.NNFD.inv 
     # quantile / ranks = frequency that oberved pattern is greater than the randomized values
-    MNNFD.inv.rankHi <- sum(meanMNNFDinvasives.inv.dist >= as.numeric(obs.MNNFD.i)) #simulated means as or more extremely lower than observed
-    MNNFD.inv.rankLo <- sum(meanMNNFDinvasives.inv.dist <= as.numeric(obs.MNNFD.i))  #simulated means as or more extremely lower than observed
+    NNFD.inv.rankHi <- sum(meanNNFDinvasives.inv.dist >= as.numeric(obs.NNFD.i)) #simulated means as or more extremely lower than observed
+    NNFD.inv.rankLo <- sum(meanNNFDinvasives.inv.dist <= as.numeric(obs.NNFD.i))  #simulated means as or more extremely lower than observed
     # p-values of observed mean vs. distribution of randomized means 
-    p.rank.MNNFD.inv <- min(MNNFD.inv.rankLo, MNNFD.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed
+    p.rank.NNFD.inv <- min(NNFD.inv.rankLo, NNFD.inv.rankHi) / (N + 1) #proportion of simulated means as or more extreme than observed
     
     # p-values of z-value
-    one.tailed.p.z.MNNFD.inv <- pnorm(-abs(z.MNNFD.inv))  #p-value of your sample is the lowest alpha level you could have used for your test and still rejected the null hypothesis given your sample. 
+    one.tailed.p.z.NNFD.inv <- pnorm(-abs(z.NNFD.inv))  #p-value of your sample is the lowest alpha level you could have used for your test and still rejected the null hypothesis given your sample. 
     
     ##### ses.MFD.inv.nat
     #mean of randomization 
@@ -993,18 +993,18 @@ ses.FunctionDist <- function(phy, com, island, simOneIslandOneTrait, outputMNNPD
     
     # p-values of z-value
     one.tailed.p.z.MFD.inv <- pnorm(-abs(z.MFD.inv))  
-    MNNFDp.i <- rbind(island, "MNNFD_inv", outputSummary["n.invasives",], obs.MNNFD.i, mean.sim.MNNFD.inv, median.sim.MNNFD.inv, sd.sim.MNNFD.inv, se.sim.MNNFD.inv,
-                     z.MNNFD.inv, MNNFD.inv.rankLo, MNNFD.inv.rankHi, p.rank.MNNFD.inv, one.tailed.p.z.MNNFD.inv,  N)
+    NNFDp.i <- rbind(island, "NNFD_inv", outputSummary["n.invasives",], obs.NNFD.i, mean.sim.NNFD.inv, median.sim.NNFD.inv, sd.sim.NNFD.inv, se.sim.NNFD.inv,
+                     z.NNFD.inv, NNFD.inv.rankLo, NNFD.inv.rankHi, p.rank.NNFD.inv, one.tailed.p.z.NNFD.inv,  N)
     
     MFDp.i <- rbind(island,  "MFD_inv_nat", outputSummary["n.invasives",], obs.MFD.i, mean.sim.MFD.inv, median.sim.MFD.inv, sd.sim.MFD.inv, se.sim.MFD.inv, 
                     z.MFD.inv, MFD.inv.rankLo, MFD.inv.rankHi,p.rank.MFD.inv, one.tailed.p.z.MFD.inv,  N)
     
-    output.MNNFD <- cbind(MNNFDp.i, MFDp.i)
-    rownames(output.MNNFD) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
+    output.NNFD <- cbind(NNFDp.i, MFDp.i)
+    rownames(output.NNFD) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
                                "obs.z", "rankLow", "rankHi", "p.value.ranks", "one.tailed.p.value.z.", "runs")
-    colnames(output.MNNFD) <- c(paste(island), paste(island))
+    colnames(output.NNFD) <- c(paste(island), paste(island))
     
-    return(as.data.frame(output.MNNFD))
+    return(as.data.frame(output.NNFD))
     
   }
   
@@ -1012,17 +1012,17 @@ ses.FunctionDist <- function(phy, com, island, simOneIslandOneTrait, outputMNNPD
 }
 
 
-# output = .csv of sim.meanMNNFD.MFD()
+# output = .csv of sim.meanNNFD.MFD()
 # names of islands 
 read.nullOutput <- function(sim.output, islands.sim){
-  ## Load output of sim.meanMNNFD.MFD()
+  ## Load output of sim.meanNNFD.MFD()
   sdf <- read.csv(file=sim.output, as.is=T, row.names=1)
   head(sdf[, 1:6])
   list.sdf <- list()
   try(
     for (i in 1:ncol(sdf)){
       newlist <- (cbind(sdf[,c(1:6)]))
-      colnames(newlist) <- c("n.native.tips", "n.invasive.tips", "meanMNNFDinvasives", "meanMNNFDnatives", "meanMFDinv_nat", "meanMFDnat_nat")
+      colnames(newlist) <- c("n.native.tips", "n.invasive.tips", "meanNNFDinvasives", "meanNNFDnatives", "meanMFDinv_nat", "meanMFDnat_nat")
       list.sdf[[i]] <- newlist
       sdf <- sdf[, -c(1:6)]
       
@@ -1035,7 +1035,7 @@ read.nullOutput <- function(sim.output, islands.sim){
 
 # plottype = "NullInvOcc" (boxplot showing distribution of null means, with observed mean) 
 #             OR "ses.allIslands" (points of z-scores for SES of each observed mean to null for each island, significant islands hightlighted)
-#             OR "summary.Bar" (barplot of frequency of significant islands for MNNFD / MFD clustered/overdispersed)
+#             OR "summary.Bar" (barplot of frequency of significant islands for NNFD / MFD clustered/overdispersed)
 # sim.output = directory of .csv file for the output of the null distribution 
 # islands.sim = list of the island names to use
 # phyloObs = output of phyloDistinct() applies across all communities 
@@ -1045,11 +1045,11 @@ read.nullOutput <- function(sim.output, islands.sim){
 sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summary.Bar"), sim.output, islands.sim, phyloObs, 
                                 traits, traitname, metadata){
   ## Observed Values
-  obs.MNNFD <- lapply(islands.sim, function(x) functionDistinct(output=phyloObs[[x]], traits, traitname)) 
-  names(obs.MNNFD) <- islands.sim 
+  obs.NNFD <- lapply(islands.sim, function(x) functionDistinct(output=phyloObs[[x]], traits, traitname)) 
+  names(obs.NNFD) <- islands.sim 
   ## Summary Observed Values
-  summ.MNNFD  <- lapply(islands.sim, function(x) functionObsSum(obs.MNNFD[[x]])) 
-  names(summ.MNNFD) <- islands.sim 
+  summ.NNFD  <- lapply(islands.sim, function(x) functionObsSum(obs.NNFD[[x]])) 
+  names(summ.NNFD) <- islands.sim 
   
   ## Read in output of means from simulated communites  (list elements = communities )
   simIslands <- read.nullOutput(sim.output, islands.sim)
@@ -1058,9 +1058,9 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
   list.meta.null.distrib <- list()
   for (i in 1:length(simIslands)){ 
     tmp <- metadata[as.character(names(simIslands[i])), "Area.m2"]
-    tmp.MNNFD.i <- rep(summ.MNNFD[as.character(names(summ.MNNFD[i]))][[1]][[2]], times=nrow(simIslands[[i]]))
-    tmp.MFD.in <- rep(summ.MNNFD[as.character(names(summ.MNNFD[i]))][[1]][[9]], times=nrow(simIslands[[i]]))
-    newlist <- mapply(cbind, "islands"=names(simIslands[i]), simIslands[i], "Area.m2"=tmp, "Obs.meanMNNFDinvasives"=tmp.MNNFD.i, "Obs.meanMPFDinv_nat"= tmp.MFD.in, SIMPLIFY=F) 
+    tmp.NNFD.i <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[2]], times=nrow(simIslands[[i]]))
+    tmp.MFD.in <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[9]], times=nrow(simIslands[[i]]))
+    newlist <- mapply(cbind, "islands"=names(simIslands[i]), simIslands[i], "Area.m2"=tmp, "Obs.meanNNFDinvasives"=tmp.NNFD.i, "Obs.meanMPFDinv_nat"= tmp.MFD.in, SIMPLIFY=F) 
     list.meta.null.distrib[i] <- newlist[1]
   }
   names(list.meta.null.distrib) <- islands.sim
@@ -1072,19 +1072,19 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
   sim.null.distrib.melt <- sim.null.distrib.melt[which(!sim.null.distrib.melt$value == "NA"),]
   #head(sim.null.distrib.melt)
   if(plottype[1] == "NullInvOcc"){
-    pdf(file=paste("figs/plots/functionDiv/ses/NullInvOcc.MNNFD", traitname, "pdf", sep="."), width=20, height=10)
-    p1 <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanMNNFDinvasives))), 
+    pdf(file=paste("figs/plots/functionDiv/ses/NullInvOcc.NNFD", traitname, "pdf", sep="."), width=20, height=10)
+    p1 <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanNNFDinvasives))), 
                  position=position_dodge(width=1)) +
       geom_boxplot(aes(fill=factor(as.character(variable))), width = 1) +
       scale_x_discrete("Island (increasing size)") +
-      scale_y_discrete("Null distribution mean(MNNFD)") +
+      scale_y_discrete("Null distribution mean(NNFD)") +
       theme_bw() +
       scale_fill_manual(values="grey", labels="") + 
       guides(fill=guide_legend(title=" Null distibuiton : random invasive occurrence")) +
       theme(legend.position="top") +
-      geom_point(aes(y = Obs.meanMNNFDinvasives), shape=1, color="magenta1") +
+      geom_point(aes(y = Obs.meanNNFDinvasives), shape=1, color="magenta1") +
       theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
-      ggtitle(paste("Null distribution and observed MNNFD of\n", traitname, sep=" ")) + 
+      ggtitle(paste("Null distribution and observed NNFD of\n", traitname, sep=" ")) + 
       theme(plot.title=element_text(size=rel(1.5))) +
       theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm")) 
     print(p1)
@@ -1110,12 +1110,12 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
     
   }
   #### Summarize simualted means, standardized effect size 
-  ses.SanJuan.MNNFD.MFD <- lapply(islands.sim, function(x) ses.FunctionDist(phy=SJfinalTree, com=SJcommNewSim, island=x, 
-                                                                            simOneIslandOneTrait=simIslands, outputMNNPD=phyloObs[[x]], traits=SJtraitLog, traitname=traitname, N=1000))
-  names(ses.SanJuan.MNNFD.MFD) <- islands.sim
+  ses.SanJuan.NNFD.MFD <- lapply(islands.sim, function(x) ses.FunctionDist(phy=SJfinalTree, com=SJcommNewSim, island=x, 
+                                                                            simOneIslandOneTrait=simIslands, outputDNNS=phyloObs[[x]], traits=SJtraitLog, traitname=traitname, N=1000))
+  names(ses.SanJuan.NNFD.MFD) <- islands.sim
   
-  listIslands <- ses.SanJuan.MNNFD.MFD
-  ses.SJ.MNNFD <- data.frame()
+  listIslands <- ses.SanJuan.NNFD.MFD
+  ses.SJ.NNFD <- data.frame()
   for (i in 1:length(listIslands)){ 
     if (length(listIslands[[i]]) != 2){
       newlist <- NULL
@@ -1124,26 +1124,26 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
       tmp2 <- metadata[as.character(names(listIslands[i])), "Size.cat"]
       newlist <-cbind(t(listIslands[[i]]), "Area.m2"=tmp1, "Size.cat"=tmp2) 
     }
-    ses.SJ.MNNFD <- rbind(ses.SJ.MNNFD, newlist)
+    ses.SJ.NNFD <- rbind(ses.SJ.NNFD, newlist)
     
   }
-  #head(ses.SJ.MNNFD)
-  #dim(ses.SJ.MNNFD) #144
-  ses.SJ.MNNFD <- na.omit(ses.SJ.MNNFD)
-  ses.SJ.MNNFD$p.value.ranks <- as.numeric(as.character(ses.SJ.MNNFD$p.value.ranks)) 
-  ses.SJ.MNNFD.sig <- subset(ses.SJ.MNNFD, p.value.ranks <= 0.05)
-  sig = (ses.SJ.MNNFD[,"p.value.ranks"] <= 0.05)
-  ses.SJ.MNNFD <- cbind(ses.SJ.MNNFD, sig)
+  #head(ses.SJ.NNFD)
+  #dim(ses.SJ.NNFD) #144
+  ses.SJ.NNFD <- na.omit(ses.SJ.NNFD)
+  ses.SJ.NNFD$p.value.ranks <- as.numeric(as.character(ses.SJ.NNFD$p.value.ranks)) 
+  ses.SJ.NNFD.sig <- subset(ses.SJ.NNFD, p.value.ranks <= 0.05)
+  sig = (ses.SJ.NNFD[,"p.value.ranks"] <= 0.05)
+  ses.SJ.NNFD <- cbind(ses.SJ.NNFD, sig)
   
-  ses.SJ.MNNFD[,"Significance"] <- ifelse(ses.SJ.MNNFD[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.SJ.MNNFD[,"obs.z"])) <= 0, 1,
-                                          ifelse(ses.SJ.MNNFD[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.SJ.MNNFD[,"obs.z"])) >= 0, 2, 
-                                                 ifelse(ses.SJ.MNNFD[,"p.value.ranks"] >= 0.05 & as.numeric(as.character(ses.SJ.MNNFD[,"obs.z"])) <= 0, 3, 4)))
+  ses.SJ.NNFD[,"Significance"] <- ifelse(ses.SJ.NNFD[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) <= 0, 1,
+                                          ifelse(ses.SJ.NNFD[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) >= 0, 2, 
+                                                 ifelse(ses.SJ.NNFD[,"p.value.ranks"] >= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) <= 0, 3, 4)))
   
   if(plottype[1] == "ses.allIslands"){
-    x1 <- length(which(ses.SJ.MNNFD$Size.cat == "sm"))/2 + .5
-    x2 <- x1 + length(which(ses.SJ.MNNFD$Size.cat == "med"))/2
-    pdf(paste("figs/plots/functionDiv/ses/ses.SJ.MNNFD", traitname, "pdf", sep="."), width=20, height=10)
-    p3 <- ggplot(ses.SJ.MNNFD, aes(x=reorder(factor(island),as.numeric(as.character(Area.m2))), 
+    x1 <- length(which(ses.SJ.NNFD$Size.cat == "sm"))/2 + .5
+    x2 <- x1 + length(which(ses.SJ.NNFD$Size.cat == "med"))/2
+    pdf(paste("figs/plots/functionDiv/ses/ses.SJ.NNFD", traitname, "pdf", sep="."), width=20, height=10)
+    p3 <- ggplot(ses.SJ.NNFD, aes(x=reorder(factor(island),as.numeric(as.character(Area.m2))), 
                                    y=as.numeric(as.character((obs.z))), color=factor(sig), shape=Metric, fill=factor(sig))) +
       geom_point(size=10) +  
       coord_cartesian(ylim=c(-5, 5)) + 
@@ -1151,13 +1151,13 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
       scale_x_discrete("Island (increasing size)") +
       scale_fill_manual(values=alpha(c("FALSE"="white", "TRUE"= "black"), .3), guide="none") +
       scale_color_manual(name =" ",values=c("FALSE"= "grey", "TRUE"="black"), guide="none") +
-      scale_shape_manual(name =" ",values=c("MNNFD_inv"= 21, "MFD_inv_nat"= 24), labels=c("MNNFD_inv"="MNNFD i  ", "MFD_inv_nat"="MFD_inv_nat")) +
+      scale_shape_manual(name =" ",values=c("NNFD_inv"= 21, "MFD_inv_nat"= 24), labels=c("NNFD_inv"="NNFD i  ", "MFD_inv_nat"="MFD_inv_nat")) +
       theme_bw() +
       theme(legend.position="top") +
       geom_abline(intercept = 0, slope = 0, colour = "grey", size = .5) +
       geom_vline(xintercept = c(x1, x2)) +
       theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
-      ggtitle(paste("Significane of", traitname, "difference for\n invasive species to nearest native (MNNFD i),\n and native community (MFD_inv_nat)\n", sep=" ")) +
+      ggtitle(paste("Significane of", traitname, "difference for\n invasive species to nearest native (NNFD i),\n and native community (MFD_inv_nat)\n", sep=" ")) +
       theme(plot.title=element_text(size=rel(1.5))) +
       theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
     print(p3)
@@ -1167,31 +1167,31 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
   
   if(plottype[1] == "summary.Bar"){
     ################################## ses FUNCTIONAL summary final #################################################################### 
-    sesMNNPD <- ses.SJ.MNNFD[ses.SJ.MNNFD[,"Metric"] =="MNNFD_inv",]
-    sesMPD <- ses.SJ.MNNFD[ses.SJ.MNNFD[,"Metric"] =="MFD_inv_nat",]
+    sesDNNS <- ses.SJ.NNFD[ses.SJ.NNFD[,"Metric"] =="NNFD_inv",]
+    sesMDNS <- ses.SJ.NNFD[ses.SJ.NNFD[,"Metric"] =="MFD_inv_nat",]
     
-    sesMNNPDPos = cbind("Island"=rownames(sesMNNPD), "Size.cat"=as.character(sesMNNPD[,"Size.cat"]), 
-                        "Metric"=rep(x = "MNNFD inv > 0", times = nrow(sesMNNPD)), 
-                        "Significance"=ifelse(sesMNNPD[,"p.value.ranks"] <= 0.05 & 
-                                                as.numeric(as.character(sesMNNPD[,"obs.z"])) >= 0, 1,0))
-    sesMNNPDNeg = cbind("Island"=rownames(sesMNNPD), "Size.cat"=as.character(sesMNNPD[,"Size.cat"]), 
-                        "Metric"=rep(x = "MNNFD inv < 0", times = nrow(sesMNNPD)), 
-                        "Significance"=ifelse(sesMNNPD[,"p.value.ranks"] <= 0.05 & 
-                                                as.numeric(as.character(sesMNNPD[,"obs.z"])) <= 0, 1,0))
-    sesMPDPos = cbind("Island"=rownames(sesMPD), "Size.cat"=as.character(sesMPD[,"Size.cat"]), 
-                      "Metric"=rep(x = "MFD inv > 0", times = nrow(sesMPD)), 
-                      "Significance"=ifelse(sesMPD[,"p.value.ranks"] <= 0.05 & 
-                                              as.numeric(as.character(sesMPD[,"obs.z"])) >= 0, 1,0))
-    sesMPDNeg = cbind("Island"=rownames(sesMPD), "Size.cat"=as.character(sesMPD[,"Size.cat"]), 
-                      "Metric"=rep(x = "MFD inv < 0", times = nrow(sesMPD)), 
-                      "Significance"=ifelse(sesMPD[,"p.value.ranks"] <= 0.05 & 
-                                              as.numeric(as.character(sesMPD[,"obs.z"])) <= 0, 1,0))
-    sesFunctional <- as.data.frame(rbind(sesMNNPDPos, sesMNNPDNeg, sesMPDPos, sesMPDNeg))
+    sesDNNSPos = cbind("Island"=rownames(sesDNNS), "Size.cat"=as.character(sesDNNS[,"Size.cat"]), 
+                        "Metric"=rep(x = "NNFD inv > 0", times = nrow(sesDNNS)), 
+                        "Significance"=ifelse(sesDNNS[,"p.value.ranks"] <= 0.05 & 
+                                                as.numeric(as.character(sesDNNS[,"obs.z"])) >= 0, 1,0))
+    sesDNNSNeg = cbind("Island"=rownames(sesDNNS), "Size.cat"=as.character(sesDNNS[,"Size.cat"]), 
+                        "Metric"=rep(x = "NNFD inv < 0", times = nrow(sesDNNS)), 
+                        "Significance"=ifelse(sesDNNS[,"p.value.ranks"] <= 0.05 & 
+                                                as.numeric(as.character(sesDNNS[,"obs.z"])) <= 0, 1,0))
+    sesMDNSPos = cbind("Island"=rownames(sesMDNS), "Size.cat"=as.character(sesMDNS[,"Size.cat"]), 
+                      "Metric"=rep(x = "MFD inv > 0", times = nrow(sesMDNS)), 
+                      "Significance"=ifelse(sesMDNS[,"p.value.ranks"] <= 0.05 & 
+                                              as.numeric(as.character(sesMDNS[,"obs.z"])) >= 0, 1,0))
+    sesMDNSNeg = cbind("Island"=rownames(sesMDNS), "Size.cat"=as.character(sesMDNS[,"Size.cat"]), 
+                      "Metric"=rep(x = "MFD inv < 0", times = nrow(sesMDNS)), 
+                      "Significance"=ifelse(sesMDNS[,"p.value.ranks"] <= 0.05 & 
+                                              as.numeric(as.character(sesMDNS[,"obs.z"])) <= 0, 1,0))
+    sesFunctional <- as.data.frame(rbind(sesDNNSPos, sesDNNSNeg, sesMDNSPos, sesMDNSNeg))
     
-    length(which(sesMPD[,"p.value.ranks"] <= 0.05 & 
-                   as.numeric(as.character(sesMPD[,"obs.z"])) <= 0))
+    length(which(sesMDNS[,"p.value.ranks"] <= 0.05 & 
+                   as.numeric(as.character(sesMDNS[,"obs.z"])) <= 0))
     
-    neworder <- c("MNNFD inv > 0", "MFD inv > 0", "MNNFD inv < 0", "MFD inv < 0")
+    neworder <- c("NNFD inv > 0", "MFD inv > 0", "NNFD inv < 0", "MFD inv < 0")
     sesFunctional2 <- arrange(transform(sesFunctional, Metric=factor(Metric,levels=neworder)),Metric)
     
     pdf(paste("figs/plots/functionDiv/ses/", traitname, "Functional.SummaryBar.pdf", sep=""))
@@ -1210,36 +1210,36 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
   
   
   #### summarize significance data by size categories
-  ses.SJ.MNNFD$Size.cat <- as.character(ses.SJ.MNNFD$Size.cat)
-  ses.SJ.MNNFD$Size.cat <- factor(ses.SJ.MNNFD$Size.cat, levels=c("sm", "med", "lg"))
+  ses.SJ.NNFD$Size.cat <- as.character(ses.SJ.NNFD$Size.cat)
+  ses.SJ.NNFD$Size.cat <- factor(ses.SJ.NNFD$Size.cat, levels=c("sm", "med", "lg"))
   
   ##### ses MMNPDi 
-  MNNFD_inv <- na.omit(ses.SJ.MNNFD[which(ses.SJ.MNNFD$Metric == "MNNFD_inv"), ] )
-  sigMNNFD_inv <- (MNNFD_inv[which(as.numeric(as.character(MNNFD_inv$p.value.ranks)) <= 0.05), ]) #7
+  NNFD_inv <- na.omit(ses.SJ.NNFD[which(ses.SJ.NNFD$Metric == "NNFD_inv"), ] )
+  sigNNFD_inv <- (NNFD_inv[which(as.numeric(as.character(NNFD_inv$p.value.ranks)) <= 0.05), ]) #7
   ## Significant by size category
-  sm.MNNFD <- length(which(sigMNNFD_inv$Size.cat == "sm")) #3/71  0.04225352
-  med.MNNFD <- length(which(sigMNNFD_inv$Size.cat == "med")) #3/71   0.04225352
-  lg.MNNFD <- length(which(sigMNNFD_inv$Size.cat == "lg")) #1/71   0.01408451
+  sm.NNFD <- length(which(sigNNFD_inv$Size.cat == "sm")) #3/71  0.04225352
+  med.NNFD <- length(which(sigNNFD_inv$Size.cat == "med")) #3/71   0.04225352
+  lg.NNFD <- length(which(sigNNFD_inv$Size.cat == "lg")) #1/71   0.01408451
   
   
-  #### ses MPDin 
-  MFD_inv_nat <- ses.SJ.MNNFD[which(ses.SJ.MNNFD$Metric == "MFD_inv_nat"), ] 
+  #### ses MDNSin 
+  MFD_inv_nat <- ses.SJ.NNFD[which(ses.SJ.NNFD$Metric == "MFD_inv_nat"), ] 
   sigMFD_inv <- (MFD_inv_nat[which(as.numeric(as.character(MFD_inv_nat$p.value.ranks)) <= 0.05), ]) #13
   ## Significant by size category
   sm.MFD <- length(which(sigMFD_inv$Size.cat == "sm")) #2/71  0.02816901
   med.MFD <- length(which(sigMFD_inv$Size.cat == "med")) #7/71   0.09859155
   lg.MFD <- length(which(sigMFD_inv$Size.cat == "lg")) #4/71   0.05633803
   
-  nrow(sigMNNFD_inv)
+  nrow(sigNNFD_inv)
   nrow(sigMFD_inv)
   
-  nrow(sigMNNFD_inv) / nrow(MFD_inv_nat)
+  nrow(sigNNFD_inv) / nrow(MFD_inv_nat)
   nrow(sigMFD_inv) / nrow(MFD_inv_nat)
   
-  sum <- rbind(nrow(sigMNNFD_inv), nrow(sigMNNFD_inv) / nrow(MFD_inv_nat), sm.MNNFD, med.MNNFD, lg.MNNFD,
+  sum <- rbind(nrow(sigNNFD_inv), nrow(sigNNFD_inv) / nrow(MFD_inv_nat), sm.NNFD, med.NNFD, lg.NNFD,
                nrow(sigMFD_inv),  nrow(sigMFD_inv) / nrow(MFD_inv_nat), sm.MFD, med.MFD, lg.MFD,
                nrow(MFD_inv_nat))
-  rownames(sum) <- c("n sig MNNFD", "% sig MNNFD", "n sig small MNNFD", "n sig medium MNNFD", "n sig large MNNFD",
+  rownames(sum) <- c("n sig NNFD", "% sig NNFD", "n sig small NNFD", "n sig medium NNFD", "n sig large NNFD",
                      "n sig MFD", "% sig MFD", "n sig small MFD", "n sig medium MFD", "n sig large MFD", 
                      "Total Islands")
   colnames(sum) <- traitname
