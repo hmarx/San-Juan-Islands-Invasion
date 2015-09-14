@@ -1,11 +1,13 @@
-## Last updated August 28, 2013
-##With help from Matt Settles / Matt Pennell; Version of NEWfunction.R
-##Modified May15,2013 by HEM to correct NCBI names, and add "_"
+#########################################################################################################
+############################### Last updated August 28, 2013 ############################################
+## Functions to edit allignments: collapse infraspecific taxa, keep longest sequences, for each species
+## With help from Matt Settles / Matt Pennell
+## Modified May 15, 2013 by HEM to correct NCBI names, and add "_"
 
 #install.packages(Biostrings) # Will have to install this package 
 library(Biostrings) # load package
 
-#setwd("~/Dropbox/Hannah-Dave/SanJuans/HannahFINAL/2_SpeciesList/") # Navigate to the directory with PHLAWD output to be parsed
+#setwd("output/2_SpeciesList/") # Navigate to the directory with PHLAWD output to be parsed
 
 # This function will take the full alignment from the PHLAWD output and remove the NCBI ID, 
 # and keep only the longest unique sequences if there are multiple hits for a single species
@@ -34,7 +36,6 @@ parsePHLAWD <- function(fasta.file){
   names(uniques) <- namesGBord[!ID] #full NCBI names
   writeXStringSet(uniques, file=paste(file.name, "unique.GB", sep=".", format="fasta"))
   return(combinedname)
-  #names(uniques) <- paste(genus.name[!ID], species.name2[!ID], sep="") # to get without space, eg for the Lamiales project b/c Nancy's seqs were like this, match for Mafft
  
 }  
 
@@ -63,7 +64,6 @@ parseREMOVED <- function(fasta.file){
   writeXStringSet(rem, file=paste(file.name, "unique.rem.name", sep=".", format="fasta"))
 }
 
-#parseREMOVED("atpB.unique.GB.fasta.rem") #62
 
 parseALIGNMENT <- function(fasta.file){
   GBseqs <- readDNAStringSet(fasta.file) #read .aln.full
@@ -77,8 +77,6 @@ parseALIGNMENT <- function(fasta.file){
   
 }
 
-#fasta.file <- "~/Dropbox/Work/FranceLab/FranceProjects/IslandComparaive/WeigletWG/8Archepleagos/231014/4_Concatenate/align.concat.8arch.241014.fst"
-#extractID <- read.csv("~/Dropbox/Work/FranceLab/FranceProjects/Islandcomparaive/WeigletWG/8Archepleagos/ExtractID/output241014.txt")
 
 parseALIGNMENT.Input.to.acceptedName <- function(fasta.file, extractID, file.name){
   dim(extractID) #6477 = number of species used in include file == speices in island dataset
@@ -93,7 +91,6 @@ parseALIGNMENT.Input.to.acceptedName <- function(fasta.file, extractID, file.nam
   
   
   extractID$input_name <- combinedname.input
-  #write.csv(extractID.uniques$input_name, file="TEST.csv")
   
   extractID.uniques <- subset(extractID,!duplicated(extractID$input_name)) #remove duplicated input names
   dim(extractID.uniques) #4637    4
@@ -101,9 +98,7 @@ parseALIGNMENT.Input.to.acceptedName <- function(fasta.file, extractID, file.nam
   GBseqs <- readDNAStringSet(fasta.file) #read concatenated alignmenzt
   print(length(GBseqs))  # 4383 = number of species in alignment 
   
-  
   #print(dim(combinedname[(which(combinedname %in% extractID$input_name))])) # check to make sure all the names in alighment map to GenBank ID 
-  #i = 4316
   matched.acceptedID.align <- DNAStringSet()
   matched.accepted.align <- DNAStringSet()
   matched.input.align <- DNAStringSet()
@@ -153,18 +148,7 @@ parseALIGNMENT.Input.to.acceptedName <- function(fasta.file, extractID, file.nam
   writeXStringSet(matched.input.align, file=paste(file.name, "input", "fst", sep="."))
   
   
-  #names(uniques) <- paste(genus.name[!ID], species.name2[!ID], sep="") # to get without space, eg for the Lamiales project b/c Nancy's seqs were like this, match for Mafft
-  
 }
-
-#parseALIGNMENT.Input.to.acceptedName(fasta.file, extractID, file.name="align.concat.8arch.241014")
-
-#[1] "Picris_sp does not match PHLAWD includefile"
-#[1] "Chenopodium_glaucum does not match PHLAWD includefile"
-#[1] "Polypodium_polypodioides does not match PHLAWD includefile"
-#[1] "Hedyotis_corymbosa does not match PHLAWD includefile"
-#[1] "Polygonum_chinense does not match PHLAWD includefile"
-#[1] "Phelipanche_purpurea does not match PHLAWD includefile"
 
 
 

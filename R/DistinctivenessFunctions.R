@@ -1,25 +1,29 @@
 ###### Distinctiveness Functions #######
-###### 6 Nov 2014 ########
-###### Hannah E. Marx #######
+###### 6 Nov 2014 ######################
+###### Hannah E. Marx ##################
 
-### For analysis of phylogenetic and functional distinctivness to nearest native (DNNS/NNFD) 
+### For analysis of phylogenetic and functional distinctivness 
+###### to nearest native (DNNS/NNFD) 
 ###### and mean native community (MDNS/MFD)
-### Also, standardized effect size compared to null model randomizing invasive species occurences
+### Also, calculate standardized effect size compared to null model randomizing invasive species occurences
 ### Used for Marx et al. 2015
 
 ## Data (analysis.R)
 ## Phylogeny: phylo object with all species in "source pool"
 ## Community data: data.frame with species names matching phylogeny, presence/absence of speices in each community: 
-# row = species names; columns = 1 (presnce), or 0 (absence)
+######## row = species names; columns = 1 (presnce), or 0 (absence)
 ## Trait data: data.frame with species names mathcing phylogeny, trait values 
-# row = species names (must match format of names in phylogeny); columns = trait value
+######## row = species names (must match format of names in phylogeny); columns = trait value
+
 
 ##################################### PHYLOGENETIC DISTINCTIVENESS ##################################### 
 ############################ Mean Nearest Native Phylogenetic Distance (DNNS)
 ############################ Mean Phylogenetic Distance to Native Community (MDNS)
+
 ## phy = phylogenetic tree of species pool
 ## communinty = occurence data for species (rownames match phy), in each community (colnames): invasive species = i, native spcecies = n, absence = 0 
 ## col = the community to calcualte metrics for
+
 phyloDistinct  <- function(phy, community, col){
   dataPruned <- community[which(!community[col] == "0"), col,  drop=F]   ## prune community step
   data3 <- as.list(unlist(dataPruned))
@@ -106,14 +110,14 @@ phyloDistinct  <- function(phy, community, col){
 }
 
 
-#### Summarize phyloDistinct output
+############################ Summarize phyloDistinct output
 # output = output from phyloDistinct()
 summary.DNNS.MDNS<- function(output){
   summ <- data.frame()
   if (nrow(output)==1){
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA")
     rownames(summ) <- c("meanDNNSnatives", "meanDNNSinvasives", "n.natives", "n.invasives", "t.DNNS.p.value", "t.DNNS.conf.int.Lo","t.DNNS.conf.int.Hi", 
-                        "meanMDNSnat_nat", "meanMDNSinv_nat", "t.MDNS.p.value", "t.MDNS.conf.int.Lo","t.MDNS.conf.int.Hi")
+                        "meanMDNSnatives", "meanMDNSinvasives", "t.MDNS.p.value", "t.MDNS.conf.int.Lo","t.MDNS.conf.int.Hi")
     return(summ)
   }
   DNNSn <- output[output["Species.Status"]=="n",] # get all native
@@ -147,20 +151,211 @@ summary.DNNS.MDNS<- function(output){
   }
   
   rownames(summ) <- c("meanDNNSnatives", "meanDNNSinvasives", "n.natives", "n.invasives", "t.DNNS.p.value", "t.DNNS.conf.int.Lo","t.DNNS.conf.int.Hi", 
-                      "meanMDNSnat_nat", "meanMDNSinv_nat", "t.MDNS.p.value", "t.MDNS.conf.int.Lo","t.MDNS.conf.int.Hi")
+                      "meanMDNSnatives", "meanMDNSinvasives", "t.MDNS.p.value", "t.MDNS.conf.int.Lo","t.MDNS.conf.int.Hi")
+  
+  
   return(summ)
 }
 
+sig.obs.phyloDiversty <- function(summaryDF, metadataFULL, plottype=c("summary.Bar", "IslSizeDNNS", "IslSizeDNNS", "4islDNNS", "4islMDNS")){
+  summaryDF <- merge(summaryDF, metadata, by=0) # add metadata for islands for plotting and discussing
+  nisls <- nrow(summaryDF)
+  # indicate islands with significant difference in observed means between status groups for each island
+  summaryDF[,"Significance"] <- ifelse(summaryDF[,"t.DNNS.p.value"] <= 0.05, 1,
+                                         ifelse(summaryDF[,"t.MDNS.p.value"] <= 0.05, 2, 0)) 
+  
+  #### summarize significance data by size categories
+  summaryDF$Size.cat <- as.character(summaryDF$Size.cat)
+  summaryDF$Size.cat <- factor(summaryDF$Size.cat, levels=c("sm", "med", "lg"))
+  
+  sigDNNS = cbind("Island"=summaryDF[,1], "Size.cat"=as.character(summaryDF[,"Size.cat"]), "Metric"=rep(x = "DNNS", times = nrow(summaryDF)), "Significance"=ifelse(summaryDF[,"t.DNNS.p.value"] <= 0.05, 1,0))
+  sigMDNS = cbind("Island"=summaryDF[,1], "Size.cat"=as.character(summaryDF[,"Size.cat"]), "Metric"=rep(x = "MDNS", times = nrow(summaryDF)), "Significance"=ifelse(summaryDF[,"t.MDNS.p.value"] <= 0.05, 1,0))
+  obs.phylo <- as.data.frame(rbind(sigDNNS, sigMDNS))
+  
+  ##### significance in observed difference bewteen mean DNNSi / mean DNNSn 
+  nsdifDNNS <- length(summaryDF$t.DNNS.p.value[which(summaryDF$t.DNNS.p.value >= 0.05)]) # 34 islands NS
+  sigdifDNNS <- length(summaryDF$t.DNNS.p.value[which(summaryDF$t.DNNS.p.value <= 0.05)]) # 40 isalnds with significant differnece in mean betweenmean MMNPDi / mean MMNPDn 
+  summaryDF.DNNS.sig <- summaryDF[which(summaryDF$t.DNNS.p.value <= 0.05),]
+  #summaryDF[which(summaryDF$t.DNNS.p.value <= 0.005),] # 3
+  per.diff.DNNS <- sigdifDNNS/nisls # 0.5405405 
+  nat.greater.DNNS <- sum(ifelse(as.numeric(summaryDF$meanDNNSnatives) > as.numeric(summaryDF$meanDNNSinvasives), 1,0)) #74
+  nat.less.DNNS <- sum(ifelse(as.numeric(summaryDF$meanDNNSnatives) < as.numeric(summaryDF$meanDNNSinvasives), 1,0)) #74
+  
+  sm.sigDNNS <- nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "sm"),], summaryDF.DNNS.sig, by=1)) # 7/74 small islands sig DNNS 0.09459459
+  med.sigDNNS <- nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "med"),], summaryDF.DNNS.sig, by=1)) # 20/74 medium isl sig DNNS 0.2702703
+  lg.sigDNNS <- nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "lg"),], summaryDF.DNNS.sig, by=1)) # 13/74 large isl sig DNNS 0.1756757
+  
+  #### significance in observed difference bewteen mean MDNSin / mean MDNSnn
+  nsdifMDNS <- length(summaryDF$t.MDNS.p.value[which(summaryDF$t.MDNS.p.value >= 0.05)]) # 53 NS
+  sigdifMDNS <- length(summaryDF$t.MDNS.p.value[which(summaryDF$t.MDNS.p.value <= 0.05)]) # 21 significant differneces between mean MDNS
+  summaryDF.MDNS.sig <- summaryDF[which(summaryDF$t.MDNS.p.value <= 0.05),]
+  #summaryDF[which(summaryDF$t.MDNS.p.value <= 0.005),] # 5
+  per.diff.MDNS <- sigdifMDNS/nisls # 0.2837838
+  nat.greater.MDNS <-sum(ifelse(as.numeric(summaryDF$meanMDNSnatives) > as.numeric(summaryDF$meanMDNSinvasives), 1,0)) #70
+  nat.less.MDNS <-sum(ifelse(as.numeric(summaryDF$meanMDNSnatives) < as.numeric(summaryDF$meanMDNSinvasives), 1,0)) #4
+  
+  sm.sigMDNS <- nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "sm"),], summaryDF.MDNS.sig, by=1)) # 2/74 small islands sig MDNS 0.02702703
+  med.sigMDNS <- nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "med"),], summaryDF.MDNS.sig, by=1)) # 4/74 med islands sig MDNS 0.05405405
+  lg.sigMDNS <- nrow(merge(metadataFULL[which(metadataFULL$Size.cat == "lg"),], summaryDF.MDNS.sig, by=1)) # 15/74 large isl sig MDNS 0.2027027
+  
+  dnns <- c(nisls, sigdifDNNS, nsdifDNNS, per.diff.DNNS, nat.greater.DNNS, nat.less.DNNS, sm.sigDNNS, med.sigDNNS, lg.sigDNNS)
+  mdns <- c(nisls, sigdifMDNS, nsdifMDNS, per.diff.MDNS, nat.greater.MDNS, nat.less.MDNS, sm.sigMDNS, med.sigMDNS, lg.sigMDNS)
+  
+  sigobs <- rbind(dnns, mdns)
+  colnames(sigobs) <- c("nIslands", "sigDiff", "ns", "%Sig", "mean_N>I", "mean_N<I", "sigSmall", "sigMed", "sigLg")
 
-######################## Difference in Observed Trait Values ################################
+  
+  if (plottype[1] == "summary.Bar"){
+    ### Bar plot of significance 
+    p <- ggplot(obs.phylo, aes(x=Significance, fill=factor(Size.cat))) + 
+      geom_bar(stat="bin") +
+      scale_fill_manual(name="Size Category",
+                        breaks=c("sm", "med", "lg"),
+                        values=c("sm"="dodgerblue4", "med"="orangered3", "lg"="gold1"),
+                        labels=c("sm"="small", "med"="medium", "lg"="large")) +
+      theme_bw() +
+      scale_x_discrete(name="", labels=c("0"="NS", "1"="Significant")) +
+      facet_wrap(~ Metric) +
+      ggtitle("Observed difference of \n Phylogenetic Distances\n") 
+    return(list(p,sigobs))
+  }
+  
+  
+  ########################  Plot observed phylogenetic distinctiveness for each island, ordered by increasing island size
+  ### append metadata for island area to column in list of DNNS/MDNS for each island
+  list <- phyloObs
+  list.meta <- list()
+  for (i in 1:length(list)){ 
+    tmp <- metadata[names(list[i]), "Area.m2"]
+    rep(x=tmp, times=nrow(list[[i]]))
+    newlist <- mapply(cbind, list[i], "Area"=tmp, SIMPLIFY=F) 
+    list.meta[[i]] <- newlist
+  }
+  head(list.meta)
+  
+  ### melt into datafrome for plotting
+  phyloObs_melt  <- suppressMessages(melt(data=list.meta))
+  #head(phyloObs_melt)
+  #dim(phyloObs_melt) # 4835   11
+  if (plottype[1] == "none"){
+    return(list(sigobs,phyloObs_melt))
+    
+  }
+  
+  if (plottype[1] =="IslSizeDNNS"){
+    ## Regression of differnence in means to island size
+    model <- lm(as.numeric(as.character(MinDist.Nearest.native)) ~ value , data=phyloObs_melt)
+    summary(model)
+    anova(model)
+    r2.DNNS <- paste("R^2 = ", signif(summary(model)$r.squared, 3), sep="") #Explained variation / Total variation
+    p.DNNS <- paste("p-value = ", signif(anova(model)[[5]][1], 3), "***", sep="")
+    
+    head(phyloObs_melt)
+    DNNS <- ggplot(phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MinDist.Nearest.native))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+    DNNS <- DNNS + geom_boxplot(aes(fill = Species.Status), width = 1)
+    DNNS <- DNNS + geom_smooth(method="lm", se=T, color="black", aes(group=1))
+    DNNS <- DNNS + coord_cartesian(ylim=c(.5, 5000)) 
+    DNNS <- DNNS + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+    DNNS <- DNNS + scale_y_log10("Log DNNS") #+ coord_fixed(ratio=4) 
+    DNNS <- DNNS + theme_bw() 
+    DNNS <- DNNS + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MMNPDi", "n"="MMNPDn")) ##breaks=rev(factor(SJnew$status)),
+    DNNS <- DNNS + guides(fill=guide_legend(title=""))
+    DNNS <- DNNS + theme(legend.position="top")
+    DNNS <- DNNS + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+    DNNS <- DNNS + ggtitle("Phylogenetic Distance to the Nearest Native Species (DNNS)") + theme(plot.title=element_text(size=rel(1.5)))
+    DNNS <- DNNS + annotate("text", label=r2.DNNS, x=3, y=0.9, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+    DNNS <- DNNS + annotate("text", label=p.DNNS, x=4, y=0.7, size=4) 
+    DNNS <- DNNS + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+    return(list(DNNS,sigobs))
+    
+  }
 
-#### Prune trait values down for each community and calculate difference in observed mean trait values for native and invasive species
+  if (plottype[1] =="IslSizeMDNS"){
+    ## Regression of differnence in means to island size
+    modelMDNS <- lm(as.numeric(as.character(MeanDist.NativeCommunity)) ~ value , data=phyloObs_melt)
+    summary(modelMDNS)
+    anova(modelMDNS)
+    r2.MDNS <- paste("R^2 = ", signif(summary(modelMDNS)$r.squared, 3)) #Explained variation / Total variation
+    p.MDNS <- paste("p-value = ", signif(anova(modelMDNS)[[5]][1], 3), "**", sep="")
+    
+    MDNS <- ggplot(phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MeanDist.NativeCommunity))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+    MDNS <- MDNS + geom_boxplot(aes(fill = Species.Status), width = 1)
+    MDNS <- MDNS + geom_smooth(method="lm", se=T, color="black", aes(group=1))
+    MDNS <- MDNS + coord_cartesian(ylim=c(100, 2000))
+    MDNS <- MDNS + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+    MDNS <- MDNS + scale_y_log10("Log MDNS")  
+    MDNS <- MDNS + theme_bw() 
+    MDNS <- MDNS + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MDNSNi", "n"="MDNSNn")) ##breaks=rev(factor(SJnew$status)),
+    MDNS <- MDNS + guides(fill=guide_legend(title=""))
+    MDNS <- MDNS + theme(legend.position="top")
+    MDNS <- MDNS + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+    MDNS <- MDNS + ggtitle("Mean Phylogenetic Distance to Native Community (MDNS)") + theme(plot.title=element_text(size=rel(1.5)))
+    MDNS <- MDNS + annotate("text", label=r2.MDNS, x=3, y=130, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+    MDNS <- MDNS + annotate("text", label=p.MDNS, x=3.5, y=120, size=4) 
+    MDNS <- MDNS + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+    return(list(MDNS,sigobs))
+    
+  }
+  
+  if (plottype[1] =="4islDNNS"){
+    four.islands.phyloObs_melt <- phyloObs_melt[phyloObs_melt$L2 %in% four.islands, ]
+    DNNS.four <- ggplot(four.islands.phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MinDist.Nearest.native))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+    DNNS.four <- DNNS.four+ geom_boxplot(aes(fill = Species.Status), width = 1)
+    #DNNS.four+ geom_smooth(method="lm", se=T, color="black", aes(group=1))
+    DNNS.four <- DNNS.four+ coord_cartesian(ylim=c(.5, 5000))
+    DNNS.four <- DNNS.four+ scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+    DNNS.four <- DNNS.four+ scale_y_log10("Log DNNS") #+ coord_fixed(ratio=4) 
+    DNNS.four <- DNNS.four+ theme_bw() 
+    DNNS.four <- DNNS.four+ scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MMNPDi", "n"="MMNPDn")) ##breaks=rev(factor(SJnew$status)),
+    DNNS.four <- DNNS.four+ guides(fill=guide_legend(title=""))
+    DNNS.four <- DNNS.four+ theme(legend.position="top")
+    DNNS.four <- DNNS.four+ theme(axis.text.x = element_text(angle = -45, hjust = 0))
+    DNNS.four <- DNNS.four+ ggtitle("Phylogenetic Distance to the Nearest Native Species (DNNS)") + theme(plot.title=element_text(size=rel(1.5)))
+    #DNNS.four+ annotate("text", label=r2.DNNS, x=5, y=0.09, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+    #DNNS.four+ annotate("text", label=p.DNNS, x=5, y=0.05, size=4) 
+    DNNS.four <- DNNS.four+ theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+    return(list(DNNS.four,sigobs))
+  
+  }
+  
+  if (plottype[1] =="4islMDNS"){
+    four.islands.phyloObs_melt <- phyloObs_melt[phyloObs_melt$L2 %in% four.islands, ]
+    MDNS.four <- ggplot(four.islands.phyloObs_melt, aes(x=reorder(factor(L2),value), y=as.numeric(as.character(MeanDist.NativeCommunity))), position=position_dodge(width=1))#, col=c("magenta1", "green3"))
+    MDNS.four <- MDNS.four + geom_boxplot(aes(fill = Species.Status), width = 1)
+    MDNS.four <- MDNS.four  + coord_cartesian(ylim=c(100, 2000))
+    #MDNS.four <- MDNS.four  + geom_smooth(method="lm", se=T, color="black", aes(group=1))
+    MDNS.four <- MDNS.four  + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+    MDNS.four <- MDNS.four  + scale_y_log10("Log MDNSN")  
+    MDNS.four <- MDNS.four  + theme_bw() 
+    MDNS.four <- MDNS.four  + scale_fill_manual(values=c("i"= "magenta1", "n"="green3"), labels=c("i"= "MDNSi", "n"="MDNSn")) ##breaks=rev(factor(SJnew$status)),
+    MDNS.four <- MDNS.four  + guides(fill=guide_legend(title=""))
+    MDNS.four <- MDNS.four  + theme(legend.position="top")
+    MDNS.four <- MDNS.four  + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+    MDNS.four <- MDNS.four  + ggtitle("Mean Phylogenetic Distance to Native Community (MDNS)") + theme(plot.title=element_text(size=rel(1.5)))
+    #MDNS.four <- MDNS.four  + annotate("text", label=r2.MDNS, x=5, y=100, size=4) #y=max(as.numeric(as.character(SJ_NN_meltNEW$MinDist.Nearest.native))-20)
+    #MDNS.four <- MDNS.four  + annotate("text", label=p.MDNS, x=5, y=90, size=4) 
+    MDNS.four <- MDNS.four  + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm")) 
+    return(list(MDNS.four,sigobs))
+    
+  }
+  
+  
+  
+}
+
+
+##################################### FUNCTIONAL DISTINCTIVENESS ##################################### 
+######################## Difference in Observed Trait Values ###########################################
+
+#### Prune trait values down for each community and calculate difference in observed mean trait values 
+#### for native and invasive species
 # phy= phylogeny of species pool 
 # community = community data matrix (rownames = species, colnames= communtiy names)
 # traits = trait matirx, with first column labeled "Status"
 # OneTrait = the name of one trait from trait matrix (rownames = community names, col= trait)
 # col = column number indicating the community of interest 
-commTraitSummary  <- function(phy, community, traits, OneTrait, col){
+
+summary.trait.meas  <- function(phy, community, traits, OneTrait, col){
   # Prune community
   dataPruned <- (community)[which(!community[col] == "0"), col]  ## prune tree step
   n.sp <- length(dataPruned[dataPruned == "n"]) # get all the tips which are native
@@ -168,15 +363,14 @@ commTraitSummary  <- function(phy, community, traits, OneTrait, col){
   tot.sp <- length(dataPruned)
   if (length(dataPruned) == 1){
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA",
-                  "NA", "NA", "NA","NA", "NA", "NA")
-    
-    rownames(summ) <- c(paste("Total.tips.with", names(OneTrait), sep="."),paste("Percent.of.total.tips.with", names(OneTrait), sep="."), 
-                        paste("Median.tot", names(OneTrait), sep="."),paste("Min.tot", names(OneTrait), sep="."), paste("Max.tot", names(OneTrait),sep="."),
-                        paste("Total.native.tipswith", names(OneTrait), sep="."),  paste("Percent.of.native.tips.with", names(OneTrait), sep="."), 
-                        paste("Median.nat", names(OneTrait), sep="."), paste("Min.nat", names(OneTrait), sep="."), paste("Max.nat", names(OneTrait), sep="."),
-                        paste("Total.invasive.tips.with",names(OneTrait), sep="."), paste("Percent.of.invasive.tips.with", names(OneTrait), sep="."), 
-                        paste("Median.inv",names(OneTrait), sep="."), paste("Min.inv", names(OneTrait), sep="."), paste("Max.inv", names(OneTrait), sep="."), 
-                        paste("p.value", names(OneTrait), sep="."), paste("conf.int.Lo", names(OneTrait), sep="."), paste("conf.int.Hi", names(OneTrait), sep="."))
+                  "NA", "NA", "NA","NA", "NA", "NA", "NA", "NA")
+    rownames(summ) <- c("Total.tips.with.trait","Percent.of.total.tips.with.trait", 
+                        "Median.tot","Min.tot", "Max.tot",
+                        "Total.native.tips.with.trait",  "Percent.of.native.tips.with.trait", 
+                        "Mean.nat", "Median.nat", "Min.nat", "Max.nat",
+                        "Total.invasive.tips.with.trait", "Percent.of.invasive.tips.with", 
+                        "Mean.inv", "Median.inv", "Min.inv", "Max.inv", 
+                        "p.value.mean.trait", "conf.int.Lo", "conf.int.Hi")
     colnames(summ) <- names(OneTrait)
     return(summ)
   } 
@@ -197,16 +391,16 @@ commTraitSummary  <- function(phy, community, traits, OneTrait, col){
   comTraitPruned <- (comTrait)[which(!comTrait[names(OneTrait)] == "NA"),] ## prune data to trait
   if (nrow(comTraitPruned) == 0){
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA",
-                  "NA", "NA", "NA", "NA", "NA", "NA")
+                  "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA")
     
-    rownames(summ) <- c(paste("Total.tips.with", names(OneTrait), sep="."),paste("Percent.of.total.tips.with", names(OneTrait), sep="."), 
-                        paste("Median.tot", names(OneTrait), sep="."),paste("Min.tot", names(OneTrait), sep="."), paste("Max.tot", names(OneTrait),sep="."),
-                        paste("Total.native.tipswith", names(OneTrait), sep="."),  paste("Percent.of.native.tips.with", names(OneTrait), sep="."), 
-                        paste("Median.nat", names(OneTrait), sep="."), paste("Min.nat", names(OneTrait), sep="."), paste("Max.nat", names(OneTrait), sep="."),
-                        paste("Total.invasive.tips.with",names(OneTrait), sep="."), paste("Percent.of.invasive.tips.with", names(OneTrait), sep="."), 
-                        paste("Median.inv",names(OneTrait), sep="."), paste("Min.inv", names(OneTrait), sep="."), paste("Max.inv", names(OneTrait), sep="."), 
-                        paste("p.value", names(OneTrait), sep="."), paste("conf.int.Lo", names(OneTrait), sep="."), paste("conf.int.Hi", names(OneTrait), sep="."))
     
+    rownames(summ) <- c("Total.tips.with.trait","Percent.of.total.tips.with.trait", 
+                        "Median.tot","Min.tot", "Max.tot",
+                        "Total.native.tips.with.trait",  "Percent.of.native.tips.with.trait", 
+                        "Mean.nat", "Median.nat", "Min.nat", "Max.nat",
+                        "Total.invasive.tips.with.trait", "Percent.of.invasive.tips.with", 
+                        "Mean.inv", "Median.inv", "Min.inv", "Max.inv", 
+                        "p.value.mean.trait", "conf.int.Lo", "conf.int.Hi")
     colnames(summ) <- names(OneTrait)   
     return(summ)
   }
@@ -224,10 +418,12 @@ commTraitSummary  <- function(phy, community, traits, OneTrait, col){
     comTraitPruned.min <- min(comTraitPruned[,2])
     comTraitPruned.max <- max(comTraitPruned[,2])
     
+    n.sp.mean <- mean(n.comTraitPruned[,2])
     n.sp.median <- median(n.comTraitPruned[,2])
     n.sp.min <- min(n.comTraitPruned[,2])
     n.sp.max <- max(n.comTraitPruned[,2])
     
+    i.sp.mean <- mean(i.comTraitPruned[,2])
     i.sp.median <- median(i.comTraitPruned[,2])
     i.sp.min <- min(i.comTraitPruned[,2])
     i.sp.max <- max(i.comTraitPruned[,2])
@@ -235,28 +431,117 @@ commTraitSummary  <- function(phy, community, traits, OneTrait, col){
     t.means <- t.test(as.numeric(as.character(i.comTraitPruned[,2])), as.numeric(as.character(n.comTraitPruned[,2])), paired=F)
     
     summ <- rbind(tot.sp.trait, tot.sp.trait.percent, comTraitPruned.median, comTraitPruned.min, comTraitPruned.max,
-                  n.sp.trait, n.sp.trait.percent, n.sp.median, n.sp.min, n.sp.max,
-                  i.sp.trait, i.sp.trait.percent, i.sp.median, i.sp.min, i.sp.max,
+                  n.sp.trait, n.sp.trait.percent, n.sp.mean, n.sp.median, n.sp.min, n.sp.max,
+                  i.sp.trait, i.sp.trait.percent, i.sp.mean, i.sp.median, i.sp.min, i.sp.max,
                   t.means$p.value, t.means$conf.int[1], t.means$conf.int[2])
     
   } else {
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA",
-                  "NA", "NA", "NA", "NA", "NA", "NA")
+                  "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA")
     
   }
   
-  rownames(summ) <- c(paste("Total.tips.with", names(OneTrait), sep="."),paste("Percent.of.total.tips.with", names(OneTrait), sep="."), 
-                      paste("Median.tot", names(OneTrait), sep="."),paste("Min.tot", names(OneTrait), sep="."), paste("Max.tot", names(OneTrait),sep="."),
-                      paste("Total.native.tipswith", names(OneTrait), sep="."),  paste("Percent.of.native.tips.with", names(OneTrait), sep="."), 
-                      paste("Median.nat", names(OneTrait), sep="."), paste("Min.nat", names(OneTrait), sep="."), paste("Max.nat", names(OneTrait), sep="."),
-                      paste("Total.invasive.tips.with",names(OneTrait), sep="."), paste("Percent.of.invasive.tips.with", names(OneTrait), sep="."), 
-                      paste("Median.inv",names(OneTrait), sep="."), paste("Min.inv", names(OneTrait), sep="."), paste("Max.inv", names(OneTrait), sep="."), 
-                      paste("p.value", names(OneTrait), sep="."), paste("conf.int.Lo", names(OneTrait), sep="."), paste("conf.int.Hi", names(OneTrait), sep="."))
+  rownames(summ) <- c("Total.tips.with.trait","Percent.of.total.tips.with.trait", 
+                      "Median.tot","Min.tot", "Max.tot",
+                      "Total.native.tips.with.trait",  "Percent.of.native.tips.with.trait", 
+                      "Mean.nat", "Median.nat", "Min.nat", "Max.nat",
+                      "Total.invasive.tips.with.trait", "Percent.of.invasive.tips.with", 
+                      "Mean.inv", "Median.inv", "Min.inv", "Max.inv", 
+                      "p.value.mean.trait", "conf.int.Lo", "conf.int.Hi")
   
   colnames(summ) <- names(OneTrait)
   return(summ)
   
 }
+
+sig.obs.functionDiversty <- function(obsdiffSum, obstraitSum, metadata, traitName, plottype=c("summary.Bar")){
+  nns <- length(obstraitSum$p.value.mean.trait[which(obstraitSum$p.value.mean.trait >= 0.05)]) # 65 NS
+  nsig <- length(obstraitSum$p.value.mean.trait[which(obstraitSum$p.value.mean.trait <= 0.05)]) # 9 significant differneces between means 
+  sigSum <- (obstraitSum[which(obstraitSum$p.value <= 0.05),]) # 9 significant differneces between means 
+  percentSig <- nsig/nisls #9/74 #0.1216216
+  nat.greater <- suppressWarnings(sum(ifelse(as.numeric(obstraitSum$Median.nat) > as.numeric(obstraitSum$Median.inv), 1,0), na.rm = T)) #66
+  nat.less <- suppressWarnings(sum(ifelse(as.numeric(obstraitSum$Median.nat) < as.numeric(obstraitSum$Median.inv), 1,0), na.rm = T)) #66
+  
+  sig.sm <- nrow(merge(metadata[which(metadata$Size.cat == "sm"),], sigSum, by=0)) # 0 small islands sig 
+  sig.med <- nrow(merge(metadata[which(metadata$Size.cat == "med"),], sigSum, by=0)) # 6/74 med islands sig  0.08108108
+  sig.lg <- nrow(merge(metadata[which(metadata$Size.cat == "lg"),], sigSum, by=0)) # 3/74 large isl sig  0.04054054
+  
+  tr.dif <- cbind(nisls, nsig, nns, percentSig, nat.greater, nat.less, sig.sm, sig.med, sig.lg)
+  rownames(tr.dif) <- traitName
+  colnames(tr.dif) <- c("nIslands", "sigDiff", "ns", "%Sig", "mean_N>I", "mean_N<I", "sigSmall", "sigMed", "sigLg")  
+  
+  trait.Sum.ranm <- obsdiffSum[obsdiffSum$t.NNFD.p.value != "NA",]
+  tmp <- transform(merge(obstraitSum, obsdiffSum, by=0), row.names=Row.names,Row.names=NULL)
+  trait.tmp <- (merge(tmp, metadata, by=0))
+  nisls <- nrow(trait.tmp)
+  # indicate islands with significant difference in observed means between status groups for each island
+  trait.tmp[,"Significance"] <- ifelse(trait.tmp[,"p.value.mean.trait"] <= 0.05, 1,
+                                       ifelse(trait.tmp[,"t.NNFD.p.value"] <= 0.05, 2,
+                                              ifelse(trait.tmp[,"t.MFD.p.value"] <= 0.05, 3, 0)))
+  
+  
+  #### summarize significance data by size categories
+  trait.tmp$Size.cat <- as.character(trait.tmp$Size.cat)
+  trait.tmp$Size.cat <- factor(trait.tmp$Size.cat, levels=c("sm", "med", "lg"))
+  
+  sigMeas = cbind("Island"=trait.tmp[,1], "Size.cat"=as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "measure", times = nrow(seedmass)), "Significance"=ifelse(seedmass[,"p.value.mean.trait"] <= 0.05, 1,0))
+  sigNNFD = cbind("Island"=trait.tmp[,1], "Size.cat"=as.character(trait.tmp[,"Size.cat"]), "Metric"=rep(x = "NNFD", times = nrow(trait.tmp)), "Significance"=ifelse(trait.tmp[,"t.NNFD.p.value"] <= 0.05, 1,0))
+  sigMFD = cbind("Island"=trait.tmp[,1], "Size.cat"=as.character(trait.tmp[,"Size.cat"]), "Metric"=rep(x = "MFD", times = nrow(trait.tmp)), "Significance"=ifelse(trait.tmp[,"t.MFD.p.value"] <= 0.05, 1,0))
+  obs.func.diff <- as.data.frame(rbind(sigMeas, sigNNFD, sigMFD))
+  
+  ##### significance in observed difference bewteen mean NNFDi / mean NNFDn 
+  nsdifNNFD <- length(trait.Sum.ranm$t.NNFD.p.value[which(trait.Sum.ranm$t.NNFD.p.value >= 0.05)]) # 34 islands NS
+  sigdifNNFD <- length(trait.Sum.ranm$t.NNFD.p.value[which(trait.Sum.ranm$t.NNFD.p.value <= 0.05)]) # 40 isalnds with significant differnece in mean betweenmean MMNPDi / mean MMNPDn 
+  trait.tmp.NNFD.sig <- trait.Sum.ranm[which(trait.Sum.ranm$t.NNFD.p.value <= 0.05),]
+  #trait.tmp[which(trait.tmp$t.NNFD.p.value <= 0.005),] # 3
+  per.diff.NNFD <- sigdifNNFD/nisls # 0.5405405 
+  nat.greater.NNFD <- sum(ifelse(as.numeric(trait.Sum.ranm$meanNNFDnatives) > as.numeric(trait.Sum.ranm$meanNNFDinvasives), 1,0)) #74
+  nat.less.NNFD <- sum(ifelse(as.numeric(trait.Sum.ranm$meanNNFDnatives) < as.numeric(trait.Sum.ranm$meanNNFDinvasives), 1,0)) #74
+  
+  sm.sigNNFD <- nrow(merge(metadata[which(metadata$Size.cat == "sm"),], trait.tmp.NNFD.sig, by=0)) # 7/74 small islands sig NNFD 0.09459459
+  med.sigNNFD <- nrow(merge(metadata[which(metadata$Size.cat == "med"),], trait.tmp.NNFD.sig, by=0)) # 20/74 medium isl sig NNFD 0.2702703
+  lg.sigNNFD <- nrow(merge(metadata[which(metadata$Size.cat == "lg"),], trait.tmp.NNFD.sig, by=0)) # 13/74 large isl sig NNFD 0.1756757
+  
+  #### significance in observed difference bewteen mean MFDin / mean MFDnn
+  nsdifMFD <- length(trait.Sum.ranm$t.MFD.p.value[which(trait.Sum.ranm$t.MFD.p.value >= 0.05)]) # 53 NS
+  sigdifMFD <- length(trait.Sum.ranm$t.MFD.p.value[which(trait.Sum.ranm$t.MFD.p.value <= 0.05)]) # 21 significant differneces between mean MFD
+  trait.tmp.MFD.sig <- trait.Sum.ranm[which(trait.Sum.ranm$t.MFD.p.value <= 0.05),]
+  #trait.tmp[which(trait.tmp$t.MFD.p.value <= 0.005),] # 5
+  per.diff.MFD <- sigdifMFD/nisls # 0.2837838
+  nat.greater.MFD <-sum(ifelse(as.numeric(trait.Sum.ranm$meanMFDnatives) > as.numeric(trait.Sum.ranm$meanMFDinvasives), 1,0)) #70
+  nat.less.MFD <-sum(ifelse(as.numeric(trait.Sum.ranm$meanMFDnatives) < as.numeric(trait.Sum.ranm$meanMFDinvasives), 1,0)) #4
+  
+  sm.sigMFD <- nrow(merge(metadata[which(metadata$Size.cat == "sm"),], trait.tmp.MFD.sig, by=0)) # 2/74 small islands sig MFD 0.02702703
+  med.sigMFD <- nrow(merge(metadata[which(metadata$Size.cat == "med"),], trait.tmp.MFD.sig, by=0)) # 4/74 med islands sig MFD 0.05405405
+  lg.sigMFD <- nrow(merge(metadata[which(metadata$Size.cat == "lg"),], trait.tmp.MFD.sig, by=0)) # 15/74 large isl sig MFD 0.2027027
+  
+  NNFD <- c(nisls, sigdifNNFD, nsdifNNFD, per.diff.NNFD, nat.greater.NNFD, nat.less.NNFD, sm.sigNNFD, med.sigNNFD, lg.sigNNFD)
+  MFD <- c(nisls, sigdifMFD, nsdifMFD, per.diff.MFD, nat.greater.MFD, nat.less.MFD, sm.sigMFD, med.sigMFD, lg.sigMFD)
+  
+  sigobs <- rbind(tr.dif, NNFD, MFD)
+  colnames(sigobs) <- c("nIslands", "sigDiff", "ns", "%Sig", "mean_N>I", "mean_N<I", "sigSmall", "sigMed", "sigLg")
+  
+  
+  if (plottype[1] == "summary.Bar"){
+    ### Bar plot of significance 
+    neworder = (c("measure", "NNFD", "MFD"))
+    p <- ggplot(arrange(transform(obs.func.diff, Metric=factor(Metric, levels=neworder)), Metric), aes(x=Significance, fill=factor(Size.cat))) + 
+      geom_bar(stat="bin") +
+      scale_fill_manual(name="Size Category",
+                        breaks=c("sm", "med", "lg"),
+                        values=c("sm"="dodgerblue4", "med"="orangered3", "lg"="gold1"),
+                        labels=c("sm"="small", "med"="medium", "lg"="large")) +
+      theme_bw() +
+      scale_x_discrete(name="", labels=c("0"="NS", "1"="Significant")) +
+      facet_wrap(~ Metric) +
+      ggtitle(paste("Observed difference of \n Functional Distances\n", traitName))
+    return(list(p,sigobs))
+  } else {
+    return(sigobs)
+  }
+  
+}
+
 
 #### Creates of dataframe of just species in phylo and community for that have functional trait data for one trait
 # phy= phylogeny of species pool 
@@ -264,6 +549,7 @@ commTraitSummary  <- function(phy, community, traits, OneTrait, col){
 # traits = trait matirx, with first column labeled "Status"
 # OneTrait = the name of one trait from trait matrix (rownames = community names, col= trait)
 # col = column number indicating the community of interest 
+
 pruneTrait <- function(phy, community, traits, OneTrait, col){
   ## prune community to include just species present
   dataPruned <- (community)[which(!community[col] == "0"), col]  
@@ -372,49 +658,51 @@ melt.trait.to.meta <- function(list, metadata, meta.data.column.name, plot.title
 ## and functional diffference for each species to mean trait value of native (MFD.n) and invasive commmunity (MFD.i)
 # output = results from phyloDistinct for one community
 # traits = results from pruntTrait
-# OneTrait = the name of one trait from trait matrix
-# col = column of the community of interest 
+# traitname = the name of one trait from trait matrix
+
 functionDistinct <- function(output, traits, traitname){
   diff.data <- data.frame()
   if (nrow(output)==1){
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
     colnames(diff.data) <-c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
-    return(diff.data)#(print("has only one species; go fuck yourself"))
+    return(diff.data)
   }
   if (nrow(as.data.frame(output[output["Species.Status"]=="n",]))==1){
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
     colnames(diff.data) <- c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
-    return(diff.data)#(print("has only one native species; go fuck yourself"))
+    return(diff.data)
   }
   if (nrow(as.data.frame(output[output["Species.Status"]=="i",]))==0){
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
     colnames(diff.data) <- c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
-    return(diff.data)#(print("has only one native species; go fuck yourself"))
+    return(diff.data)
   }
   output <- as.data.frame(output) ### DNNS results; have info about nearest native species
   
   # merge Communty and trait data for one trait: Row.names, Species.Status,  Nearest.native, leafletSize
   comDNNSTrait <- merge(output[c("Species.Status","Nearest.native")], na.omit(traits[traitname]), by=0) #merge DNNS data and trait data; remove NA
+  ### IF THERE IS NO TRAIT DATA FOR NEAREST NATIVE (DNNS) <- NA....
   if (nrow(comDNNSTrait) == 0) {
     dat <- cbind("NA", "NA", "NA", "NA")
     diff.data <- rbind(diff.data, dat)
     colnames(diff.data) <- c("Species.Status", paste("NNFD", traitname, sep="_"), "MFD.n",  "MFD.i")
-    return(diff.data)#(print("has only one native species; go fuck yourself"))
+    return(diff.data)
   }
   
   dim(comDNNSTrait)
   i.comDNNSTrait <- (comDNNSTrait)[which(comDNNSTrait[2] == "i"),] ## just invasive species with trait on island
   n.comDNNSTrait <- (comDNNSTrait)[which(comDNNSTrait[2] == "n"),] ## native species with trait on island
   
-  # create distance matrix of trait values == absolute value of difference in trait values between each species 
-  trait.dist <- as.matrix(dist(comDNNSTrait[4], upper=T))
+  # create difference matrix of trait values == value of difference in trait values between each species 
+  Table1 <- (comDNNSTrait[4])
+  trait.dist <- t(outer(Table1[,1], Table1[,1], `-`))
   rownames(trait.dist) <- comDNNSTrait$Row.names
   colnames(trait.dist) <- comDNNSTrait$Row.names
-  dim(trait.dist)
-  head(trait.dist)
+  #dim(trait.dist)
+  #head(trait.dist)
   
   for (i in 1:nrow(trait.dist)){
     i.traits.new <- i.comDNNSTrait[i.comDNNSTrait$Row.names != comDNNSTrait[i,"Row.names"], "Row.names"] # remove self comparison for invasives
@@ -565,13 +853,13 @@ melt.MFD.to.meta <- function(list, metadata, meta.data.column.name, plot.title, 
 
 #### Summarizes NNFD, MFD across each community for each trait
 #outputTraitDistance = output from functionDistinct() for each trait (list of each community)
-functionObsSum <- function(outputTraitDistance){
+summary.function.diff <- function(outputTraitDistance){
   outputTraitDistance.naomit <- (outputTraitDistance)[which(!outputTraitDistance[2] == "NA"), ]
   summ <- data.frame()
   if (nrow(outputTraitDistance.naomit)==0){
     summ <- rbind("NA", "NA", "NA", "NA", "NA","NA", "NA", "NA", "NA","NA", "NA", "NA")
     rownames(summ) <- c("meanNNFDnatives", "meanNNFDinvasives", "n.natives", "n.invasives", "t.NNFD.p.value", "t.NNFD.conf.int.Lo","t.NNFD.conf.int.Hi", 
-                        "meanMFDnat_nat", "meanMFDinv_nat", "t.MFD.p.value", "t.MFD.conf.int.Lo","t.MFD.conf.int.Hi")  #colnames(summ) <- names(traits[col])
+                        "meanMFDnatives", "meanMFDinvasives", "t.MFD.p.value", "t.MFD.conf.int.Lo","t.MFD.conf.int.Hi")  #colnames(summ) <- names(traits[col])
     return(summ)
   }
   natives <- outputTraitDistance.naomit[outputTraitDistance.naomit["Species.Status"]=="n",] # get all native
@@ -606,7 +894,7 @@ functionObsSum <- function(outputTraitDistance){
   }
   
   rownames(summ) <- c("meanNNFDnatives", "meanNNFDinvasives", "n.natives", "n.invasives", "t.NNFD.p.value", "t.NNFD.conf.int.Lo","t.NNFD.conf.int.Hi", 
-                      "meanMFDnat_nat", "meanMFDinv_nat", "t.MFD.p.value", "t.MFD.conf.int.Lo","t.MFD.conf.int.Hi")  #colnames(summ) <- names(traits[col])
+                      "meanMFDnatives", "meanMFDinvasives", "t.MFD.p.value", "t.MFD.conf.int.Lo","t.MFD.conf.int.Hi")  #colnames(summ) <- names(traits[col])
   return(summ)
 }
 
@@ -630,6 +918,7 @@ functionObsSum <- function(outputTraitDistance){
 # com = community matrix, rownames = species, colnames = communtities (observed)
 # traits = dataframe with rownames = species, colname == "Status" has "i" coded for invasive spcies, "n" for native
 # N = the number of null communities to generate
+
 randomizeCommunity <- function(phy, com, traits, N){
   community.matrix.list <- list()
   inv.com <- rownames(traits[traits$Status=="i",])
@@ -690,10 +979,10 @@ sim.meanDNNS.MDNS <- function(phy, com, island, traits, N){
     All.Sim.com.Dist <- phyloDistinct(phy=phy, community=comm.island, col=(names(comm.island)))#apply DNNS funciton across all communities ...find.NN
     All.Sim.com.DistsummaryDNNS <- summary.DNNS.MDNS(All.Sim.com.Dist) #apply summary funciton across all communities...summary.DNNS
     
-    tmp <- c(All.Sim.com.DistsummaryDNNS["n.natives",], All.Sim.com.DistsummaryDNNS["n.invasives",], All.Sim.com.DistsummaryDNNS["meanDNNSinvasives",], All.Sim.com.DistsummaryDNNS["meanDNNSnatives",], All.Sim.com.DistsummaryDNNS["meanMDNSinv_nat", ], All.Sim.com.DistsummaryDNNS["meanMDNSnat_nat", ])
+    tmp <- c(All.Sim.com.DistsummaryDNNS["n.natives",], All.Sim.com.DistsummaryDNNS["n.invasives",], All.Sim.com.DistsummaryDNNS["meanDNNSinvasives",], All.Sim.com.DistsummaryDNNS["meanDNNSnatives",], All.Sim.com.DistsummaryDNNS["meanMDNSinvasives", ], All.Sim.com.DistsummaryDNNS["meanMDNSnatives", ])
     sim.mean <- rbind(sim.mean, tmp)
   }
-  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanDNNSinvasives", "meanDNNSnatives", "meanMDNSinv_nat", "meanMDNSnat_nat")
+  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanDNNSinvasives", "meanDNNSnatives", "meanMDNSinvasives", "meanMDNSnatives")
   return(sim.mean)
   
 }
@@ -719,7 +1008,6 @@ commSummary  <- function(phy, community, col){
                         "Percent native species", "Percent invasive species", "Percent native tips", "Percent invasive tips")
     colnames(summ) <- names(community[col])
     return(summ)
-    #return(print(paste(names(community[col]), "has only one native species; go fuck yourself", sep=" ")))
   } # if community has only one species, return
   #print(c(names(community[col]), "Total native species =", n.sp), quote=F) ## print the number of native species on the island
   #print(c(names(community[col]), "Total invasive species =", i.sp), quote=F) ## print the number of native species on the island
@@ -822,7 +1110,7 @@ ses.PhyloDist <- function(phy, com, island, simOneIsland, N){
   sd.sim.MDNS.inv <- sd(meanMDNSinvasives.inv.dist, na.rm=T)
   se.sim.MDNS.inv <- mean.sim.MDNS.inv / sqrt(N)
   #observed mean
-  obs.MDNS.i <- as.numeric(as.character(outputSummary["meanMDNSinv_nat",]))
+  obs.MDNS.i <- as.numeric(as.character(outputSummary["meanMDNSinvasives",]))
   #Z-value assuming that the null hypothesis is true 
   z.MDNS.inv <- (obs.MDNS.i - mean.sim.MDNS.inv) / sd.sim.MDNS.inv 
   # quantile / ranks = frequency that oberved pattern is greater than the randomized values
@@ -856,6 +1144,218 @@ ses.PhyloDist <- function(phy, com, island, simOneIsland, N){
   
 }
 
+sum.sesPhyloDist <- function(plottype=c("NullObsIntervalDNNS","NullObsIntervalMDNS", "ses", "summary.Bar"), simPhyloOut, metadata){
+  
+  ## Read in simulation file
+  sdf <- read.csv(file=simPhyloOut, as.is=T, row.names=1)
+  head(sdf[, 1:6])
+  list.sdf <- list()
+  for (i in 1:ncol(sdf))
+    try({
+      newlist <- (cbind(sdf[, c(1:6)]))
+      head(newlist)
+      colnames(newlist) <- c("n.native.tips", "n.invasive.tips", "meanDNNSinvasives", "meanDNNSnatives", "meanMDNSinvasives", "meanMDNSnatives")
+      list.sdf[[i]] <- newlist
+      sdf <- sdf[, -c(1:6)]
+      
+      
+    }, silent=TRUE)
+  names(list.sdf) <- SJ_islands
+  
+  ## remove islands that don't make sense for the null hyp.
+  #remove.islands.sim <- c("All_SanJuanIslands", "Unnamed_west_of_Castle_Island") ## no null species pool, only one invasive species
+  #list.sdf.new  <- list.sdf[-which(names(list.sdf) %in% remove.islands.sim)]
+  #length(list.sdf.new) # 72
+  
+  ## Append metadata, observed means to each element in list of communities 
+  #head(metadata)
+  listIslands <- list.sdf#list.sdf.new
+  list.meta.null.distrib.SJ <- list()
+  for (i in 1:length(listIslands)){ 
+    tmp <- metadata[as.character(names(listIslands[i])), "Area.m2"]
+    tmp.DNNS.i <- rep(summ.DNNS.SJ[as.character(names(summ.DNNS.SJ[i]))][[1]][[2]], times=nrow(listIslands[[i]])) # observed DNNS.i
+    tmp.MDNS.in <- rep(summ.DNNS.SJ[as.character(names(summ.DNNS.SJ[i]))][[1]][[9]], times=nrow(listIslands[[i]])) # observed MDNS.i to mean native community
+    newlist <- mapply(cbind, "islands"=names(listIslands[i]), listIslands[i], "Area.m2"=tmp, "Obs.meanDNNSinvasives"=tmp.DNNS.i, "Obs.meanMDNSinvasives"= tmp.MDNS.in, SIMPLIFY=F)   
+    list.meta.null.distrib.SJ[i] <- newlist[1]
+  }
+  names(list.meta.null.distrib.SJ) <- names(list.sdf)
+  #head(list.meta.null.distrib.SJ[[1]])
+  
+  ## Melt list of simulated mean DNNS/MDNS and observed means into dataframe, and remove NA
+  sim.null.distrib.melt <- melt(list.meta.null.distrib.SJ, measure.vars="islands")
+  sim.null.distrib.melt <- sim.null.distrib.melt[which(!sim.null.distrib.melt$value == "NA"),] 
+  #head(sim.null.distrib.melt)
+  
+  listIslands <- ses.SanJuan.DNNS.MDNS
+  ses.DNNS.MDNS <- data.frame()
+  for (i in 1:length(listIslands)){ 
+    tmp1 <- metadata[as.character(names(listIslands[i])), "Area.m2"]
+    tmp2 <- metadata[as.character(names(listIslands[i])), "Size.cat"]
+    newlist <-cbind(t(listIslands[[i]]), "Area.m2"=tmp1, "Size.cat"=tmp2) 
+    ses.DNNS.MDNS <- rbind(ses.DNNS.MDNS, newlist)
+  }
+  #head(ses.DNNS.MDNS)
+  #write.csv(ses.DNNS.MDNS, file="ses.DNNS.MDNS.MDNSNew2.csv")
+  ses.DNNS.MDNS$p.value.ranks <- as.numeric(as.character(ses.DNNS.MDNS$p.value.ranks)) 
+  ses.DNNS.MDNS$obs.z <- as.numeric(as.character(ses.DNNS.MDNS$obs.z))
+  ses.DNNS.MDNS <- na.omit(ses.DNNS.MDNS)
+  ses.DNNS.MDNS <- ses.DNNS.MDNS[!is.infinite(as.numeric(as.character(ses.DNNS.MDNS$obs.z))),]
+  
+  ## add a column indicating significant islands for plotting
+  sig = (ses.DNNS.MDNS[,"p.value.ranks"] <= 0.05)
+  neg = (as.numeric(as.character(ses.DNNS.MDNS[,"obs.z"])) <= 0)
+  ses.DNNS.MDNS <- cbind(ses.DNNS.MDNS, sig)
+  
+  ## code for signficance of observed means, and for direction of pattern (clusering / overdispersed)
+  ses.DNNS.MDNS[,"Significance"] <- ifelse(ses.DNNS.MDNS[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.DNNS.MDNS[,"obs.z"])) <= 0, 1,
+                                           ifelse(ses.DNNS.MDNS[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.DNNS.MDNS[,"obs.z"])) >= 0, 2, 
+                                                  ifelse(ses.DNNS.MDNS[,"p.value.ranks"] >= 0.05 & as.numeric(as.character(ses.DNNS.MDNS[,"obs.z"])) <= 0, 3, 4)))
+  
+  
+  #### summarize significance data by size categories
+  nisls <- length(unique(ses.DNNS.MDNS$island))
+  ### ses MMNPDi 
+  DNNS_inv <- ses.DNNS.MDNS[which(ses.DNNS.MDNS$Metric == "DNNS_inv"), ] 
+  sigdifDNNS <- nrow(DNNS_inv[which(as.numeric(as.character(DNNS_inv$p.value.ranks)) <= 0.05), ]) # 22
+  nsdifDNNS <- nrow(DNNS_inv[which(as.numeric(as.character(DNNS_inv$p.value.ranks)) >= 0.05), ]) #50 NS
+  per.diff.DNNS <- sigdifDNNS/nisls  # 0.3055556
+  
+  clustered.DNNS <- length(which(as.numeric(as.character(DNNS_inv$p.value.ranks)) <= 0.05 &
+                                   as.numeric(as.character(DNNS_inv[,"obs.z"])) < 0 )) ## 22 DNNS clustered, significant
+  dispersed.DNNS <- length(which(as.numeric(as.character(DNNS_inv$p.value.ranks)) <= 0.05 &
+                                   as.numeric(as.character(DNNS_inv[,"obs.z"])) > 0 )) ## 0 DNNS overdispersed, significant
+  
+  sigDNNS_inv <- (DNNS_inv[which(as.numeric(as.character(DNNS_inv$p.value.ranks)) <= 0.05), ])
+  sm.sigDNNS <- length(which(sigDNNS_inv$Size.cat == "sm")) # 10/72 small islands sig 0.1388889
+  med.sigDNNS <- length(which(sigDNNS_inv$Size.cat == "med"))  # 6/72 med islands sig  0.08333333
+  lg.sigDNNS <- length(which(sigDNNS_inv$Size.cat == "lg"))  # 6/72 large isl sig  0.08333333
+  
+  ## ses MDNSin 
+  MDNS_inv_nat <- ses.DNNS.MDNS[which(ses.DNNS.MDNS$Metric == "MDNS_inv_nat"), ] 
+  sigdifMDNS <- nrow(MDNS_inv_nat[which(as.numeric(as.character(MDNS_inv_nat$p.value.ranks)) <= 0.05), ]) #27 significant
+  nsdifMDNS <- nrow(MDNS_inv_nat[which(as.numeric(as.character(MDNS_inv_nat$p.value.ranks)) >= 0.05), ]) #45 NS
+  per.diff.MDNS <- sigdifMDNS/nisls  # 0.375
+  
+  clustered.MDNS <- length(which(as.numeric(as.character(MDNS_inv_nat$p.value.ranks)) <= 0.05 &
+                                   as.numeric(as.character(MDNS_inv_nat[,"obs.z"])) < 0 )) ## 5 MDNS clustered, significant
+  dispersed.MDNS <- length(which(as.numeric(as.character(MDNS_inv_nat$p.value.ranks)) <= 0.05 &
+                                   as.numeric(as.character(MDNS_inv_nat[,"obs.z"])) > 0 )) ## 22 MDNS overdispersed, significant
+  
+  sigMDNS_inv <- (MDNS_inv_nat[which(as.numeric(as.character(MDNS_inv_nat$p.value.ranks)) <= 0.05), ]) #45 NS
+  sm.sigMDNS <- length(which(sigMDNS_inv$Size.cat == "sm")) #7/72  0.09722222
+  med.sigMDNS <-length(which(sigMDNS_inv$Size.cat == "med")) #16/72   0.2222222
+  lg.sigMDNS <-length(which(sigMDNS_inv$Size.cat == "lg")) #4/72   0.05555556
+  
+  ses.dnns <- c(nisls, sigdifDNNS, nsdifDNNS, per.diff.DNNS, clustered.DNNS, dispersed.DNNS, sm.sigDNNS, med.sigDNNS, lg.sigDNNS)
+  ses.mdns <- c(nisls, sigdifMDNS, nsdifMDNS, per.diff.MDNS, clustered.MDNS, dispersed.MDNS, sm.sigMDNS, med.sigMDNS, lg.sigMDNS)
+  
+  sigobs <- rbind(ses.dnns, ses.mdns)
+  colnames(sigobs) <- c("nIslands", "sigDiff", "ns", "%Sig", "sig.clustered", "sig.even", "sigSmall", "sigMed", "sigLg")
+  
+  ###### Plot distribution of null means, with observed mean, for each island 
+  if(plottype[1] == "NullObsIntervalDNNS"){
+    p <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanDNNSinvasives))), 
+                position=position_dodge(width=1)) 
+    p <- p + geom_boxplot(aes(fill=factor(as.character(variable))), width = 1)
+    p <- p + scale_x_discrete("Island (increasing size)") 
+    p <- p + scale_y_log10("log Null distribution mean(DNNS)")
+    p <- p + theme_bw() 
+    p <- p + scale_fill_manual(values="grey", labels="")
+    p <- p + guides(fill=guide_legend(title="Null distibuiton : random invasive occurrence"))
+    p <- p + theme(legend.position="top")
+    p <- p + geom_point(aes(y = Obs.meanDNNSinvasives), shape=1, color="magenta1") 
+    p <- p + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+    p <- p + ggtitle("Null Distribution and observed mean(DNNS)\n Increasing Island Size") + theme(plot.title=element_text(size=rel(1.5)))
+    p <- p + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+    return(list(p, sigobs))
+    
+  }
+  
+  if(plottype[1] == "NullObsIntervalMDNS"){
+    p <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanMDNSinv_nat))), 
+                position=position_dodge(width=1)) 
+    p <- p + geom_boxplot(aes(fill=factor(as.character(variable))), width = 1)
+    p <- p + scale_x_discrete("Island (increasing size)") #, breaks=seq(0, 80, 10)) 
+    p <- p + scale_y_log10("log Null distribution mean(MDNS inv-nat)")
+    p <- p + theme_bw() 
+    p <- p + scale_fill_manual(values="grey", labels="")
+    p <- p + guides(fill=guide_legend(title=" Null distibuiton : random invasive occurrence"))
+    p <- p + theme(legend.position="top")
+    p <- p + geom_point(aes(y = Obs.meanMDNSinv_nat), shape=1, color="magenta1") 
+    p <- p + theme(axis.text.x = element_text(angle = -45, hjust = 0))
+    p <- p + ggtitle("Null Distribution and observed mean(MDNS inv-nat)\n Increasing Island Size") + theme(plot.title=element_text(size=rel(1.5)))
+    p <- p + theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+    return(list(p,sigobs))
+    
+  }
+  
+  
+  if(plottype[1] == "ses"){
+      p <- ggplot(ses.DNNS.MDNS, aes(x=reorder(factor(island),as.numeric(as.character(Area.m2))), 
+                                   y=as.numeric(as.character((obs.z))), color=factor(sig), shape=Metric, fill=factor(sig))) +
+      geom_point(size=10) +
+      coord_cartesian(ylim=c(-5, 5)) + 
+      scale_y_continuous("standardized effect size", breaks=seq(-8, 8, 2)) +
+      scale_x_discrete("Island (increasing size)") +
+      scale_fill_manual(values=alpha(c("FALSE"="white", "TRUE"= "black"), .3), guide="none") +
+      scale_color_manual(name =" ",values=c("FALSE"= "grey", "TRUE"="black"), guide="none") +
+      scale_shape_manual(name =" ",values=c("DNNS_inv"= 21, "MDNS_inv_nat"= 24), labels=c("DNNS_inv"="DNNS i  ", "MDNS_inv_nat"="MDNS inv_nat")) +
+      theme_bw() +
+      theme(legend.position="top") +
+      geom_abline(intercept = 0, slope = 0, colour = "grey", size = .5) +
+      geom_vline(xintercept = c(18.5, 54.5)) +
+      theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
+      ggtitle("Significane of Phylogenetic Distances for\n invasive species to nearest native (DNNS),\n and native community (MDNS)\n") +
+      theme(plot.title=element_text(size=rel(1.5))) +
+      theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+    return(list(p, sigobs))
+    
+  }
+  
+  
+  
+  ################################## ses PHYLO summary final
+  sesDNNS <- ses.DNNS.MDNS[ses.DNNS.MDNS[,"Metric"] =="DNNS_inv",]
+  sesMDNS <- ses.DNNS.MDNS[ses.DNNS.MDNS[,"Metric"] !="DNNS_inv",]
+  
+  sigDNNSpos = cbind("Island"=rownames(sesDNNS), "Size.cat"=as.character(sesDNNS[,"Size.cat"]), 
+                     "Metric"=rep(x = "DNNS inv > 0", times = nrow(sesDNNS)), 
+                     "Significance"=ifelse(sesDNNS[,"p.value.ranks"] <= 0.05 & 
+                                             as.numeric(as.character(sesDNNS[,"obs.z"])) >= 0, 1,0))
+  sigDNNSneg = cbind("Island"=rownames(sesDNNS), "Size.cat"=as.character(sesDNNS[,"Size.cat"]), 
+                     "Metric"=rep(x = "DNNS inv < 0", times = nrow(sesDNNS)), 
+                     "Significance"=ifelse(sesDNNS[,"p.value.ranks"] <= 0.05 & 
+                                             as.numeric(as.character(sesDNNS[,"obs.z"])) <= 0, 1,0))
+  sigMDNSpos = cbind("Island"=rownames(sesMDNS), "Size.cat"=as.character(sesMDNS[,"Size.cat"]), 
+                     "Metric"=rep(x = "MDNS inv > 0", times = nrow(sesMDNS)), 
+                     "Significance"=ifelse(sesMDNS[,"p.value.ranks"] <= 0.05 & 
+                                             as.numeric(as.character(sesMDNS[,"obs.z"])) >= 0, 1,0))
+  sigMDNSneg = cbind("Island"=rownames(sesMDNS), "Size.cat"=as.character(sesMDNS[,"Size.cat"]), 
+                     "Metric"=rep(x = "MDNS inv < 0", times = nrow(sesMDNS)), 
+                     "Significance"=ifelse(sesMDNS[,"p.value.ranks"] <= 0.05 & 
+                                             as.numeric(as.character(sesMDNS[,"obs.z"])) <= 0, 1,0))
+  sesPhylo <- as.data.frame(rbind(sigDNNSpos, sigDNNSneg, sigMDNSpos, sigMDNSneg))
+  
+  neworder <- c("DNNS inv > 0", "MDNS inv > 0", "DNNS inv < 0", "MDNS inv < 0")
+  sesPhylo2 <- arrange(transform(sesPhylo, Metric=factor(Metric,levels=neworder)),Metric)
+  
+  
+  if(plottype[1] == "summary.Bar"){
+    p <- ggplot(sesPhylo2, aes(x=Significance, fill=factor(Size.cat))) + 
+      geom_bar(stat="bin") +
+      scale_fill_manual(name="Size Category",
+                        breaks=c("sm", "med", "lg"),
+                        values=c("sm"="dodgerblue4", "med"="orangered3", "lg"="gold1")) +
+      theme_bw() +
+      scale_x_discrete(name="", labels=c("0"="NS", "1"="Significant")) +
+      facet_wrap(~Metric, ncol = 2) +
+      ggtitle("SES Phylogenetic Distances \n") 
+    return(list(p, sigobs))    
+  
+  }
+
+}
+
 #################################### Simulate NNFD, MFD  #################################### 
 # phy = community phylogeny
 # com = observed community matrix
@@ -883,16 +1383,16 @@ sim.meanNNFD.MFD <- function(phy, com, island, traits, traitname, N){
     if (nrow(All.Sim.com.Functional.Dist) == 0){
       tmp <- c("NA", "NA", "NA", "NA",  "NA", "NA")
     } else {
-      All.Sim.com.Funct.summaryNNFD <- functionObsSum(All.Sim.com.Functional.Dist) #apply summary funciton across all communities...summary.DNNS
+      All.Sim.com.Funct.summaryNNFD <- summary.function.diff(All.Sim.com.Functional.Dist) #apply summary funciton across all communities...summary.DNNS
       
       tmp <- c(All.Sim.com.Funct.summaryNNFD["n.natives",], All.Sim.com.Funct.summaryNNFD["n.invasives",], 
                All.Sim.com.Funct.summaryNNFD["meanNNFDinvasives",], All.Sim.com.Funct.summaryNNFD["meanNNFDnatives",], 
-               All.Sim.com.Funct.summaryNNFD["meanMFDinv_nat", ], All.Sim.com.Funct.summaryNNFD["meanMFDnat_nat", ])
+               All.Sim.com.Funct.summaryNNFD["meanMFDinvasives", ], All.Sim.com.Funct.summaryNNFD["meanMFDnat_nat", ])
     }
     
     sim.mean <- rbind(sim.mean, tmp)
   }
-  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanNNFDinvasives", "meanNNFDnatives", "meanMFDinv_nat", "meanMFDnat_nat")
+  colnames(sim.mean) <- c("n.native.tips", "n.invasive.tips", "meanNNFDinvasives", "meanNNFDnatives", "meanMFDinvasives", "meanMFDnat_nat")
   return(sim.mean)
   
 }
@@ -913,42 +1413,26 @@ ses.FunctionDist <- function(phy, com, island, simOneIslandOneTrait, outputDNNS,
   
   ## Ouput of phyloDistinct
   output <- functionDistinct(outputDNNS, traits, traitname)
+  p <- as.data.frame(rbind(island,"NNFD_inv", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA","NA", "NA"))
+  q <- as.data.frame(rbind(island,"MFD_inv_nat", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA","NA", "NA"))
+  
+  rownames(p) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
+                   "obs.z", "rankLow", "rankHi", "p.value.ranks", "one.tailed.p.value.z.", "runs")
+  
+  s <- cbind(p, q)
+  colnames(s) <- c(paste(island), paste(island))
   
   if (length(na.omit(as.numeric(as.character(output[,2])))) == 1){
-    p <- as.data.frame(cbind(island, "has only one species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA","NA", "NA"))
-    colnames(p) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
-                               "obs.z", "rankLow", "rankHi", "p.value.ranks", "one.tailed.p.value.z.", "runs")
-    rownames(p) <- island
-    
-    p <- t(p)
-    return(p)
-    #return(print("This island has only one species; go fuck yourself"))
+    return(s)
   } else if (length(which(output[,"Species.Status"]=="n")) == 0){
-    p <- as.data.frame(rbind(island, "has no native species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA", "NA", "NA"))
-    rownames(p) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
-                     "obs.z", "rankLow", "rankHi", "p.value.ranks", "one.tailed.p.value.z.", "runs")
-    colnames(p) <- island
-    p <- t(p)
-    return(p)
-    #return(print("This island has no native species; go fuck yourself"))
+    return(s)
   } else if (length(which(output[,"Species.Status"]=="i")) == 0){
-    p <- as.data.frame(rbind(island, "has no invasive species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA", "NA", "NA"))
-    rownames(p) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
-                     "obs.z", "rankLow", "rankHi", "p.value.ranks", "one.tailed.p.value.z.", "runs")
-    colnames(p) <- island
-    p <- t(p)
-    return(p)
+    return(s)
   } else if (length(which(output[,"Species.Status"]=="n")) == 1){
-    p <- as.data.frame(cbind(island, "has only one native species", "NA","NA", "NA","NA","NA", "NA","NA","NA", "NA", "NA","NA", "NA"))
-    colnames(p) <- c("island", "Metric", "n.inv.tax", "mean.obs.metric", "mean.randomized.null", "median.randomized.null", "sd.randomized.null", "se.randomized.null", 
-                     "obs.z", "rankLow", "rankHi", "p.value.ranks", "one.tailed.p.value.z.", "runs")
-    rownames(p) <- island
-    
-    p <- t(p)
-    return(p)
+    return(s)
   } else {
     # observed mean NNFD /MFD for natives, invasives
-    outputSummary <- functionObsSum(output)
+    outputSummary <- summary.function.diff(output) 
     
     # simulated mean NNFD / MFD by randomizing invasive species in each community
     simOneIslandOneTrait[island]
@@ -981,7 +1465,7 @@ ses.FunctionDist <- function(phy, com, island, simOneIslandOneTrait, outputDNNS,
     sd.sim.MFD.inv <- sd(meanMFDinvasives.inv.dist, na.rm=T)
     se.sim.MFD.inv <- mean.sim.MFD.inv / sqrt(N)
     #observed mean
-    obs.MFD.i <- as.numeric(as.character(outputSummary["meanMFDinv_nat",]))
+    obs.MFD.i <- as.numeric(as.character(outputSummary["meanMFDinvasives",]))
     #Z-value assuming that the null hypothesis is true 
     z.MFD.inv <- (obs.MFD.i - mean.sim.MFD.inv) / sd.sim.MFD.inv 
     # quantile / ranks = frequency that oberved pattern is greater than the randomized values
@@ -1022,7 +1506,7 @@ read.nullOutput <- function(sim.output, islands.sim){
   try(
     for (i in 1:ncol(sdf)){
       newlist <- (cbind(sdf[,c(1:6)]))
-      colnames(newlist) <- c("n.native.tips", "n.invasive.tips", "meanNNFDinvasives", "meanNNFDnatives", "meanMFDinv_nat", "meanMFDnat_nat")
+      colnames(newlist) <- c("n.native.tips", "n.invasive.tips", "meanNNFDinvasives", "meanNNFDnatives", "meanMFDinvasives", "meanMFDnat_nat")
       list.sdf[[i]] <- newlist
       sdf <- sdf[, -c(1:6)]
       
@@ -1042,25 +1526,24 @@ read.nullOutput <- function(sim.output, islands.sim){
 # traits = trait file; rownames = species, column[1] = "Status", other columns = trait values
 # traitname = name of the trait to analize
 # metadata = rownames = island names; one column == "Area.m2
-sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summary.Bar"), sim.output, islands.sim, phyloObs, 
+sum.sesFunctionDist <- function(plottype=c("NullObsIntervalNNFD", "NullObsIntervalMFD", "ses", "summary.Bar"), sim.output, islands.sim, phyloObs, 
                                 traits, traitname, metadata){
   ## Observed Values
   obs.NNFD <- lapply(islands.sim, function(x) functionDistinct(output=phyloObs[[x]], traits, traitname)) 
   names(obs.NNFD) <- islands.sim 
   ## Summary Observed Values
-  summ.NNFD  <- lapply(islands.sim, function(x) functionObsSum(obs.NNFD[[x]])) 
+  summ.NNFD  <- lapply(islands.sim, function(x) summary.function.diff(obs.NNFD[[x]])) 
   names(summ.NNFD) <- islands.sim 
   
   ## Read in output of means from simulated communites  (list elements = communities )
   simIslands <- read.nullOutput(sim.output, islands.sim)
-  
   ## append a column of metadata to each element in list
   list.meta.null.distrib <- list()
   for (i in 1:length(simIslands)){ 
     tmp <- metadata[as.character(names(simIslands[i])), "Area.m2"]
     tmp.NNFD.i <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[2]], times=nrow(simIslands[[i]]))
     tmp.MFD.in <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[9]], times=nrow(simIslands[[i]]))
-    newlist <- mapply(cbind, "islands"=names(simIslands[i]), simIslands[i], "Area.m2"=tmp, "Obs.meanNNFDinvasives"=tmp.NNFD.i, "Obs.meanMPFDinv_nat"= tmp.MFD.in, SIMPLIFY=F) 
+    newlist <- mapply(cbind, "islands"=names(simIslands[i]), simIslands[i], "Area.m2"=tmp, "Obs.meanNNFDinvasives"=tmp.NNFD.i, "Obs.meanMFDinvasives"= tmp.MFD.in, SIMPLIFY=F) 
     list.meta.null.distrib[i] <- newlist[1]
   }
   names(list.meta.null.distrib) <- islands.sim
@@ -1071,47 +1554,10 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
   sim.null.distrib.melt <- melt.list(list.meta.null.distrib, measure.vars="islands")
   sim.null.distrib.melt <- sim.null.distrib.melt[which(!sim.null.distrib.melt$value == "NA"),]
   #head(sim.null.distrib.melt)
-  if(plottype[1] == "NullInvOcc"){
-    pdf(file=paste("figs/plots/functionDiv/ses/NullInvOcc.NNFD", traitname, "pdf", sep="."), width=20, height=10)
-    p1 <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanNNFDinvasives))), 
-                 position=position_dodge(width=1)) +
-      geom_boxplot(aes(fill=factor(as.character(variable))), width = 1) +
-      scale_x_discrete("Island (increasing size)") +
-      scale_y_discrete("Null distribution mean(NNFD)") +
-      theme_bw() +
-      scale_fill_manual(values="grey", labels="") + 
-      guides(fill=guide_legend(title=" Null distibuiton : random invasive occurrence")) +
-      theme(legend.position="top") +
-      geom_point(aes(y = Obs.meanNNFDinvasives), shape=1, color="magenta1") +
-      theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
-      ggtitle(paste("Null distribution and observed NNFD of\n", traitname, sep=" ")) + 
-      theme(plot.title=element_text(size=rel(1.5))) +
-      theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm")) 
-    print(p1)
-    dev.off()
-    
-    pdf(paste("figs/plots/functionDiv/ses/NullInvOcc.MFD", traitname, "pdf", sep="."), width=20, height=10)
-    p2 <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanMFDinv_nat))), 
-                 position=position_dodge(width=1)) +
-      geom_boxplot(aes(fill=factor(as.character(variable))), width = 1) +
-      scale_x_discrete("Island (increasing size)") +
-      scale_y_log10("Null distribution mean(MFD inv-nat)") +
-      theme_bw() +
-      scale_fill_manual(values="grey", labels="") +
-      guides(fill=guide_legend(title=" Null distibuiton : random invasive occurrence")) +
-      theme(legend.position="top") +
-      geom_point(aes(y = Obs.meanMPFDinv_nat), shape=1, color="magenta1") +
-      theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
-      ggtitle(paste("Null Distribution and observed MFD of\n", traitname, sep=" ")) + 
-      theme(plot.title=element_text(size=rel(1.5))) +
-      theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
-    print(p2)
-    dev.off()
-    
-  }
+  
   #### Summarize simualted means, standardized effect size 
   ses.SanJuan.NNFD.MFD <- lapply(islands.sim, function(x) ses.FunctionDist(phy=SJfinalTree, com=SJcommNewSim, island=x, 
-                                                                            simOneIslandOneTrait=simIslands, outputDNNS=phyloObs[[x]], traits=SJtraitLog, traitname=traitname, N=1000))
+                                                                           simOneIslandOneTrait=simIslands, outputDNNS=phyloObs[[x]], traits=SJtraitLog, traitname=traitname, N=1000))
   names(ses.SanJuan.NNFD.MFD) <- islands.sim
   
   listIslands <- ses.SanJuan.NNFD.MFD
@@ -1129,6 +1575,8 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
   }
   #head(ses.SJ.NNFD)
   #dim(ses.SJ.NNFD) #144
+  ses.SJ.NNFD$obs.z <- as.numeric(as.character(ses.SJ.NNFD$obs.z)) 
+  ses.SJ.NNFD$obs.z[!is.finite(ses.SJ.NNFD$obs.z)] <- NA
   ses.SJ.NNFD <- na.omit(ses.SJ.NNFD)
   ses.SJ.NNFD$p.value.ranks <- as.numeric(as.character(ses.SJ.NNFD$p.value.ranks)) 
   ses.SJ.NNFD.sig <- subset(ses.SJ.NNFD, p.value.ranks <= 0.05)
@@ -1136,13 +1584,89 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
   ses.SJ.NNFD <- cbind(ses.SJ.NNFD, sig)
   
   ses.SJ.NNFD[,"Significance"] <- ifelse(ses.SJ.NNFD[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) <= 0, 1,
-                                          ifelse(ses.SJ.NNFD[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) >= 0, 2, 
-                                                 ifelse(ses.SJ.NNFD[,"p.value.ranks"] >= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) <= 0, 3, 4)))
+                                         ifelse(ses.SJ.NNFD[,"p.value.ranks"] <= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) >= 0, 2, 
+                                                ifelse(ses.SJ.NNFD[,"p.value.ranks"] >= 0.05 & as.numeric(as.character(ses.SJ.NNFD[,"obs.z"])) <= 0, 3, 4)))
   
-  if(plottype[1] == "ses.allIslands"){
+  
+  #### summarize significance data by size categories
+  ses.SJ.NNFD$Size.cat <- as.character(ses.SJ.NNFD$Size.cat)
+  ses.SJ.NNFD$Size.cat <- factor(ses.SJ.NNFD$Size.cat, levels=c("sm", "med", "lg"))
+  
+  ##### ses MMNPDi 
+  NNFD_inv <- na.omit(ses.SJ.NNFD[which(ses.SJ.NNFD$Metric == "NNFD_inv"), ] )
+  sigNNFD_inv <- (NNFD_inv[which(as.numeric(as.character(NNFD_inv$p.value.ranks)) <= 0.05), ]) #7
+  ## Significant by size category
+  sm.NNFD <- length(which(sigNNFD_inv$Size.cat == "sm")) #3/71  0.04225352
+  med.NNFD <- length(which(sigNNFD_inv$Size.cat == "med")) #3/71   0.04225352
+  lg.NNFD <- length(which(sigNNFD_inv$Size.cat == "lg")) #1/71   0.01408451
+  
+  
+  #### ses MDNSin 
+  MFD_inv_nat <- ses.SJ.NNFD[which(ses.SJ.NNFD$Metric == "MFD_inv_nat"), ] 
+  sigMFD_inv <- (MFD_inv_nat[which(as.numeric(as.character(MFD_inv_nat$p.value.ranks)) <= 0.05), ]) #13
+  ## Significant by size category
+  sm.MFD <- length(which(sigMFD_inv$Size.cat == "sm")) #2/71  0.02816901
+  med.MFD <- length(which(sigMFD_inv$Size.cat == "med")) #7/71   0.09859155
+  lg.MFD <- length(which(sigMFD_inv$Size.cat == "lg")) #4/71   0.05633803
+
+  nisls <- length(unique(ses.SJ.NNFD$island))
+  
+  dispersed.NNFD <- length(which(as.numeric(as.character(sigNNFD_inv$obs.z)) > 0))
+  clustered.NNFD <- length(which(as.numeric(as.character(sigNNFD_inv$obs.z)) < 0))
+  
+  dispersed.MFD <- length(which(as.numeric(as.character(sigMFD_inv$obs.z)) > 0))
+  clustered.MFD <- length(which(as.numeric(as.character(sigMFD_inv$obs.z)) < 0))
+  
+  ses.nnfd <- c(nisls, nrow(sigNNFD_inv), abs(nisls - nrow(sigNNFD_inv)),  nrow(sigNNFD_inv) / nrow(NNFD_inv), clustered.NNFD, dispersed.NNFD, sm.NNFD, med.NNFD, lg.NNFD)
+  ses.mfd <- c(nisls, nrow(sigMFD_inv), abs(nisls - nrow(sigMFD_inv)), nrow(sigMFD_inv) / nrow(MFD_inv_nat), clustered.MFD, dispersed.MFD, sm.MFD, med.MFD, lg.MFD)
+  
+  sigobs <- rbind(ses.nnfd, ses.mfd)
+  colnames(sigobs) <- c("nIslands", "sigDiff", "ns", "%Sig", "sig.clustered", "sig.even", "sigSmall", "sigMed", "sigLg")
+  
+  rownames(sigobs) <- c(paste("sesNNFD", traitname), paste("sesMFD", traitname))
+  
+  #return(sigobs)
+  
+
+  if(plottype[1] == "NullObsIntervalNNFD"){
+    p1 <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanNNFDinvasives))), 
+                 position=position_dodge(width=1)) +
+      geom_boxplot(aes(fill=factor(as.character(variable))), width = 1) +
+      scale_x_discrete("Island (increasing size)") +
+      scale_y_discrete("Null distribution mean(NNFD)") +
+      theme_bw() +
+      scale_fill_manual(values="grey", labels="") + 
+      guides(fill=guide_legend(title=" Null distibuiton : random invasive occurrence")) +
+      theme(legend.position="top") +
+      geom_point(aes(y = Obs.meanNNFDinvasives), shape=1, color="magenta1") +
+      theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
+      ggtitle(paste("Null distribution and observed NNFD of\n", traitname, sep=" ")) + 
+      theme(plot.title=element_text(size=rel(1.5))) +
+      theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm")) 
+    return(list(sigobs, p1))
+  }
+  
+  if(plottype[1] == "NullObsIntervalNNFD"){
+    p2 <- ggplot(sim.null.distrib.melt, aes(x=reorder((L1), Area.m2), y=as.numeric(as.character(meanMFDinvasives))), 
+                 position=position_dodge(width=1)) +
+      geom_boxplot(aes(fill=factor(as.character(variable))), width = 1) +
+      scale_x_discrete("Island (increasing size)") +
+      scale_y_log10("Null distribution mean(MFD inv-nat)") +
+      theme_bw() +
+      scale_fill_manual(values="grey", labels="") +
+      guides(fill=guide_legend(title=" Null distibuiton : random invasive occurrence")) +
+      theme(legend.position="top") +
+      geom_point(aes(y = Obs.meanMPFDinv_nat), shape=1, color="magenta1") +
+      theme(axis.text.x = element_text(angle = -45, hjust = 0)) +
+      ggtitle(paste("Null Distribution and observed MFD of\n", traitname, sep=" ")) + 
+      theme(plot.title=element_text(size=rel(1.5))) +
+      theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
+    return(list(sigobs, p2))
+  }
+
+  if(plottype[1] == "ses"){
     x1 <- length(which(ses.SJ.NNFD$Size.cat == "sm"))/2 + .5
     x2 <- x1 + length(which(ses.SJ.NNFD$Size.cat == "med"))/2
-    pdf(paste("figs/plots/functionDiv/ses/ses.SJ.NNFD", traitname, "pdf", sep="."), width=20, height=10)
     p3 <- ggplot(ses.SJ.NNFD, aes(x=reorder(factor(island),as.numeric(as.character(Area.m2))), 
                                    y=as.numeric(as.character((obs.z))), color=factor(sig), shape=Metric, fill=factor(sig))) +
       geom_point(size=10) +  
@@ -1160,9 +1684,7 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
       ggtitle(paste("Significane of", traitname, "difference for\n invasive species to nearest native (NNFD i),\n and native community (MFD_inv_nat)\n", sep=" ")) +
       theme(plot.title=element_text(size=rel(1.5))) +
       theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"))
-    print(p3)
-    dev.off()
-    
+    return(list(sigobs, p3))    
   }
   
   if(plottype[1] == "summary.Bar"){
@@ -1194,7 +1716,6 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
     neworder <- c("NNFD inv > 0", "MFD inv > 0", "NNFD inv < 0", "MFD inv < 0")
     sesFunctional2 <- arrange(transform(sesFunctional, Metric=factor(Metric,levels=neworder)),Metric)
     
-    pdf(paste("figs/plots/functionDiv/ses/", traitname, "Functional.SummaryBar.pdf", sep=""))
     p4 <- ggplot(sesFunctional2, aes(x=Significance, fill=factor(Size.cat))) + 
       geom_bar(stat="bin") +
       scale_fill_manual(name="Size Category",
@@ -1204,54 +1725,11 @@ sum.sesFunctionDist <- function(plottype=c("NullInvOcc", "ses.allIslands", "summ
       scale_x_discrete(name="", labels=c("0"="NS", "1"="Significant")) +
       facet_wrap(~Metric, ncol = 2) +
       ggtitle(paste(traitname, "SES Functional Difference\n",sep=" "))
-    print(p4)
-    dev.off()
+    return(list(sigobs, p4))
   }
   
-  
-  #### summarize significance data by size categories
-  ses.SJ.NNFD$Size.cat <- as.character(ses.SJ.NNFD$Size.cat)
-  ses.SJ.NNFD$Size.cat <- factor(ses.SJ.NNFD$Size.cat, levels=c("sm", "med", "lg"))
-  
-  ##### ses MMNPDi 
-  NNFD_inv <- na.omit(ses.SJ.NNFD[which(ses.SJ.NNFD$Metric == "NNFD_inv"), ] )
-  sigNNFD_inv <- (NNFD_inv[which(as.numeric(as.character(NNFD_inv$p.value.ranks)) <= 0.05), ]) #7
-  ## Significant by size category
-  sm.NNFD <- length(which(sigNNFD_inv$Size.cat == "sm")) #3/71  0.04225352
-  med.NNFD <- length(which(sigNNFD_inv$Size.cat == "med")) #3/71   0.04225352
-  lg.NNFD <- length(which(sigNNFD_inv$Size.cat == "lg")) #1/71   0.01408451
-  
-  
-  #### ses MDNSin 
-  MFD_inv_nat <- ses.SJ.NNFD[which(ses.SJ.NNFD$Metric == "MFD_inv_nat"), ] 
-  sigMFD_inv <- (MFD_inv_nat[which(as.numeric(as.character(MFD_inv_nat$p.value.ranks)) <= 0.05), ]) #13
-  ## Significant by size category
-  sm.MFD <- length(which(sigMFD_inv$Size.cat == "sm")) #2/71  0.02816901
-  med.MFD <- length(which(sigMFD_inv$Size.cat == "med")) #7/71   0.09859155
-  lg.MFD <- length(which(sigMFD_inv$Size.cat == "lg")) #4/71   0.05633803
-  
-  nrow(sigNNFD_inv)
-  nrow(sigMFD_inv)
-  
-  nrow(sigNNFD_inv) / nrow(MFD_inv_nat)
-  nrow(sigMFD_inv) / nrow(MFD_inv_nat)
-  
-  sum <- rbind(nrow(sigNNFD_inv), nrow(sigNNFD_inv) / nrow(MFD_inv_nat), sm.NNFD, med.NNFD, lg.NNFD,
-               nrow(sigMFD_inv),  nrow(sigMFD_inv) / nrow(MFD_inv_nat), sm.MFD, med.MFD, lg.MFD,
-               nrow(MFD_inv_nat))
-  rownames(sum) <- c("n sig NNFD", "% sig NNFD", "n sig small NNFD", "n sig medium NNFD", "n sig large NNFD",
-                     "n sig MFD", "% sig MFD", "n sig small MFD", "n sig medium MFD", "n sig large MFD", 
-                     "Total Islands")
-  colnames(sum) <- traitname
-  
-  return(sum)
-  
+
 }
-
-
-
-
-
 
 
 

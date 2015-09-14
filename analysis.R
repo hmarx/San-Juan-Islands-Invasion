@@ -19,7 +19,6 @@ library(reshape)
 library(calibrate)
 library(adephylo)
 library(devtools)
-#library(ggbiplot)
 library(phytools)
 library(phylobase)
 library(picante)
@@ -30,7 +29,7 @@ library(plyr)
 #### Final ML tree, scaled with treePL, bootstrap support added to nodes
 SJfinalTree <- read.tree("data/SJtreePL.bootstrap.tre")
 SJfinalTree #367
-plot(ladderize(SJfinalTree), type="fan", cex=.1)
+#plot(ladderize(SJfinalTree), type="fan", cex=.1)
 
 ################# FUNCTIONAL TRAITS
 # from SJtraitsFINAL.csv == edited NESCent (edited to average values for synonymous taxa); 
@@ -39,19 +38,17 @@ plot(ladderize(SJfinalTree), type="fan", cex=.1)
 # Status   seedMass  maxHeight sla   leafletSize    leafN  
 
 SJtrait <- read.csv("data/SJtraits.csv", as.is=T, row.names=1) 
-names(SJtrait)
-#SJtrait <- SJtrait[c("Status", "Geometric.mean.Seed.mass", "MAX.Height", "Geometic.mean.SLA", "Geometric.mean.Leaflet.size", "Geometric.mean.Leaf.N" )]
 head(SJtrait)
 dim(SJtrait) #415 8 
 summary(SJtrait)
 length(which(SJtrait["Status"] =="i")) #150 invasive species
 length(which(SJtrait["Status"] =="n")) #265 native species
-150/415
+150/415 #36.14 %invasive
 
 
 ## plot the trait data to visualize
-pairs(SJtrait[,2:length(SJtrait)], main="Raw Trait Data")  # check distribution of data
-pairs(log(SJtrait[,2:length(SJtrait)]), main="Log Trait Data") 
+#pairs(SJtrait[,2:length(SJtrait)], main="Raw Trait Data")  # check distribution of data
+#pairs(log(SJtrait[,2:length(SJtrait)]), main="Log Trait Data") 
 
 SJtraitLog <- cbind(SJtrait[1],log10(SJtrait[,2:6])) #very skewed -> log
 pairs(SJtraitLog[,2:length(SJtrait)], main="Log Trait Data") 
@@ -63,7 +60,6 @@ summary(SJtraitLog)
 # All San Juans + 80 uninhabited islands
 SJcomm <- read.csv("data/SJspList.csv", as.is=T, row.names=1) 
 head(SJcomm)
-class(SJcomm$Aleck_Rock)
 dim(SJcomm) #415 81
 
 ## convert presnece (1) to n/i across community 
@@ -74,7 +70,6 @@ colnames(SJcommNew) <- colnames(SJcomm)
 dim(SJcommNew) #415  81
 head(SJcommNew)
 
-
 #### Remove islands with few specices that don't make sense for nearest native comparisons  
 #East_Sucia_5_Island #no invasive species
 #Little_Oak__2 #only one species
@@ -84,7 +79,6 @@ head(SJcommNew)
 #Swirl_Rock_East #only one species
 #Swirl_Rock_West #no invasive species 
 #Unnamed_west_of_Castle_Island...only one invasive species
-
 
 head(SJcommNew[, c("East_Sucia_5_Island", "Little_Oak__2", "Shag_Reef", "Smaller_Island_near_Charles", 
                    "Smallest_unnamed_island_by_Long_Island", "Swirl_Rock_East", "Swirl_Rock_West")])

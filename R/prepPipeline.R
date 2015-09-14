@@ -1,20 +1,20 @@
-
-###### 6 Nov 2014  ##########
-###### Hannah E. Marx #######
+#########################################################################################################
+###########################  6 Nov 2014     #############################################################
+###########################  Hannah E. Marx #############################################################
 
 ### Pre-processing for Phylogeny of the flora of the San Jaun Islands (data/SJtreePL.bootstrap.tre) 
 ### For analyses of Phylogenetic and Functional Distinctiveness, just load final community phylogeny 
 
-##################### 2_SpeciesList: #######################
+######################### 2_SpeciesList:  ##############################################################
 
-# Use ParsePHLAWD.R to rename GenBank, and keep longest sequences
+# Use ParsePHLAWD.R to collapse infraspecific taxa, and keep longest sequences for each species
 
-##################### 4_Weight: #######################
-######### Change Zorro weights to integers for RAxML...did not imporve phylogeny estimate, so excluded
+######################### 4_Weight:  ####################################################################
+######### Change Zorro weights to integers for RAxML...did not imporve phylogeny estimate, so excluded weights
 
-######################### 6_Trees #############################################
-######## Use Congruifier (geiger) to ASSESS Trees 
-### Modified from Jon Eastman's Congruify_HannahIsWonderful.R
+######################### 6_Trees:  #####################################################################
+### Use Congruifier (geiger) to ASSESS Trees 
+### Modified from Jon Eastman
 
 ## Gene Trees: all *.nex files could be put into a folder, and then the code following for the concatenated could be looped over each
 
@@ -72,7 +72,7 @@ out$FUN("Poaceae")
 # and the subtended tips in the tree at the best matching node
 
 
-######################### 7_Scaling #############################################
+######################### 7_Scaling:  ###################################################################
 ##### WRITES treePL for TreeScaling: Re-run congruifier, changing scale = "NA", and writing out .treePL files
 
 setwd("/Users/hannahmarx/Documents/Idaho/Tank/Projects/SanJuans/FINAL/7_Scaling/")
