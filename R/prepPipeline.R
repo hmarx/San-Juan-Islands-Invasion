@@ -8,6 +8,9 @@
 ######################### 2_SpeciesList:  ##############################################################
 
 # Use ParsePHLAWD.R to collapse infraspecific taxa, and keep longest sequences for each species
+source("R/ParsePHLAWD.R")
+parsePHLAWD("output/1_PHLAWD/ITS/ITS.FINAL.aln.full") 
+
 
 ######################### 4_Weight:  ####################################################################
 ######### Change Zorro weights to integers for RAxML...did not imporve phylogeny estimate, so excluded weights

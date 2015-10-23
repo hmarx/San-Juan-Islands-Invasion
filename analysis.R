@@ -24,6 +24,19 @@ library(phylobase)
 library(picante)
 library(scales)
 library(plyr)
+library(maps)
+library(maptools)
+library(ggplot2)
+library(grid)
+library(maps)
+library(mapdata)
+library(sp)
+library(rgdal)
+library(rgeos)
+library(ggmap)
+library(mapplots)
+library(cati)
+
 
 ################# PHYLOGENY
 #### Final ML tree, scaled with treePL, bootstrap support added to nodes

@@ -1,3 +1,4 @@
+
 ###### Pretty Trees  #######
 ###### 20 Nov 2013 ########
 ###### Hannah E. Marx #######
@@ -109,7 +110,7 @@ names(df2) <- c( "Status", "seedMass","maxHeight", "sla","leafletSize","leafN")
 df2
 
 ##Plot phylo with calibrated nodes IDed and nodes lables with taxonomy, dated with PATHd8
-pdf(file="figs/trees/SJtreeNodesTraitsStatus.pdf", height=10, width=10) 
+#pdf(file="figs/trees/SJtreeNodesTraitsStatus.pdf", height=10, width=10) 
 trait.plot.colorTip(tree = treePLboots, dat = df, cols = list(seedMass = c("white", "purple"),
                                                         maxHeight = c("white", "red2"),
                                                         sla = c("white", "gold1"),
@@ -117,10 +118,10 @@ trait.plot.colorTip(tree = treePLboots, dat = df, cols = list(seedMass = c("whit
                                                         leafN = c("white", "blue")), 
                     datTr = tra2, trait = "Status", taxa.names = "Sp.names", col.names = c("magenta1", "green4"), 
                     cex.lab = 0.3, font.lab = 1)
-dev.off()
+#dev.off()
 
 ##Plot phylo with calibrated nodes IDed and nodes lables with taxonomy, dated with PATHd8
-pdf(file="figs/trees/SJtreeNodesTraitsStatusNoTips2.pdf", height=10, width=10) 
+#pdf(file="figs/trees/SJtreeNodesTraitsStatusNoTips2.pdf", height=10, width=10) 
 trait.plot.colorTip(tree = treePLboots, dat = df2, cols = list(Status = c("magenta1", "green4"),
                                                          seedMass = c("white", "yellow"),
                                                          maxHeight = c("white", "blue"),
@@ -129,5 +130,5 @@ trait.plot.colorTip(tree = treePLboots, dat = df2, cols = list(Status = c("magen
                                                          leafN = c("white", "purple")), 
                     datTr = tra2, trait = "Status", taxa.names = "Sp.names", col.names = c("white", "white"), 
                     cex.lab = 0.3, font.lab = 1)
-dev.off()
+#dev.off()
 

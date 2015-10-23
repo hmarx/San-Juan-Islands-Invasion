@@ -1,6 +1,9 @@
+###### Functions for Pretty Trees  #######
+###### gathered from a variety of sources (indicated above each function) 
+###### contributors include Luke Harmon, Richard Glor, and Jonathan Eastman
 
-
-##The getAllSubTrees function below is a necessary subfunction that atomizes a tree into each individual subclade and was provided compliments of Luke Harmon.
+## https://github.com/samuelcrane/draw-support-summary/blob/master/drawSupportSummary.r
+## The getAllSubTrees function below is a necessary subfunction that atomizes a tree into each individual subclade and was provided compliments of Luke Harmon.
 getAllSubtrees<-function(phy, minSize=2) {
   res<-list()
   count=1
@@ -19,13 +22,14 @@ getAllSubtrees<-function(phy, minSize=2) {
   res
 }
 
+# Modified from: http://treethinkers.blogspot.com/2008/10/labeling-trees-posterior-probability.html
 plotTreePLBoot <- function(treePL,bootTree) {
   getAllSubtrees(treePL)->treePLSub
   getAllSubtrees(bootTree)->bootSub
   #bootList<-matrix("<50",Nnode(treePL),1)
   bootList<-matrix("", Nnode(treePL),1)
   
-  #The commands below compare all the subclades in the Bayes tree to all the subclades in the bootstrap tree, and vice versa, and identifies all those clades that are identical.
+  #The commands below compare all the subclades in the treePL tree to all the subclades in the bootstrap tree, and vice versa, and identifies all those clades that are identical.
   for(i in 1:Nnode(treePL)) {
     for(j in 1:Nnode(bootTree)) {
       match(treePLSub[[i]]$tip.label[order(treePLSub[[i]]$tip.label)], bootSub[[j]]$tip.label[order(bootSub[[j]]$tip.label)])->shared
@@ -35,7 +39,7 @@ plotTreePLBoot <- function(treePL,bootTree) {
       }}}
   treePLBS <- treePL
   treePLBS$node.label <- bootList
-  plot(ladderize(treePLBS, right=F), cex=.10, lwd=0.1) #Plots your Bayesian consensus tree
+  plot(ladderize(treePLBS, right=F), cex=.10, lwd=0.1) #Plots your treePL consensus tree
   nodelabels(treePLBS$node.label, adj=c(1.2, -0.3), frame="n", cex=.2, font=2) #Adds bootstrap values.
   tree <- as.phylo(treePLBS)
   write.tree(tree, file="figs/trees/treePL.bootstrap.FINAL.tre") #SAVE as tree
@@ -43,7 +47,7 @@ plotTreePLBoot <- function(treePL,bootTree) {
 }
 
 
-#### Vector of congruified nodes
+#### Vector of congruified nodes (from Jonathan Eastman)
 mrcaID=function(phy, cal){
   cal=as.matrix(cal)
   res=sapply(1:nrow(cal), function(idx){ ## loop over rows

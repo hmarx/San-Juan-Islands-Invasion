@@ -1,7 +1,7 @@
 
 #### Plot community phylogeny with calibrated nodes, bootstrap support, 
 #### pres/abs of trait data across tips, and the tip labels colored for introduced/native
-## Modified trait.plot function in diversitree package  (http://www.zoology.ubc.ca/~fitzjohn/diversitree.docs/trait.plot.html)
+#### Modified trait.plot function in diversitree package  (http://www.zoology.ubc.ca/~fitzjohn/diversitree.docs/trait.plot.html)
 
 source("R/diversitreeFunctions.R")
 

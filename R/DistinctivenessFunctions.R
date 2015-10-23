@@ -6,7 +6,7 @@
 ###### to nearest native (DNNS/NNFD) 
 ###### and mean native community (MDNS/MFD)
 ### Also, calculate standardized effect size compared to null model randomizing invasive species occurences
-### Used for Marx et al. 2015
+### Used for Marx et al. 2015 Diveristy and Distributions
 
 ## Data (analysis.R)
 ## Phylogeny: phylo object with all species in "source pool"
@@ -1732,4 +1732,68 @@ sum.sesFunctionDist <- function(plottype=c("NullObsIntervalNNFD", "NullObsInterv
 }
 
 
+
+#######################################################################################################
+## builds dataframe for new plots of observed and expected phylogenetic and functional distinctiveness 
+getSesFunctionalDataframe <- function(sim.output, islands.sim, phyloObs, traits, traitname, metadata){
+  obs.NNFD <- lapply(islands.sim, function(x) functionDistinct(output=phyloObs[[x]], traits, traitname)) 
+  names(obs.NNFD) <- islands.sim 
+  ## Summary Observed Values
+  summ.NNFD  <- lapply(islands.sim, function(x) functionObsSum(obs.NNFD[[x]])) 
+  names(summ.NNFD) <- islands.sim 
+  
+  ## Read in output of means from simulated communites  (list elements = communities )
+  simIslands <- read.nullOutput(sim.output, islands.sim)
+  
+  ## append a column of metadata to each element in list
+  list.meta.null.distrib <- list()
+  for (i in 1:length(simIslands)){ 
+    tmp <- metadata[as.character(names(simIslands[i])), "Area.m2"]
+    tmp.NNFD.i <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[2]], times=nrow(simIslands[[i]]))
+    tmp.MFD.in <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[9]], times=nrow(simIslands[[i]]))
+    newlist <- mapply(cbind, "islands"=names(simIslands[i]), simIslands[i], "Area.m2"=tmp, "Obs.meanNNFDinvasives"=tmp.NNFD.i, "Obs.meanMPFDinv_nat"= tmp.MFD.in, SIMPLIFY=F) 
+    list.meta.null.distrib[i] <- newlist[1]
+  }
+  names(list.meta.null.distrib) <- islands.sim
+  #summary(list.meta.null.distrib[1])
+  #head(list.meta.null.distrib[[71]])
+  
+  ## melt for plotting
+  sim.null.distrib.melt <- melt.list(list.meta.null.distrib, measure.vars="islands")
+  #head(sim.null.distrib.melt)
+  #sim.null.distrib.melt <- sim.null.distrib.melt[which(!sim.null.distrib.melt$value == "NA"),]
+  #### Summarize simualted means, standardized effect size 
+  ses.SanJuan.NNFD.MFD <- lapply(islands.sim, function(x) ses.FunctionDist(phy=SJfinalTree, com=SJcommNewSim, island=x, 
+                                                                           simOneIslandOneTrait=simIslands, outputDNNS=phyloObs[[x]], traits=SJtraitLog, traitname=traitname, N=1000))
+  names(ses.SanJuan.NNFD.MFD) <- islands.sim
+  
+  listIslands <- ses.SanJuan.NNFD.MFD
+  ses.SJ.NNFD <- data.frame()
+  for (i in 1:length(listIslands)){ 
+    if (length(listIslands[[i]]) != 2){
+      newlist <- NULL
+    } else {
+      tmp1 <- metadata[as.character(names(listIslands[i])), "Area.m2"]
+      tmp2 <- metadata[as.character(names(listIslands[i])), "Size.cat"]
+      newlist <-cbind(t(listIslands[[i]]), "Area.m2"=tmp1, "Size.cat"=tmp2) 
+    }
+    ses.SJ.NNFD <- rbind(ses.SJ.NNFD, newlist)
+    
+  }
+  
+  
+  ses.SJ.NNFD$obs.z <- as.numeric(as.character(ses.SJ.NNFD$obs.z)) 
+  ses.SJ.NNFD$obs.z[!is.finite(ses.SJ.NNFD$obs.z)] <- NA
+  ses.SJ.NNFD$p.value.ranks <- as.numeric(as.character(ses.SJ.NNFD$p.value.ranks)) 
+  
+  ses.SJ.NNFD[,"sig"] <- ifelse(ses.SJ.NNFD[,"p.value.ranks"] <= 0.05 & is.finite(ses.SJ.NNFD[,"obs.z"]) & !is.na(ses.SJ.NNFD[,"obs.z"]), TRUE, FALSE)
+  ses.SJ.NNFD$obs.z[!is.finite(ses.SJ.NNFD$obs.z)] <- NA
+  
+  x <- ses.SJ.NNFD[ses.SJ.NNFD$Metric == "NNFD_inv",]
+  x <- cbind(x, "Metric2"=rep(x = paste("NNFD_inv", traitname), times = nrow(x)))
+  y <- ses.SJ.NNFD[ses.SJ.NNFD$Metric == "MFD_inv_nat",]
+  y <- cbind(y, "Metric2"=rep(x = paste("MFD_inv_nat", traitname), times = nrow(y)))
+  ses.SJ.NNFD.f <- rbind(x, y)
+  return(ses.SJ.NNFD.f)
+}
 

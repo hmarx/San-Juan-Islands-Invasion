@@ -9,10 +9,7 @@
     <layer-tree-layer expanded="1" checked="Qt::Checked" id="20150823200053087" name="SanJuanIslandsMap">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="0" checked="Qt::Unchecked" id="srgr48i0100a20150823152135655" name="srgr48i0100a">
-      <customproperties/>
-    </layer-tree-layer>
-    <layer-tree-layer expanded="1" checked="Qt::Checked" id="20150823200325117" name="PSbasemap">
+    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="20150823200325117" name="PSbasemap">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="OpenLayers_plugin_layer20150823195401059" name="Google Physical">
@@ -23,10 +20,10 @@
   <mapcanvas>
     <units>meters</units>
     <extent>
-      <xmin>-13722662.26847006939351559</xmin>
-      <ymin>6168233.53421410731971264</ymin>
-      <xmax>-13615587.76425071246922016</xmax>
-      <ymax>6222775.09264041855931282</ymax>
+      <xmin>-13744569.91937735490500927</xmin>
+      <ymin>6173335.45441632531583309</ymin>
+      <xmax>-13590312.69451500289142132</xmax>
+      <ymax>6251910.92393495514988899</ymax>
     </extent>
     <rotation>0</rotation>
     <projections>1</projections>
@@ -217,7 +214,6 @@
   <layer-tree-canvas>
     <custom-order enabled="0">
       <item>SanJuanIslandsSampled20150823115639035</item>
-      <item>srgr48i0100a20150823152135655</item>
       <item>OpenLayers_plugin_layer20150823195401059</item>
       <item>20150823200053087</item>
       <item>20150823200325117</item>
@@ -234,14 +230,9 @@
         <legendlayerfile isInOverview="0" layerid="20150823200053087" visible="1"/>
       </filegroup>
     </legendlayer>
-    <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="srgr48i0100a" showFeatureCount="0">
-      <filegroup open="false" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="srgr48i0100a20150823152135655" visible="0"/>
-      </filegroup>
-    </legendlayer>
-    <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="PSbasemap" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="PSbasemap" showFeatureCount="0">
       <filegroup open="true" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="20150823200325117" visible="1"/>
+        <legendlayerfile isInOverview="0" layerid="20150823200325117" visible="0"/>
       </filegroup>
     </legendlayer>
     <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="Google Physical" showFeatureCount="0">
@@ -371,7 +362,10 @@
                   <effect type="outerGlow">
                     <prop k="blend_mode" v="0"/>
                     <prop k="blur_level" v="3"/>
+                    <prop k="color1" v="0,0,255,255"/>
+                    <prop k="color2" v="0,255,0,255"/>
                     <prop k="color_type" v="0"/>
+                    <prop k="discrete" v="0"/>
                     <prop k="draw_mode" v="2"/>
                     <prop k="enabled" v="0"/>
                     <prop k="single_color" v="255,255,255,255"/>
@@ -401,7 +395,10 @@
                   <effect type="innerGlow">
                     <prop k="blend_mode" v="0"/>
                     <prop k="blur_level" v="3"/>
+                    <prop k="color1" v="0,0,255,255"/>
+                    <prop k="color2" v="0,255,0,255"/>
                     <prop k="color_type" v="0"/>
+                    <prop k="discrete" v="0"/>
                     <prop k="draw_mode" v="2"/>
                     <prop k="enabled" v="0"/>
                     <prop k="single_color" v="255,255,255,255"/>
@@ -450,7 +447,10 @@
                   <effect type="outerGlow">
                     <prop k="blend_mode" v="0"/>
                     <prop k="blur_level" v="3"/>
+                    <prop k="color1" v="0,0,255,255"/>
+                    <prop k="color2" v="0,255,0,255"/>
                     <prop k="color_type" v="0"/>
+                    <prop k="discrete" v="0"/>
                     <prop k="draw_mode" v="2"/>
                     <prop k="enabled" v="0"/>
                     <prop k="single_color" v="255,255,255,255"/>
@@ -480,7 +480,10 @@
                   <effect type="innerGlow">
                     <prop k="blend_mode" v="0"/>
                     <prop k="blur_level" v="3"/>
+                    <prop k="color1" v="0,0,255,255"/>
+                    <prop k="color2" v="0,255,0,255"/>
                     <prop k="color_type" v="0"/>
+                    <prop k="discrete" v="0"/>
                     <prop k="draw_mode" v="2"/>
                     <prop k="enabled" v="0"/>
                     <prop k="single_color" v="255,255,255,255"/>
@@ -503,7 +506,7 @@
       </ComposerMap>
     </Composition>
   </Composer>
-  <projectlayers layercount="5">
+  <projectlayers layercount="4">
     <maplayer minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>20150823200053087</id>
       <datasource>./SanJuanIslandsMap</datasource>
@@ -1600,52 +1603,6 @@
           <widgetv2config IsMultiline="0" fieldEditable="1" UseHtml="0" labelOnTop="0"/>
         </edittype>
       </edittypes>
-    </maplayer>
-    <maplayer minimumScale="0" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
-      <id>srgr48i0100a20150823152135655</id>
-      <datasource>../../../../../../../../../Downloads/srgr48i0100a_tif/srgr48i0100a.tif</datasource>
-      <title></title>
-      <abstract></abstract>
-      <keywordList>
-        <value></value>
-      </keywordList>
-      <layername>srgr48i0100a</layername>
-      <srs>
-        <spatialrefsys>
-          <proj4>+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs</proj4>
-          <srsid>100005</srsid>
-          <srid>0</srid>
-          <authid>USER:100005</authid>
-          <description> * Generated CRS (+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs)</description>
-          <projectionacronym>aea</projectionacronym>
-          <ellipsoidacronym></ellipsoidacronym>
-          <geographicflag>false</geographicflag>
-        </spatialrefsys>
-      </srs>
-      <customproperties>
-        <property key="identify/format" value="Value"/>
-      </customproperties>
-      <provider>gdal</provider>
-      <noData>
-        <noDataList bandNo="1" useSrcNoData="1"/>
-      </noData>
-      <map-layer-style-manager current="">
-        <map-layer-style name=""/>
-      </map-layer-style-manager>
-      <pipe>
-        <rasterrenderer gradient="BlackToWhite" opacity="1" alphaBand="-1" type="singlebandgray" grayBand="1">
-          <rasterTransparency/>
-          <contrastEnhancement>
-            <minValue>129</minValue>
-            <maxValue>255</maxValue>
-            <algorithm>StretchToMinimumMaximum</algorithm>
-          </contrastEnhancement>
-        </rasterrenderer>
-        <brightnesscontrast brightness="0" contrast="0"/>
-        <huesaturation colorizeGreen="128" colorizeOn="0" colorizeRed="255" colorizeBlue="128" grayscaleMode="0" saturation="0" colorizeStrength="100"/>
-        <rasterresampler maxOversampling="2"/>
-      </pipe>
-      <blendMode>0</blendMode>
     </maplayer>
   </projectlayers>
   <properties>

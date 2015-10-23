@@ -1,10 +1,8 @@
-########### Final Analysis of San Juans Dataset
-
-## Phylogenetic and functional distinctiveness between invasive and native species within each island community 
-
+###### Final Analysis of San Juans Dataset ######
 ###### 6 Nov 2014  ##########
 ###### Hannah E. Marx #######
 
+## Phylogenetic and functional distinctiveness between invasive and native species within each island community 
 
 ################################################# Read in Final Datasets #####################################################@
 source("analysis.R")
@@ -83,7 +81,7 @@ ggplot(phyloObsDF,aes(x=reorder(factor(L2),value),fill = Species.Status)) +
 
 
 ## Richness of invasive and native species per islands, shapes = size categories, 
-pdf("figs/misc/SR.percenttips.islsize.pdf", width=20, height=10)
+#pdf("figs/misc/SR.percenttips.islsize.pdf", width=20, height=10)
 metadataFULL.plot <- ggplot(metadataFULL, aes(x=reorder(factor(Row.names),Area.m2), y=as.numeric(as.character(Total.species)), shape=Size.cat)) +
   geom_point(aes(size=as.numeric(Percent.native.tips)), color="green") +
   geom_point(aes(size=as.numeric(Percent.invasive.tips)), color="magenta") +
@@ -100,7 +98,7 @@ metadataFULL.plot <- ggplot(metadataFULL, aes(x=reorder(factor(Row.names),Area.m
   scale_y_continuous("species richness") +
   scale_x_discrete("Island (increasing size)") 
 metadataFULL.plot
-dev.off()
+#dev.off()
 
 
 ##################################################################################################################################
@@ -247,24 +245,24 @@ melt.trait.to.meta(list = seedmass.allSJ, metadata = metadata, meta.data.column.
 #dev.off()
 
 #maxHeight
-pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedValues.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedValues.pdf", width=20, height=10)
 melt.trait.to.meta(list = maxHeight.allSJ, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height", y.axis.title="Log Maximum Height")
-dev.off()
+#dev.off()
 
 #SLA
-pdf("figs/plots/functionDiv/observed/SLA_ObservedValues.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/SLA_ObservedValues.pdf", width=20, height=10)
 melt.trait.to.meta(list = sla.allSJ, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA", y.axis.title="SLA")
-dev.off()
+#dev.off()
 
 #leafSize
-pdf("figs/plots/functionDiv/observed/LeafletSize_ObservedValues.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/LeafletSize_ObservedValues.pdf", width=20, height=10)
 melt.trait.to.meta(list = leafletize.allSJ, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size", y.axis.title="Log Leaflet Size")
-dev.off()
+#dev.off()
 
 #leafN
-pdf("figs/plots/functionDiv/observed/LeafN_ObservedValues.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/LeafN_ObservedValues.pdf", width=20, height=10)
 melt.trait.to.meta(list = leafN.allSJ, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf Nitrogen", y.axis.title="Log Leaf %N")
-dev.off()
+#dev.off()
 
 
 ######## Just For Four Islands (in each size category) for manuscript figs #######
@@ -281,25 +279,25 @@ leafN.four <- lapply(com.list.4, function(x) pruneTrait(phy=SJfinalTree, communi
 names(leafN.four) <-four.islands
 
 #SeedMass
-pdf("figs/plots/functionDiv/observed/4Islands_SeedMass_ObservedValues.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_SeedMass_ObservedValues.pdf")
 melt.trait.to.meta(list = seedmass.four, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass", y.axis.title="Log Seed Mass")
-dev.off()
+#dev.off()
 #maxHeight
-pdf("figs/plots/functionDiv/observed/4Islands_MaxHeight_ObservedValues.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_MaxHeight_ObservedValues.pdf")
 melt.trait.to.meta(list = maxHeight.four, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height", y.axis.title="Log Maximum Height")
-dev.off()
+#dev.off()
 #SLA
-pdf("figs/plots/functionDiv/observed/4Islands_SLA_ObservedValues.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_SLA_ObservedValues.pdf")
 melt.trait.to.meta(list = sla.four, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA", y.axis.title="SLA")
-dev.off()
+#dev.off()
 #leafSize
-pdf("figs/plots/functionDiv/observed/4Islands_LeafletSize_ObservedValues.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_LeafletSize_ObservedValues.pdf")
 melt.trait.to.meta(list = leafletize.four, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size", y.axis.title="Log Leaflet Size")
-dev.off()
+#dev.off()
 #leafN
-pdf("figs/plots/functionDiv/observed/4Islands_LeafN_ObservedValues.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_LeafN_ObservedValues.pdf")
 melt.trait.to.meta(list = leafN.four, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf Nitrogen", y.axis.title="Log Leaf %N")
-dev.off()
+#dev.off()
 
 ####################################################################################################################################
 ######### Calculate observed difference in trait values to nearest native (NNFD) and to mean value odnative community (MFD) #######################
@@ -323,25 +321,25 @@ leafN.distObs <- lapply(com.list, function(x) functionDistinct(output=phyloObs[[
 names(leafN.distObs) <- names(SJcommNew) 
 
 #SeedMass
-pdf("figs/plots/functionDiv/observed/SeedMass_ObservedNNFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/SeedMass_ObservedNNFD.pdf", width=20, height=10)
 melt.NNFD.to.meta(list = seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass NNFD", y.axis.title="NNFD (Seed Mass)")
-dev.off()
+#dev.off()
 #maxHeight
-pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedNNFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedNNFD.pdf", width=20, height=10)
 melt.NNFD.to.meta(list = maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height NNFD", y.axis.title="NNFD (Maximum Height)")
-dev.off()
+#dev.off()
 #SLA
-pdf("figs/plots/functionDiv/observed/SLA_ObservedNNFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/SLA_ObservedNNFD.pdf", width=20, height=10)
 melt.NNFD.to.meta(list = sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA NNFD", y.axis.title="NNFD (SLA)")
-dev.off()
+#dev.off()
 #leafSize
-pdf("figs/plots/functionDiv/observed/Leaflet_ObservedNNFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/Leaflet_ObservedNNFD.pdf", width=20, height=10)
 melt.NNFD.to.meta(list = leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size NNFD", y.axis.title="NNFD (Leaflet Size)")
-dev.off()
+#dev.off()
 #leafN
-pdf("figs/plots/functionDiv/observed/LeafN_ObservedNNFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/LeafN_ObservedNNFD.pdf", width=20, height=10)
 melt.NNFD.to.meta(list = leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N NNFD", y.axis.title="NNFD (% Leaf N)")
-dev.off()
+#dev.off()
 
 
 ####### Four Islands
@@ -367,72 +365,72 @@ names(four.islands.leafN.distObs) <- four.islands
 
 
 #SLA
-pdf("figs/plots/functionDiv/observed/4Islands_SLA_ObservedNNFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_SLA_ObservedNNFD.pdf")
 melt.NNFD.to.meta(list = four.islands.sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA NNFD", y.axis.title="SLA")
-dev.off()
+#dev.off()
 #leafSize
-pdf("figs/plots/functionDiv/observed/4Islands_Leaflet_ObservedNNFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_Leaflet_ObservedNNFD.pdf")
 melt.NNFD.to.meta(list = four.islands.leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size NNFD", y.axis.title="Leaflet Size")
-dev.off()
+#dev.off()
 #SeedMass
-pdf("figs/plots/functionDiv/observed/4Islands_SeedMass_ObservedNNFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_SeedMass_ObservedNNFD.pdf")
 melt.NNFD.to.meta(list = four.islands.seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass NNFD", y.axis.title="Seed Mass")
-dev.off()
+#dev.off()
 #leafN
-pdf("figs/plots/functionDiv/observed/4Islands_LeafN_ObservedNNFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_LeafN_ObservedNNFD.pdf")
 melt.NNFD.to.meta(list = four.islands.leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N NNFD", y.axis.title="% Leaf N")
-dev.off()
+#dev.off()
 #maxHeight
-pdf("figs/plots/functionDiv/observed/4Islands_MaxHeight_ObservedNNFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4Islands_MaxHeight_ObservedNNFD.pdf")
 melt.NNFD.to.meta(list = four.islands.maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height NNFD", y.axis.title="Maximum Height")
-dev.off()
+#dev.off()
 
 
 ######################################## Mean Functional Distance (MFD) #############################################
 ####### All Islands
 #SeedMass
-pdf("figs/plots/functionDiv/observed/SeedMass_ObservedMFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/SeedMass_ObservedMFD.pdf", width=20, height=10)
 melt.MFD.to.meta(list = seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (Seed Mass)")
-dev.off()
+#dev.off()
 #maxHeight
-pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedMFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/MaxHeight_ObservedMFD.pdf", width=20, height=10)
 melt.MFD.to.meta(list = maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (Maximum Height)")
-dev.off()
+#dev.off()
 #SLA
-pdf("figs/plots/functionDiv/observed/SLA_ObservedMFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/SLA_ObservedMFD.pdf", width=20, height=10)
 melt.MFD.to.meta(list = sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (SLA)")
-dev.off()
+#dev.off()
 #leafSize
-pdf("figs/plots/functionDiv/observed/Leaflet_ObservedMFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/Leaflet_ObservedMFD.pdf", width=20, height=10)
 melt.MFD.to.meta(list = leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (Leaflet Size)")
-dev.off()
+#dev.off()
 #leafN
-pdf("figs/plots/functionDiv/observed/LeafN_ObservedMFD.pdf", width=20, height=10)
+#pdf("figs/plots/functionDiv/observed/LeafN_ObservedMFD.pdf", width=20, height=10)
 melt.MFD.to.meta(list = leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N Mean Functional Distance to Native Community (MFD)", y.axis.title="MFD (% Leaf N)")
-dev.off()
+#dev.off()
 
 
 ####### Four Islands
 #SeedMass
-pdf("figs/plots/functionDiv/observed/4islands_SeedMass_ObservedMFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4islands_SeedMass_ObservedMFD.pdf")
 melt.MFD.to.meta(list = four.islands.seedmass.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Seed Mass Mean Functional Distance\n to Native Community (MFD)", y.axis.title="Seed Mass")
-dev.off()
+#dev.off()
 #maxHeight
-pdf("figs/plots/functionDiv/observed/4islands_MaxHeight_ObservedMFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4islands_MaxHeight_ObservedMFD.pdf")
 melt.MFD.to.meta(list = four.islands.maxheight.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Maximum Height Mean Functional Distance\n to Native Community (MFD)", y.axis.title="Maximum Height")
-dev.off()
+#dev.off()
 #SLA
-pdf("figs/plots/functionDiv/observed/4islands_SLA_ObservedMFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4islands_SLA_ObservedMFD.pdf")
 melt.MFD.to.meta(list = four.islands.sla.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="SLA Mean Functional Distance\n to Native Community (MFD)", y.axis.title="SLA")
-dev.off()
+#dev.off()
 #leafSize
-pdf("figs/plots/functionDiv/observed/4islands_Leaflet_ObservedMFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4islands_Leaflet_ObservedMFD.pdf")
 melt.MFD.to.meta(list = four.islands.leaflet.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaflet Size Mean Functional Distance\n to Native Community (MFD)", y.axis.title="Leaflet Size")
-dev.off()
+#dev.off()
 #leafN
-pdf("figs/plots/functionDiv/observed/4islands_LeafN_ObservedMFD.pdf")
+#pdf("figs/plots/functionDiv/observed/4islands_LeafN_ObservedMFD.pdf")
 melt.MFD.to.meta(list = four.islands.leafN.distObs, metadata = metadata, meta.data.column.name= "Area.m2", plot.title="Leaf N Mean Functional Distance\n to Native Community (MFD)", y.axis.title="% Leaf N")
-dev.off()
+#dev.off()
 
 
 ################### Summarize means for NNFDi / NNFDn and MFD inv-nat / MFD nat-nat for each trait on each island

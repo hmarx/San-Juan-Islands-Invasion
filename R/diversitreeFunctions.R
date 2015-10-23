@@ -1,5 +1,8 @@
 
-#### plot-alt.R 
+#### Script borrowed from Richard G. FitzJohn, diversitree package  (https://github.com/richfitz/diversitree)
+#### plot-alt.R  (https://github.com/richfitz/diversitree/blob/master/R/plot-alt.R)
+##################################################################################
+
 ## New "alternative" plotting interface for diversitree.
 ## TODO: node labels not done.
 

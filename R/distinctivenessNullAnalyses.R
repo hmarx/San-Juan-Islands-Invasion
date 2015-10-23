@@ -1,11 +1,9 @@
-################### Final Analysis of San Juans Dataset
-
-## Significance of phylogenetic and functional distinctiveness between invasive and native species within each island community 
-# compared to a null expectation, randomizing the invasive communtiy in each community with other invasives from the larger species pool
-
+###### Final Analysis of San Juans Dataset ###### 
 ###### 6 Nov 2014  ##########
 ###### Hannah E. Marx #######
 
+## Significance of phylogenetic and functional distinctiveness between invasive and native species within each island community 
+# compared to a null expectation, randomizing the invasive communtiy in each community with other invasives from the larger species pool
 
 ################################################# Read in Final Datasets #####################################################@
 source("analysis.R")
@@ -14,7 +12,6 @@ SJfinalTree
 head(SJtraitLog)
 head(SJcommNew)
 head(metadata)
-
 
 ###########################################  Significance of Phylogenetic Distances  #############################################################
 

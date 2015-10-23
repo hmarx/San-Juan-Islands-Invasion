@@ -1,14 +1,7 @@
-## Function to add scale bar to map
-###http://editerna.free.fr/wp/?p=76
-
-library(maps)
-library(maptools)
-library(ggplot2)
-library(grid)
-
+#####  Function to add scale bar to map #####  
+#####  From:  http://editerna.free.fr/wp/?p=76 (Ewen Gallic, http://egallic.fr, 10 Nov. 2013)
 
 #Then, we need a function to get the scale bar coordinates:
-
 # Result #
 #--------#
 # Return a list whose elements are :
@@ -96,8 +89,6 @@ createOrientationArrow <- function(scaleBar, length, distance = 1, dist.units = 
 
 
 #The last function enables the user to draw the elements:
-
-
 # Result #
 #--------#
 # This function enables to draw a scale bar on a ggplot object, and optionally an orientation arrow #

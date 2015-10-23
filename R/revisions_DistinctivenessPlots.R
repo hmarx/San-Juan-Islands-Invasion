@@ -1,7 +1,13 @@
-library(cati)
+ 
+#### New plots of observed and expected phylogenetic and functional distinctiveness ###
+#### Following reviewer's suggestions ####
+#### 4 September 2015 ####
+#### Hannah E. Marx ####
 
-#### Phylogenetic Distinctiveness
-# Observed 
+source("R/DistinctivenessFunctions.R")
+
+################################ Phylogenetic Distinctiveness  ################################ 
+########  Observed
 head(phyloObsSum)
 
 phyloObsSum.DNNS = cbind("Island"=phyloObsSum[,1], "Size.cat"=as.character(phyloObsSum[,"Size.cat"]), 
@@ -17,7 +23,6 @@ phyloObsSum.DNNS.MDNS$Island <- gsub(phyloObsSum.DNNS.MDNS$Island, pattern = "__
 phyloObsSum.DNNS.MDNS$Island <- gsub(phyloObsSum.DNNS.MDNS$Island, pattern = "__", replacement = "_#")
 phyloObsSum.DNNS.MDNS$Island <- gsub(phyloObsSum.DNNS.MDNS$Island, pattern = "_", replacement = " ")
 phyloObsSum.DNNS.MDNS$sig <- ifelse(phyloObsSum.DNNS.MDNS$p.value <= 0.05, 1, 0)
-
 
 
 phyloObsSum.DNNS.MDNS$Y1 <- cut(phyloObsSum.DNNS.MDNS$p.value,breaks = c(0:0.049, 0.05, 1) ,right = FALSE)
@@ -51,8 +56,7 @@ obs.plot
 #dev.off()
 
 
-
-# Expected 
+########  Expected 
 head(ses.DNNS.MDNS)
 phylo.exp.DNNS.MDNS <- ses.DNNS.MDNS
 phylo.exp.DNNS.MDNS$obs.z <- as.numeric(as.character(phylo.exp.DNNS.MDNS$obs.z))
@@ -88,7 +92,7 @@ ses.plot <- ses.plot + coord_fixed(ratio=1)
 ses.plot
 #dev.off()
 
-#######################################
+################################ Functional Distinctiveness################################ 
 sigSeed = cbind("Island"=seedmass[,"Row.names"], "Size.cat"= as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "Seed Mass", times = nrow(seedmass)), "p.value" = seedmass[,"p.value.seedMass"], "Area"=as.character(seedmass[,"Area.m2"]),  "sig"=ifelse(seedmass[,"p.value.seedMass"] <= 0.05, 1,0))
 sigNNFDSeed = cbind("Island"=seedmass[,"Row.names"],"Size.cat"= as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "NNFD Seed Mass", times = nrow(seedmass)),"p.value" = seedmass[,"t.NNFD.p.value"], "Area"=as.character(seedmass[,"Area.m2"]),  "sig"=ifelse(seedmass[,"t.NNFD.p.value"] <= 0.05, 1,0))
 sigMFDSeed = cbind("Island"=seedmass[,"Row.names"],"Size.cat"=as.character(seedmass[,"Size.cat"]), "Metric"=rep(x = "MFD Seed Mass", times = nrow(seedmass)), "p.value" = seedmass[,"t.NNFD.p.value"], "Area"=as.character(seedmass[,"Area.m2"]),  "sig"=ifelse(seedmass[,"t.MFD.p.value"] <= 0.05, 1,0))
@@ -157,9 +161,9 @@ obs.plot.function <- obs.plot.function + geom_point(aes(shape=ifelse(is.na(p.val
 obs.plot.function <- obs.plot.function + scale_shape_manual(values=c(is_NA=4, not_NA=NA), guide="none")
 obs.plot.function
 
-pdf(file="figs/plots/obs.tile.pdf",bg="white", paper="USr")
+#pdf(file="figs/plots/obs.tile.pdf",bg="white", paper="USr")
 obs.plot.function
-dev.off()
+#dev.off()
 
 #################### ses functional 
 
@@ -236,92 +240,11 @@ ses.plot.function <- ses.plot.function + geom_point(aes(shape=ifelse(is.na(obs.z
 ses.plot.function <- ses.plot.function + scale_shape_manual(values=c(is_NA=4, not_NA=NA), guide="none")
 ses.plot.function
 
-pdf(file="figs/plots/ses.tile.pdf",bg="white", paper="USr")
+#pdf(file="figs/plots/ses.tile.pdf",bg="white", paper="USr")
 ses.plot.function
-dev.off()
-
-
-
-#ses.plot.function <- ggplot(sesALL, aes(y=reorder(factor(island), as.numeric(as.character(Area.m2))), x=Metric2, fill=obs.z))#, col=c("magenta1", "green3"))
-#ses.plot.function <- ses.plot.function + geom_tile(colour="white")
-#ses.plot.function <- ses.plot.function + scale_fill_gradient(low="darkblue", high="darkorange", na.value="transparent")
-#ses.plot.function <- ses.plot.function + geom_point(aes(size=ifelse(sig, "dot", "no_dot")))
-#ses.plot.function <- ses.plot.function + scale_size_manual(values=c(dot=1, no_dot=NA), guide="none")
-#base_size <- 9
-#ses.plot.function <- ses.plot.function + theme_grey(base_size = base_size) + labs(x = "",  y = "") 
-#ses.plot.function <- ses.plot.function + scale_x_discrete(expand = c(0, 0)) 
-#ses.plot.function <- ses.plot.function + scale_y_discrete(expand = c(0, 0)) 
-#ses.plot.function <- ses.plot.function + theme(legend.position = "none", axis.ticks = element_blank(), 
-#                                               axis.text.x = element_text(size = base_size * 0.8, angle = -45, hjust = 0, colour = "black"))
-#ses.plot.function <- ses.plot.function + coord_fixed(ratio=1)
-#pdf(file="figs/plots/functionDiv/ses/ses.functionDistinct.tile.pdf")
-#ses.plot.function
 #dev.off()
 
 
 
 
-#######################################################################################################
-
-getSesFunctionalDataframe <- function(sim.output, islands.sim, phyloObs, traits, traitname, metadata){
-  obs.NNFD <- lapply(islands.sim, function(x) functionDistinct(output=phyloObs[[x]], traits, traitname)) 
-  names(obs.NNFD) <- islands.sim 
-  ## Summary Observed Values
-  summ.NNFD  <- lapply(islands.sim, function(x) functionObsSum(obs.NNFD[[x]])) 
-  names(summ.NNFD) <- islands.sim 
-  
-  ## Read in output of means from simulated communites  (list elements = communities )
-  simIslands <- read.nullOutput(sim.output, islands.sim)
-  
-  ## append a column of metadata to each element in list
-  list.meta.null.distrib <- list()
-  for (i in 1:length(simIslands)){ 
-    tmp <- metadata[as.character(names(simIslands[i])), "Area.m2"]
-    tmp.NNFD.i <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[2]], times=nrow(simIslands[[i]]))
-    tmp.MFD.in <- rep(summ.NNFD[as.character(names(summ.NNFD[i]))][[1]][[9]], times=nrow(simIslands[[i]]))
-    newlist <- mapply(cbind, "islands"=names(simIslands[i]), simIslands[i], "Area.m2"=tmp, "Obs.meanNNFDinvasives"=tmp.NNFD.i, "Obs.meanMPFDinv_nat"= tmp.MFD.in, SIMPLIFY=F) 
-    list.meta.null.distrib[i] <- newlist[1]
-  }
-  names(list.meta.null.distrib) <- islands.sim
-  #summary(list.meta.null.distrib[1])
-  #head(list.meta.null.distrib[[71]])
-
-  ## melt for plotting
-  sim.null.distrib.melt <- melt.list(list.meta.null.distrib, measure.vars="islands")
-  #head(sim.null.distrib.melt)
-  #sim.null.distrib.melt <- sim.null.distrib.melt[which(!sim.null.distrib.melt$value == "NA"),]
-  #### Summarize simualted means, standardized effect size 
-  ses.SanJuan.NNFD.MFD <- lapply(islands.sim, function(x) ses.FunctionDist(phy=SJfinalTree, com=SJcommNewSim, island=x, 
-                                                                           simOneIslandOneTrait=simIslands, outputDNNS=phyloObs[[x]], traits=SJtraitLog, traitname=traitname, N=1000))
-  names(ses.SanJuan.NNFD.MFD) <- islands.sim
-  
-  listIslands <- ses.SanJuan.NNFD.MFD
-  ses.SJ.NNFD <- data.frame()
-  for (i in 1:length(listIslands)){ 
-    if (length(listIslands[[i]]) != 2){
-      newlist <- NULL
-    } else {
-      tmp1 <- metadata[as.character(names(listIslands[i])), "Area.m2"]
-      tmp2 <- metadata[as.character(names(listIslands[i])), "Size.cat"]
-      newlist <-cbind(t(listIslands[[i]]), "Area.m2"=tmp1, "Size.cat"=tmp2) 
-    }
-    ses.SJ.NNFD <- rbind(ses.SJ.NNFD, newlist)
-    
-  }
-  
-
-  ses.SJ.NNFD$obs.z <- as.numeric(as.character(ses.SJ.NNFD$obs.z)) 
-  ses.SJ.NNFD$obs.z[!is.finite(ses.SJ.NNFD$obs.z)] <- NA
-  ses.SJ.NNFD$p.value.ranks <- as.numeric(as.character(ses.SJ.NNFD$p.value.ranks)) 
-  
-  ses.SJ.NNFD[,"sig"] <- ifelse(ses.SJ.NNFD[,"p.value.ranks"] <= 0.05 & is.finite(ses.SJ.NNFD[,"obs.z"]) & !is.na(ses.SJ.NNFD[,"obs.z"]), TRUE, FALSE)
-  ses.SJ.NNFD$obs.z[!is.finite(ses.SJ.NNFD$obs.z)] <- NA
-  
-  x <- ses.SJ.NNFD[ses.SJ.NNFD$Metric == "NNFD_inv",]
-  x <- cbind(x, "Metric2"=rep(x = paste("NNFD_inv", traitname), times = nrow(x)))
-  y <- ses.SJ.NNFD[ses.SJ.NNFD$Metric == "MFD_inv_nat",]
-  y <- cbind(y, "Metric2"=rep(x = paste("MFD_inv_nat", traitname), times = nrow(y)))
-  ses.SJ.NNFD.f <- rbind(x, y)
-  return(ses.SJ.NNFD.f)
-}
 
