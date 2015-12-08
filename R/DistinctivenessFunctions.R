@@ -1526,8 +1526,9 @@ read.nullOutput <- function(sim.output, islands.sim){
 # traits = trait file; rownames = species, column[1] = "Status", other columns = trait values
 # traitname = name of the trait to analize
 # metadata = rownames = island names; one column == "Area.m2
+# outputPath = file extension to save summary output
 sum.sesFunctionDist <- function(plottype=c("NullObsIntervalNNFD", "NullObsIntervalMFD", "ses", "summary.Bar"), sim.output, islands.sim, phyloObs, 
-                                traits, traitname, metadata){
+                                traits, traitname, metadata, saveout = FALSE, outputPath = NULL){
   ## Observed Values
   obs.NNFD <- lapply(islands.sim, function(x) functionDistinct(output=phyloObs[[x]], traits, traitname)) 
   names(obs.NNFD) <- islands.sim 
@@ -1559,6 +1560,10 @@ sum.sesFunctionDist <- function(plottype=c("NullObsIntervalNNFD", "NullObsInterv
   ses.SanJuan.NNFD.MFD <- lapply(islands.sim, function(x) ses.FunctionDist(phy=SJfinalTree, com=SJcommNewSim, island=x, 
                                                                            simOneIslandOneTrait=simIslands, outputDNNS=phyloObs[[x]], traits=SJtraitLog, traitname=traitname, N=1000))
   names(ses.SanJuan.NNFD.MFD) <- islands.sim
+  #length(ses.SanJuan.NNFD.MFD)
+  if (saveout == TRUE) {
+    write.csv(ses.SanJuan.NNFD.MFD, file=outputPath)
+  }
   
   listIslands <- ses.SanJuan.NNFD.MFD
   ses.SJ.NNFD <- data.frame()

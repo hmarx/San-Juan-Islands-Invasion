@@ -7,6 +7,7 @@
 
 ################################################# Read in Final Datasets #####################################################@
 source("analysis.R")
+source("R/DistinctivenessFunctions.R")
 
 SJfinalTree
 head(SJtraitLog)
@@ -45,7 +46,8 @@ names(summ.DNNS.SJ) <- SJ_islands
 ## proportion of simulated means as or more extreme than observed
 ses.SanJuan.DNNS.MDNS <- lapply(names(list.sdf), function(x) ses.PhyloDist(phy=SJfinalTree, com=SJcommNew, island=x, simOneIsland=list.sdf, N=1000))
 names(ses.SanJuan.DNNS.MDNS) <- names(list.sdf)
-length(ses.SanJuan.DNNS.MDNS)
+length(ses.SanJuan.DNNS.MDNS) #72
+write.csv(ses.SanJuan.DNNS.MDNS, file="output/10_Analyses/PhylogeneticDiversity/Null/SanJuan.SES.phylo.summary.csv")
 
 
 #pdf("figs/plots/phyloDiv/ses/logNullInvOcc.DNNS.islIncSize.pdf", width=20, height=10)
@@ -121,7 +123,8 @@ head(sim.null.distrib.leafN["Willow_Island"])
 ########### Seed mass ########### 
 #pdf(file="figs/plots/functionDiv/ses/NullInvOcc.NNFD.seedMass")
 sum.sesFunctionDist(plottype = "NullObsIntervalNNFD", sim.output ="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.SeedMass.1000.CSV", 
-                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="seedMass", metadata=metadata)
+                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, 
+                    traitname="seedMass", metadata=metadata)
 #dev.off()
 
 #pdf(paste("figs/plots/functionDiv/ses/NullInvOcc.MFD", traitname, "pdf", sep="."), width=20, height=10)
@@ -136,7 +139,8 @@ sum.sesFunctionDist(plottype = "ses", sim.output ="output/10_Analyses/Functional
 
 #pdf(paste("figs/plots/functionDiv/ses/", traitname, "Functional.SummaryBar.pdf", sep=""))
 sum.sesFunctionDist(plottype = "summary.Bar", sim.output ="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.SeedMass.1000.CSV", 
-                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="seedMass", metadata=metadata)
+                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="seedMass", metadata=metadata, 
+                    saveout=TRUE, outputPath="output/10_Analyses/FunctionalDiversity/Null/SanJuan.SES.seedMass.summary.csv")
 #dev.off()
 
 ########### Max Height ########### 
@@ -150,7 +154,8 @@ sum.sesFunctionDist(plottype = "ses", sim.output ="output/10_Analyses/Functional
                     islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="maxHeight", metadata=metadata)
 
 sum.sesFunctionDist(plottype = "summary.Bar", sim.output ="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.Height.null1000.csv", 
-                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="maxHeight", metadata=metadata)
+                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="maxHeight", metadata=metadata, 
+                    saveout=TRUE, outputPath="output/10_Analyses/FunctionalDiversity/Null/SanJuan.SES.maxHeight.summary.csv")
 
 
 ########### sla ########### 
@@ -164,7 +169,8 @@ sum.sesFunctionDist(plottype = "ses", sim.output ="output/10_Analyses/Functional
                     islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="sla", metadata=metadata)
 
 sum.sesFunctionDist(plottype = "summary.Bar", sim.output ="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.SLA.1000.csv", 
-                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="sla", metadata=metadata)
+                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="sla", metadata=metadata, 
+                    saveout=TRUE, outputPath="output/10_Analyses/FunctionalDiversity/Null/SanJuan.SES.sla.summary.csv")
 
 
 ########### leaf size ########### 
@@ -178,7 +184,8 @@ sum.sesFunctionDist(plottype = "ses", sim.output ="output/10_Analyses/Functional
                     islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="leafletSize", metadata=metadata)
 
 sum.sesFunctionDist(plottype = "summary.Bar", sim.output ="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.leafletSize.1000.csv", 
-                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="leafletSize", metadata=metadata)
+                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="leafletSize", metadata=metadata, 
+                    saveout=TRUE, outputPath="output/10_Analyses/FunctionalDiversity/Null/SanJuan.SES.leafletSize.summary.csv")
 
 ########### leaf N ########### 
 sum.sesFunctionDist(plottype = "NullObsIntervalNNFD", sim.output ="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.leafN.1000.csv", 
@@ -191,7 +198,8 @@ sum.sesFunctionDist(plottype = "ses", sim.output ="output/10_Analyses/Functional
                     islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="leafN", metadata=metadata)
 
 sum.sesFunctionDist(plottype = "summary.Bar", sim.output ="output/10_Analyses/FunctionalDiversity/Null/sim.null.distrib.leafN.1000.csv", 
-                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="leafN", metadata=metadata)
+                    islands.sim = SJ_islands.sim, phyloObs = phyloObs, traits=SJtraitLog, traitname="leafN", metadata=metadata, 
+                    saveout=TRUE, outputPath="output/10_Analyses/FunctionalDiversity/Null/SanJuan.SES.leafN.summary.csv")
 
 
 
